@@ -1,0 +1,16 @@
+{% extends 'store/main.html' %}
+{% block title %} Register {% endblock %}
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+<h2 style="text-align: center;">Sign-up</h2>
+<br>
+<form class="form-group signup-login" action="" method="POST">
+  {% csrf_token %}
+  {{ regform|crispy }}
+  <div class="submitbt-holder">
+    <button class="btn btn-outline-success submit" type="submit" name="submitbt">Sign-up</button>
+  </div>
+</form>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends 'store/main.html' %}
+{% load static %}
+{% block content %}
+
+<div class="row">
+  <div class="col-lg-12">
+    <div class="box-element table-responsive">
+      <a class= "btn btn-outline-secondary" href="{% url 'store' %}">&#8592; Continue Shopping</a>
+      <br>
+      <hr>
+
+      <table class='table'>
+        <tr>
+          <th>Items: 3</th>
+          <th>Total: $120.00</th>
+          <th style="float: right;"><a class='btn btn-outline-success' href="{% url 'checkout' %}">Checkout</a></th>
+        </tr>
+      </table>
+    </div>
+
+    <br>
+
+    <div class="box-element">
+        <div class="cart-row">
+          <div class="cart-row-heading" style="flex: 2;"></div>
+          <div class="cart-row-heading" style="flex: 2;"><strong>Item</strong></div>
+          <div class="cart-row-heading" style="flex: 1;"><strong>Price</strong></div>
+          <div class="cart-row-heading" style="flex: 1;"><strong>Quantity</strong></div>
+          <div class="cart-row-heading" style="flex: 1;"><strong>Total</strong></div>
+        </div>
+        <hr>
+        <div class="cart-row items">
+          <div class="cart-row-heading" style="flex: 2;"><img class="item-thumb" src="{% static 'images/placeholder.png' %}"></div>
+          <div class="cart-row-heading" style="flex: 2;"><p>Item name</p></div>
+          <div class="cart-row-heading" style="flex: 1;"><p>$30.00</p></div>
+          <div class="cart-row-heading" style="flex: 1;">
+            <p class="item-amt">2</p>
+            <div class="item-amt up-down">
+              <img class="chg-quantity up" src="{% static 'images/arrow-up.png' %}">
+
+              <img class="chg-quantity down" src="{% static 'images/arrow-down.png' %}">
+            </div>
+          </div>
+          <div class="cart-row-heading" style="flex: 1;">$30.00</div>
+        </div>
+    </div>
+
+  </div>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,12 @@
+{% extends 'store/main.html'%}
+{% load crispy_forms_tags %}
+{% block title %}
+Logout
+{% endblock %}
+
+{% block content %}
+<h1>You've Successfully logged out</h1>
+<br>
+<hr>
+<p><a href="{% url 'store' %}">Continue browsing?</a> or <a href="{% url 'login' %}">Log in</a></p>
+{% endblock %}

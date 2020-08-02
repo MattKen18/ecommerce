@@ -1,0 +1,121 @@
+.searchbar {
+  margin: auto;
+}
+
+.login {
+  position: absolute;
+  right: 100px;
+}
+
+.cart {
+  position: relative;
+}
+
+#cart-icon {
+  display: inline-block;
+  width: 30px;
+}
+
+#cart-item-amt {
+  position: absolute;
+  right: 8px;
+  bottom: 18px;
+  color: green;
+  font-weight: bold;
+}
+
+/* store styling */
+.row.container {
+
+}
+
+.col-lg-4.product-item {
+  margin-bottom: 25px;
+}
+
+.thumbnail {
+  width: 100%;
+  height: 200px;
+}
+
+.box-element {
+  width: 100%;
+  border-radius: 5px;
+  box-shadow: 0 0 16px hsl(0, 0%, 80%);
+  padding: 10px;
+}
+
+.product {
+
+}
+
+span.item-price {
+  font-weight: bolder;
+  float: right;
+}
+
+.item-thumb {
+  width: 100px;
+  height: 90px;
+}
+
+.item-amt {
+  display: inline-block;
+}
+
+.chg-quantity {
+  display: block;
+  width: 10px;
+}
+
+.chg-quantity.up {
+  margin-bottom: 2px;
+}
+
+.cart-row {
+  display: flex;
+  align-items: flex: stretch;
+  flex-direction: row;
+}
+
+/*login form styling*/
+
+.login-form {
+  max-width: 500px;
+  margin: auto;
+}
+
+.form-control:focus, .form-control:focus {
+  box-shadow: none;
+}
+
+
+.submitbt-holder {
+  text-align: center;
+}
+
+.submitbt-holder button {
+  display: inline-block;
+}
+
+.btn.btn-outline-success.submit {
+  color: dodgerblue;
+  border-radius: 5px;
+  border-color: dodgerblue;
+}
+
+.btn.btn-outline-success.submit:hover {
+  color: white;
+  background-color: dodgerblue;
+  border-color: dodgerblue;
+}
+
+.sign-up-q {
+  display: inline-block;
+  margin: auto;
+}
+
+.form-group.signup-login {
+  max-width: 500px;
+  margin: auto;
+}
