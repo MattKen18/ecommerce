@@ -1,3 +1,4 @@
+import random
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from .models import *
@@ -18,11 +19,49 @@ def add_to_cart(request, pk):
 
     return redirect('store')
 
-def cart(response):
+def cart(request):
     template = 'store/cart.html'
-    context = {}
+    cart, created = Cart.objects.get_or_create(user=request.user)
+    cart_items = OrderItem.objects.filter(cart=cart)
+
+    total_items = cart_items.count()
+
+    total_price = 0
+    for item in cart_items:
+        total_price += item.total()
+
+    context = {"cart": cart_items, "items":total_items, "total":total_price}
 
     return render(request, template, context)
+
+def qty_inc(request, pk):
+    template = 'store/cart.html'
+
+    #product = get_object_or_404(Product, pk=pk)
+    cart, created = Cart.objects.get_or_create(user=request.user)
+    order_item, created = OrderItem.objects.get_or_create(id=pk, cart=cart)#, product=product)
+    order_item.quantity += 1
+    order_item.save()
+
+    return redirect('cart')
+
+def qty_dec(request, pk):
+    template = 'store/cart.html'
+
+    #product = get_object_or_404(Product, pk=pk)
+    cart, created = Cart.objects.get_or_create(user=request.user)
+    order_item, created = OrderItem.objects.get_or_create(id=pk, cart=cart)#, product=product)
+    order_item.quantity -= 1
+
+    if order_item.quantity <= 0:
+        order_item.delete()
+    else:
+        order_item.save()
+
+
+    return redirect('cart')
+
+
 
 def checkout(request):
     template = 'store/checkout.html'

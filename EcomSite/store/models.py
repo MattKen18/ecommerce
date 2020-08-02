@@ -1,3 +1,4 @@
+import uuid
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
@@ -53,10 +54,13 @@ class Product(models.Model):
 class Cart(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.user.username + "'s Cart"
+
 
 class OrderItem(models.Model): #each item which emulates a cart item
     cart = models.ForeignKey(Cart, null=True, blank=False, on_delete=models.PROTECT)
-    product = models.ForeignKey(Product, null=True, blank=False, on_delete=models.PROTECT)
+    product = models.ForeignKey(Product, null=True, blank=False, on_delete=models.CASCADE)
     ordered = models.BooleanField(default=False)
     quantity = models.IntegerField(default=0)
 
@@ -64,7 +68,7 @@ class OrderItem(models.Model): #each item which emulates a cart item
         return self.product.name
 
     def total(self):
-        return quantity * self.product.price
+        return self.quantity * self.product.price
 
 
 class Order(models.Model): #emulates cart cashout
