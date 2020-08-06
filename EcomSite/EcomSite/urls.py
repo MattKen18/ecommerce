@@ -20,8 +20,10 @@ from store import views as sv
 
 urlpatterns = [
     path('', include('store.urls')),
+    path('seller/home/', include('seller.urls')),
     path('register/', rv.register_user, name="register"),
+    path('checkout/', include("checkout.urls")),
     path('Logoutpage/', rv.logout, name="logoutpage"),
     path('', include("django.contrib.auth.urls")),
-    path('admin/', admin.site.urls),  
+    path('admin/', admin.site.urls),
 ]

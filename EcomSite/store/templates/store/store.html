@@ -16,13 +16,13 @@
         <a href="#">{{ product.name }}</a>
       </div>
       <div class="product-details">
-        <p class="product-details-text">{{ product.details }}</p>
+        <p class="product-details-text"><a href="#">{{ product.details }}</a></p>
       </div>
       <div class="product-price">
-        <p class="product-price-text">${{ product.price|floatformat:2 }}</p>
+        <p class="product-price-text"><strong>${{ product.price|floatformat:2 }}</strong></p>
       </div>
       <div class="add-to-cart-btn">
-        <button class="btn btn-outline-success" type="button" name="button"><a href="{% url 'addtocart' product.id %}">Add to Cart</a></button>
+        <a class="btn btn-outline-success add-to-cart-btn" href="{% url 'addtocart' product.id %}"> Add to Cart</a>
       </div>
 
 

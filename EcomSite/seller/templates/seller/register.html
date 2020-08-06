@@ -1,0 +1,19 @@
+{% extends 'store/main.html' %}
+{% load static %}
+{% block title %} Register Seller {% endblock %}
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+
+<form class="form-group signup-login" action="" method="post">
+  <h1>Home Address</h1><small> ( if same as shipping address leave blank )</small>
+  <br>
+  <hr>
+  {% csrf_token %}
+  {{ sellerform|crispy }}
+  <div class="submitbt-holder">
+    <button class="btn btn-outline-success submit" type="submit" name="submitbt">Next</button>
+  </div>
+</form>
+{% endblock %}

@@ -34,11 +34,17 @@ class Customer(models.Model): # a customer is the equivalent of a user
 
 class Address(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    customer = models.OneToOneField(Customer, null=True, blank=True, on_delete=models.CASCADE)
     address_line1 = models.CharField(max_length=200, null=True, blank=False)
     address_line2 = models.CharField(max_length=200, null=True, blank=False) #post office
     state = models.CharField(max_length=200, null=True, blank=False)
+    zip_code = models.CharField(max_length=200, null=True, blank=False)
     country = models.CharField(max_length=200, null=True, blank=False)
+
+    def __str__(self):
+        return self.user.username + "'s address"
+
+    class Meta:
+        verbose_name_plural  = "Addresses"
 
 
 class Product(models.Model):

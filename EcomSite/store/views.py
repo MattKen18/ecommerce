@@ -1,4 +1,3 @@
-import random
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from .models import *
@@ -8,6 +7,7 @@ def store(response):
     template = 'store/store.html'
     products = Product.objects.all()
     context = {"products": products}
+
     return render(response, template, context)
 
 def add_to_cart(request, pk):
@@ -61,12 +61,6 @@ def qty_dec(request, pk):
 
     return redirect('cart')
 
-
-
-def checkout(request):
-    template = 'store/checkout.html'
-    context = {}
-    return render(request, template, context)
 
 def login(request):
     context = {}

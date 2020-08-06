@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'store.apps.StoreConfig',
     'register.apps.RegisterConfig',
+    'checkout.apps.CheckoutConfig',
+    'seller.apps.SellerConfig',
     'crispy_forms',
 ]
 
@@ -65,6 +67,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'store.context_processors.send_to_main',
             ],
         },
     },

@@ -1,0 +1,84 @@
+{% extends 'store/main.html' %}
+{% load static %}
+{% block title %} Register {% endblock %}
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+
+<h1 style="text-align: center;">Checkout</h1>
+<br>
+<div class="row checkout-content">
+  <div class="col-lg checkout-section left">
+    <div class="section-content left">
+      <div class="section-heading">
+        <p><strong>Order details</strong></p>
+      </div>
+      <hr>
+
+      <div class="order-details-content" style="height: 100%;">
+        {% for item in order_items %}
+        <div class="order-item">
+          <div class="cart-row item thumb-img order">
+            <img class="item-thumb order" src="{% static 'images/placeholder.png' %}">
+          </div>
+          <div class="order-item-details">
+            <div class="order-item-name">
+              <p> <strong>{{ item.product.name }}</strong> </p>
+            </div>
+            <div class="order-item-price">
+              <p> Total: ${{ item.total }} </p>
+            </div>
+            <div class="order-item-quantity">
+              <p> Quantity: {{ item.quantity }} </p>
+            </div>
+          </div>
+        </div>
+        <hr>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg checkout-section right container">
+    <div class="col-lg checkout-section right upper">
+      <div class="section-content right">
+        <div class="section-content-shipping">
+          <div class="shipping-heading">
+            <p><strong>Shipping to:</strong></p>
+          </div>
+          <div class="shipping-content">
+            <p>{{ user.first_name}} {{ user.last_name }}</p>
+            <p>{{address.address_line1}}</p>
+            <p>{{address.address_line2}}</p>
+            <p>{{address.state}}</p>
+            <p>{{address.zip_code}}</p>
+            <p>{{address.country}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br>
+    <div class="col-lg checkout-section right lower">
+      <div class="section-content right">
+        <div class="payment-info">
+          <div class="payment-heading">
+            <p><strong> Payment Options:</strong></p>
+            <button class="btn btn-outline-secondary payment cdcard" type="button" name="button"><i class="far fa-credit-card"></i> Add Debit or Credit Card</button>
+            <button class="btn btn-outline-secondary payment paypal" type="button" name="button"><i class="fab fa-cc-paypal"></i> Paypal</button>
+          </div>
+        </div>
+        <br>
+        <hr>
+
+        <div class="checkout-btn">
+          <p><a href="#" class="btn btn-outline-success checkout-submit-btn"><i class="fas fa-lock"></i> Checkout</a></p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+{% endblock %}

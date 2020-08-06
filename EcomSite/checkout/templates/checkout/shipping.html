@@ -1,0 +1,28 @@
+{% extends 'store/main.html' %}
+{% block title %} Register {% endblock %}
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+<h2 style="text-align: center;">Shipping</h2>
+<p><a href="{% url 'checkout' %}">Skip</a>. You already have my address.</p>
+{% if messages %}
+  {% for message in messages %}
+  <p style="text-align: center;"><strong>{{ message }}</strong></p>
+  <br>
+  {% endfor %}
+{% endif %}
+<br>
+<hr>
+
+
+<form class="form-group signup-login" action="" method="POST">
+  {% csrf_token %}
+
+  {{ shipform|crispy }}
+  <br>
+  <div class="submitbt-holder">
+    <button class="btn btn-outline-success submit" type="submit" name="submitbt">Proceed to Checkout</button>
+  </div>
+</form>
+{% endblock %}
