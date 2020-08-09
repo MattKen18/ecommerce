@@ -5,7 +5,9 @@
 
 {% block content %}
 <h2 style="text-align: center;">Shipping</h2>
+{% if address %}
 <p><a href="{% url 'checkout' %}">Skip</a>. You already have my address.</p>
+{% endif %}
 {% if messages %}
   {% for message in messages %}
   <p style="text-align: center;"><strong>{{ message }}</strong></p>

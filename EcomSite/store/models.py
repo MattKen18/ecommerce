@@ -3,7 +3,24 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from seller.models import Profile
+
 # Create your models here.
+
+categories = [
+        ('TB', 'textbook'),
+        ('NB', 'notebook'),
+        ('LB', 'literature book'),
+        ('RB', 'reading book'),
+
+]
+
+conditions = [
+        ('BN', 'Brand New'),
+        ('UD', 'Used'),
+        ('UGD', 'Used Good Condition'),
+        ('UPC', 'Used Poor Condition'),
+]
 
 
 class Customer(models.Model): # a customer is the equivalent of a user
@@ -34,8 +51,10 @@ class Customer(models.Model): # a customer is the equivalent of a user
 
 class Address(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    profile = models.ForeignKey(Profile, null=True, blank=False, on_delete=models.CASCADE)
     address_line1 = models.CharField(max_length=200, null=True, blank=False)
     address_line2 = models.CharField(max_length=200, null=True, blank=False) #post office
+    city = models.CharField(max_length=200, null=True, blank=False)
     state = models.CharField(max_length=200, null=True, blank=False)
     zip_code = models.CharField(max_length=200, null=True, blank=False)
     country = models.CharField(max_length=200, null=True, blank=False)
@@ -48,14 +67,32 @@ class Address(models.Model):
 
 
 class Product(models.Model):
-    customer = models.ForeignKey(Customer, null=True, blank=True, on_delete=models.PROTECT)
+    product_seller = models.ForeignKey(Customer, null=True, blank=True, on_delete=models.PROTECT)
     name = models.CharField(max_length=200, null=True, blank=False)
     price = models.FloatField(null=True, blank=False)
     details = models.CharField(max_length=200, null=True, blank=True)
     available = models.BooleanField(default=True, null=True, blank=False) #sold or not
+    category = models.CharField(max_length=20, null=True, blank=False, choices=categories)
+    pub_date = models.DateTimeField(null=True, blank=False)
+    image = models.ImageField(null=True, blank=True)
+    condition = models.CharField(max_length=200, null=True, blank=False, choices=conditions)
+    amt_available = models.IntegerField(null=True, blank=False, default=1)
+
+    #Customer.product_set.all() to get all products of
 
     def __str__(self):
         return self.name
+
+    def seller(self):
+        return self.seller.user.username
+
+    @property
+    def imageURL(self):
+        try:
+            url = self.image.url
+        except:
+            url = ''
+        return url
 
 class Cart(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -81,3 +118,12 @@ class Order(models.Model): #emulates cart cashout
     user = models.ForeignKey(User, null=True, blank=False, on_delete=models.CASCADE)
     items = models.ManyToManyField(OrderItem)
     order_date = models.DateTimeField(null=True, blank=False)
+
+
+class SingleBuy(models.Model):
+    customer = models.ForeignKey(Customer, null=True, blank=False, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, null=True, on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.product.name + " (single buy)"

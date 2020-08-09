@@ -1,10 +1,55 @@
 {% extends 'store/main.html' %}
 {% load static %}
-{% block title %} Register {% endblock %}
-
-
+{% block title %} Seller {% endblock %}
+{% block active %}
+{% load crispy_forms_tags %}
+  <div class="form-inline right left-content mr-auto">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'store' %}">Store</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'cart' %}">Cart</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'checkout' %}">Checkout</a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="{% url 'sellerhome' %}">Sell<span class="sr-only">(current)</span></a>
+      </li>
+    </ul>
+  </div>
+{% endblock active %}
 {% block content %}
 
-<p><a href="{% url 'registerseller' %}">Register</a> to become an official seller</p>
+{% if not seller %}
+<p>I see you're not a seller. <a href="{% url 'registerseller' %}">Register</a> to become an official seller</p>
+<h3>What's a seller?</h3>
+<h3>Why become a seller?</h3>
+
+{% else %}
+  <h1>Seller Homepage</h1>
+  {% if messages %}
+  {% for message in messages %}
+  <strong>{{ message }}</strong>
+  {% endfor %}
+  {% endif %}
+  <hr>
+  <br>
+  <br>
+  <div class="box-element create-product-form-holder form-group">
+    <h5 style="text-align: center;">Submit a product</h5>
+    <br>
+    <div class="inner-form">
+      <form class="create-product-form form-group" action="{% url 'createproduct' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ productform|crispy }}
+        <div class="submitbt-holder">
+          <a href="{% url 'createproduct' %}"><button class="btn btn-outline-success create-product-btn" type="submit" name="button">Create Product</button></a>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endif %}
 
 {% endblock %}

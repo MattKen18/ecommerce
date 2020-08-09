@@ -1,0 +1,37 @@
+{% extends 'store/main.html' %}
+{% load static %}
+{% block title %} Product Details {% endblock %}
+
+{% block content %}
+<h1>Product page</h1>
+<div class="row">
+  <div class="col-lg-4 left-section">
+    <div class="box-element product-images-view">
+      <div class="large-image-view">
+        <img src="{{ product.imageURL }}" alt="">
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-8 right-section">
+    <div class="box-element">
+      <div class="detail product-name-holder">
+        <h4 class="detail-product-name">{{ product.name }} <small>in</small> <a href="{% url 'categories' product.category %}">{{ product.category }}</a></h4>
+      </div>
+      <div class="detail product-seller">
+        {% if product.product_seller == None %}
+        <p>Seller: <a href="#">Ecom</a></p>
+        {% else %}
+        <p>Seller: <a href="#">{{product.product_seller}}</a></p>
+        {% endif %}
+      </div>
+      <div class="detail product-details-holder">
+        <p>{{ product.details }}</p>
+      </div>
+      <div class="detail products-stock">
+        <p>{{ product.amt_available }} item(s) available</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}

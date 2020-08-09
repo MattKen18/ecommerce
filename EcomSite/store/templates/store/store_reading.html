@@ -1,0 +1,72 @@
+{% extends 'store/store.html' %}
+{% load static %}
+
+<link rel="stylesheet" type='text/css' href="{% static 'css/main.css' %}">
+{% block body %}
+<div class="categories">
+  <div class="categories-options heading-introduce">
+    <strong>Categories: </strong>
+  </div>
+  <div class="categories-options">
+    <p class="categories-options-items grow"><a href="{% url 'store' %}" class="categories-links-btn">all</a></p>
+    {% for category in categories %}
+    <p class="categories-options-items grow"><a href="{% url 'categories' category %}" class="categories-links-btn">{{ category }}s</a></p>
+    {% endfor %}
+  </div>
+</div>
+<br>
+<hr>
+<br>
+<h5>Reading books</h5>
+<div class="row items-container">
+  {% for product in page_obj %}
+  <div class="col-lg-3 product-item">
+    <div class="product-item-content">
+      <div class="thumbnail-holder">
+        <img class='thumbnail-img' src="{{ product.imageURL }}">
+      </div>
+      <div class="product-name">
+        <a href="#">{{ product.name }}</a>
+      </div>
+      <div class="product-details">
+        <p class="product-details-text"><a href="#">{{ product.details }}</a></p>
+      </div>
+      <div class="product-price">
+        <p class="product-price-text"><strong>${{ product.price|floatformat:2 }}</strong></p>
+      </div>
+      <div class="add-to-cart-btn">
+        <a class="btn btn-outline-success add-to-cart-btn" href="{% url 'addtocart' product.id %}"> Add to Cart</a>
+        <a class="btn btn-outline-success buy-btn" href="#">Buy</a>
+      </div>
+
+
+    </div>
+
+
+
+  </div>
+
+  {% endfor %}
+
+</div>
+<div class="pagination">
+  <div class="pagination-inner">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a> |
+            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+  </div>
+</div>
+
+{% endblock body %}

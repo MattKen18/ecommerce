@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'register.apps.RegisterConfig',
     'checkout.apps.CheckoutConfig',
     'seller.apps.SellerConfig',
+    'sellerprofile.apps.SellerprofileConfig',
     'crispy_forms',
 ]
 
@@ -130,5 +131,9 @@ STATICFILES_DIRS = [
 ]
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
+
+MEDIA_URL = '/images/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
+
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "logoutpage"

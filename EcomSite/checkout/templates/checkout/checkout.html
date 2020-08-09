@@ -1,13 +1,35 @@
 {% extends 'store/main.html' %}
 {% load static %}
-{% block title %} Register {% endblock %}
+{% block title %} Checkout {% endblock %}
 {% load crispy_forms_tags %}
-
+{% block active %}
+  <div class="form-inline right left-content mr-auto">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'store' %}">Store</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'cart' %}">Cart</a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="{% url 'checkout' %}">Checkout<span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'sellerhome' %}">Sell</a>
+      </li>
+    </ul>
+  </div>
+{% endblock active %}
 
 {% block content %}
 
 <h1 style="text-align: center;">Checkout</h1>
 <br>
+{% if single %}
+<p><strong>Warning: </strong> You are viewing your quick buy items,
+to checkout the items in your cart instead, please <a href="{% url 'delsingle' %}">remove</a>
+these items.</p>
+{% endif %}
 <div class="row checkout-content">
   <div class="col-lg checkout-section left">
     <div class="section-content left">
@@ -15,19 +37,42 @@
         <p><strong>Order details</strong></p>
       </div>
       <hr>
+      <div class="order-details">
+        <p>total price: </p>
+      </div>
 
       <div class="order-details-content" style="height: 100%;">
+        {% if single %}
+        {% for single in single %}
+        <div class="order-item">
+          <div class="cart-row item thumb-img order">
+            <img class="item-thumb order" src="{{ single.product.imageURL }}">
+          </div>
+          <div class="order-item-details">
+            <div class="order-item-name">
+              <p> <strong>{{ single.product.name }}</strong> </p>
+            </div>
+            <div class="order-item-price">
+              <p> Total: ${{ single.product.price|floatformat:2 }} </p>
+            </div>
+            <div class="order-item-quantity">
+              <p> Quantity: {{ single.quantity }} </p>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+        {% else %}
         {% for item in order_items %}
         <div class="order-item">
           <div class="cart-row item thumb-img order">
-            <img class="item-thumb order" src="{% static 'images/placeholder.png' %}">
+            <img class="item-thumb order" src="{{ item.product.imageURL }}">
           </div>
           <div class="order-item-details">
             <div class="order-item-name">
               <p> <strong>{{ item.product.name }}</strong> </p>
             </div>
             <div class="order-item-price">
-              <p> Total: ${{ item.total }} </p>
+              <p> Total: ${{ item.total|floatformat:2 }} </p>
             </div>
             <div class="order-item-quantity">
               <p> Quantity: {{ item.quantity }} </p>
@@ -36,6 +81,7 @@
         </div>
         <hr>
         {% endfor %}
+        {% endif %}
       </div>
     </div>
   </div>

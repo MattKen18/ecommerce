@@ -1,7 +1,7 @@
 from django.contrib import messages
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .forms import ShippingForm
-from store.models import Address, Cart, OrderItem
+from store.models import Address, Cart, OrderItem, SingleBuy, Customer
 
 # Create your views here.
 
@@ -14,6 +14,7 @@ def shipping(request):
             add1 = shipform.cleaned_data['address_line1']
             add2 = shipform.cleaned_data['address_line2']
             state = shipform.cleaned_data['state']
+            city = shipform.cleaned_data['city']
             zip = shipform.cleaned_data['zip_code']
             country = shipform.cleaned_data['country']
 
@@ -23,7 +24,7 @@ def shipping(request):
                 return redirect('shipping')
                 addr_already_exists = ''
             except:
-                user_address = Address(user=request.user, address_line1=add1, address_line2=add2, state=state, zip_code=zip, country=country)
+                user_address = Address(user=request.user, address_line1=add1, address_line2=add2, city=city, state=state, zip_code=zip, country=country)
                 user_address.save()
 
                 return redirect('checkout')
@@ -31,7 +32,15 @@ def shipping(request):
     else:
         shipform = ShippingForm()
 
-    context = {"shipform": shipform}
+    address_exists = True
+    try:
+        Address.objects.get(user=request.user)
+    except:
+        address_exists = False
+    else:
+        address_exists = True
+
+    context = {"shipform": shipform, "address": address_exists}
 
     return render(request, template, context)
 
@@ -44,10 +53,26 @@ def shipping(request):
 
 def checkout(request):
     template = 'checkout/checkout.html'
-    cart, created = Cart.objects.get_or_create(user=request.user)
-    cart_items = OrderItem.objects.filter(cart=cart)
-    address = Address.objects.get(user=request.user)
 
-    context = {"order_items": cart_items, "address": address}
+    try:
+        customer = Customer.objects.get(user=request.user)
+        singles = SingleBuy.objects.filter(customer=customer)
+        address = Address.objects.get(user=request.user)
+    except:
+        cart, created = Cart.objects.get_or_create(user=request.user)
+        cart_items = OrderItem.objects.filter(cart=cart)
+        address = Address.objects.get(user=request.user)
+        context = {"address": address, "order_items": cart_items}
+
+    else:
+        if singles.count() == 0:
+            cart, created = Cart.objects.get_or_create(user=request.user)
+            cart_items = OrderItem.objects.filter(cart=cart)
+            address = Address.objects.get(user=request.user)
+            context = {"address": address, "order_items": cart_items}
+        else:
+            context = {"address": address, "single": singles}
+
+
 
     return render(request, template, context)
