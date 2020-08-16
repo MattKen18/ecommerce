@@ -8,7 +8,7 @@ from .models import *
 def store(response):  #order by
     #option to request order of book
     template = 'store/store.html'
-    products = Product.objects.all().order_by('-pub_date')
+    products = Product.objects.all().filter(published=True, rejected=False).order_by('-pub_date')
     choices = Product._meta.get_field('category').choices
     categories = [choice[1] for choice in choices]
 
@@ -21,6 +21,7 @@ def store(response):  #order by
     context = {"products": products, "categories": categories, 'page_obj': page_obj}
 
     return render(response, template, context)
+
 
 def store_categories(response, category):  #order by
     if category == 'textbook' or category == 'TB':
@@ -55,7 +56,7 @@ def store_categories(response, category):  #order by
 
 def detail_page(request, pk):
     template = "store/detail.html"
-    product, created = Product.objects.get_or_create(pk=pk)
+    product, created = Product.objects.get_or_create(id=pk)
 
 
     context = {'product': product}
@@ -67,11 +68,25 @@ def add_to_cart(request, pk):
     product = get_object_or_404(Product, pk=pk)
     cart, created = Cart.objects.get_or_create(user=request.user)
     order_item, created = OrderItem.objects.get_or_create(cart=cart, product=product)
-    if order_item.quantity < order_item.product.amt_available:
-        order_item.quantity += 1
-        order_item.save()
+
+    try:
+        detail_amt = request.POST['detailorder_amt']
+
+    except:
+        if order_item.quantity < order_item.product.amt_available:
+            order_item.quantity += 1
+            order_item.save()
+        else:
+            no_more_stock = messages.error(request, 'No more items in stock, currently there are ' + str(order_item.product.amt_available) + ' item(s) available.')
+
     else:
-        no_more_stock = messages.error(request, 'No more items in stock, currently there are ' + str(order_item.product.amt_available) + ' item(s) available.')
+        detail_amt = int(detail_amt)
+        if order_item.quantity + detail_amt <= order_item.product.amt_available:
+            order_item.quantity += detail_amt
+            order_item.save()
+        else:
+            no_more_stock = messages.error(request, 'No more items in stock, currently there are ' + str(order_item.product.amt_available) + ' item(s) available.')
+
 
     return redirect('cart')
 
@@ -82,14 +97,29 @@ def single_buy(request, pk):
     single_buy, created = SingleBuy.objects.get_or_create(customer=customer, product=product)
     no_more_stock = ''
 
-    if single_buy.quantity >= single_buy.product.amt_available:
-        no_more_stock = messages.error(request, 'No more items in stock, currently there are ' + str(single_buy.product.amt_available) + ' item(s) available.')
-        return redirect('store')
+    try:
+        detail_single_amt = request.POST['detailorder_amt']
+        detail_single_amt = int(detail_single_amt)
+
+    except:
+        if single_buy.quantity >= single_buy.product.amt_available:
+            no_more_stock = messages.error(request, 'No more items in stock, currently there are ' + str(single_buy.product.amt_available) + ' item(s) available.')
+            return redirect('store')
+        else:
+            single_buy.quantity += 1
+            single_buy.save()
+
     else:
-        single_buy.quantity += 1
-        single_buy.save()
+        if single_buy.quantity >= single_buy.product.amt_available or single_buy.quantity + detail_single_amt > single_buy.product.amt_available:
+            no_more_stock = messages.error(request, 'No more items in stock, currently there are ' + str(single_buy.product.amt_available) + ' item(s) available.')
+            return redirect('detail', pk=pk)
+        else:
+            single_buy.quantity = detail_single_amt
+            single_buy.save()
 
     return redirect('shipping')
+
+
 
 def del_single_buy(request):
     customer = get_object_or_404(Customer, user=request.user)

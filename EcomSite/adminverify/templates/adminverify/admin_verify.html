@@ -1,0 +1,94 @@
+{% extends 'store/main.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Verification{% endblock title %}
+
+{% block content %}
+<h1 style="text-align: center;">Product Verification</h1>
+<small style="text-align: center;"><p>for staff use only</p></small>
+<hr>
+<br>
+<br>
+{% if messages %}
+{% for message in messages %}
+<strong>{{ message }}</strong>
+{% endfor %}
+<br>
+<hr>
+{% endif %}
+
+<div class="admin row items-container">
+  {% for product in products %}
+  <form class="form-group admin-view" action="{% url 'productupdate' product.id %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <a class="product-link admin-view">
+      <div class="col-lg-3 product-item admin-view">
+        <p><small>{{ product.req_date }}</small></p>
+        {% if product.product_seller == None %}
+          <p>Seller: <a href="#">Ecom</a></p>
+        {% else %}
+          <p>Seller: <a href="#">{{product.product_seller}}</a></p>
+        {% endif %}
+
+        <div class="product-item-content">
+          <div class="thumbnail-holder">
+            <img class='thumbnail-img' src="{{ product.imageURL }}">
+          </div>
+          {{ imageform|crispy }}
+          <div class="product-name">
+            <textarea name="productname">{{ product.name }}</textarea>
+          </div>
+
+          <div class="product-details">
+            <textarea name="productdetails">{{ product.details }}</textarea>
+          </div>
+          <div class="product-price" style="margin-bottom: 10px;">
+            <input type="number" name="productprice" value="{{ product.price|floatformat:2 }}">
+          </div>
+          <div class="product-category" style="margin-bottom: 10px;">
+            <select class="" name="productcategory">
+              {% for category in categories %}
+                {% if product.category in category %}
+                  <option value="{{ category }}" selected>{{ category }}</option>
+                {% else %}
+                  <option value="{{ category }}">{{ category }}</option>
+                {% endif%}
+              {% endfor%}
+            </select>
+          </div>
+          <div class="product-condition" style="margin-bottom: 10px;">
+            <select class="" name="productcondition">
+              {% for condition in conditions %}
+                {% if product.condition in conditions %}
+                  <option value="{{ condition }}" selected>{{ condition }}</option>
+                {% else %}
+                  <option value="{{ condition }}">{{ condition }}</option>
+                {% endif %}
+              {% endfor%}
+            </select>
+          </div>
+          <div class="product-amtavailable">
+            <input type="number" name="productavailable" value="{{ product.amt_available }}">
+          </div>
+          <div class="paid-verify-publish-btn-holder">
+            {% if product.paid == True %}
+              <a class="admin btn btn-outline-success paid-btn paid" href="{% url 'paid' product.id %}"><i class="far fa-check-circle"></i>&nbsp Paid</a>
+            {% else %}
+              <a class="admin btn btn-outline-success paid-btn unpaid" href="{% url 'paid' product.id %}"><i class="far fa-times-circle"></i>&nbsp Paid</a>
+            {% endif %}
+            {% if product.verified == True %}
+              <a class="admin btn btn-outline-success verified-btn verified" href="{% url 'unverify' product.id %}"><i class="fas fa-lock"></i>&nbsp Verified</a>
+              <button type="submit" class="admin btn btn-outline-success publish-btn">Publish</button>
+            {% else %}
+              <a class="admin btn btn-outline-success verified-btn unverified" href="{% url 'verify' product.id %}">Verify</a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </a>
+  </form>
+  {% endfor %}
+</div>
+<hr>
+{% endblock content %}

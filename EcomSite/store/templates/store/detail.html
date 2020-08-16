@@ -3,17 +3,24 @@
 {% block title %} Product Details {% endblock %}
 
 {% block content %}
-<h1>Product page</h1>
+
+{% if messages %}
+{% for message in messages %}
+<strong>{{ message }}</strong>
+{% endfor %}
+<br>
+<hr>
+{% endif %}
 <div class="row">
-  <div class="col-lg-4 left-section">
-    <div class="box-element product-images-view">
+  <div class="detail col-lg-4 left-section">
+    <div class="box-element detail-container product-images-view">
       <div class="large-image-view">
         <img src="{{ product.imageURL }}" alt="">
       </div>
     </div>
   </div>
-  <div class="col-lg-8 right-section">
-    <div class="box-element">
+  <div class="detail col-lg-4 middle-section">
+    <div class="box-element detail-container">
       <div class="detail product-name-holder">
         <h4 class="detail-product-name">{{ product.name }} <small>in</small> <a href="{% url 'categories' product.category %}">{{ product.category }}</a></h4>
       </div>
@@ -28,7 +35,30 @@
         <p>{{ product.details }}</p>
       </div>
       <div class="detail products-stock">
-        <p>{{ product.amt_available }} item(s) available</p>
+        <p>Stock: {{ product.amt_available }}</p>
+      </div>
+      <div class="large-get-product-view">
+        <div class="detail amt-change">
+          <form class="form-group detail amt-change-form" action="{% url 'addtocart' product.id %}" method="post">
+            {% csrf_token %}
+            <input type="number" name="detailorder_amt" value="1" min="0">
+            <br>
+            <hr>
+            <div class="detail detail-add-to-cart-btn">
+              <button type="submit" name="button" class="btn btn-outline-success add-to-cart-btn">Add to Cart</button>
+            </div>
+            <div class="detail detail-buy-btn">
+              <button type="submit" name="button" class="btn btn-outline-success buy-btn" formaction="{% url 'single' product.id %}">Buy</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="detail col-lg-4 right-section">
+    <div class="box-element detail-container">
+      <div class="right-section-heading-container">
+        <h4>Seller Details</h4>
       </div>
     </div>
   </div>

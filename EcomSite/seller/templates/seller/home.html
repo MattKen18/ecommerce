@@ -45,7 +45,7 @@
         {% csrf_token %}
         {{ productform|crispy }}
         <div class="submitbt-holder">
-          <a href="{% url 'createproduct' %}"><button class="btn btn-outline-success create-product-btn" type="submit" name="button">Create Product</button></a>
+          <a href="{% url 'createproduct' %}"><button class="btn btn-outline-success create-product-btn" type="submit" name="button">Submit</button></a>
         </div>
       </form>
     </div>

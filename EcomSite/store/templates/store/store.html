@@ -43,8 +43,8 @@
         <div class="product-price">
           <p class="product-price-text"><strong>${{ product.price|floatformat:2 }}</strong></p>
         </div>
-        <div class="add-to-cart-btn">
-          <a class="btn btn-outline-success add-to-cart-btn" href="{% url 'addtocart' product.id %}"> Add to Cart</a>
+        <div class="add-to-cart-buy-btn-holder">
+          <a class="btn btn-outline-success add-to-cart-btn" href="{% url 'addtocart' product.id  %}"> Add to Cart</a>
           <a class="btn btn-outline-success buy-btn" href="{% url 'single' product.id %}">Buy</a>
         </div>
       </div>

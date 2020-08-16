@@ -17,7 +17,7 @@ categories = [
 
 conditions = [
         ('BN', 'Brand New'),
-        ('UD', 'Used'),
+        ('NPC', 'New Poor Condition'),
         ('UGD', 'Used Good Condition'),
         ('UPC', 'Used Poor Condition'),
 ]
@@ -67,16 +67,22 @@ class Address(models.Model):
 
 
 class Product(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     product_seller = models.ForeignKey(Customer, null=True, blank=True, on_delete=models.PROTECT)
     name = models.CharField(max_length=200, null=True, blank=False)
     price = models.FloatField(null=True, blank=False)
     details = models.CharField(max_length=200, null=True, blank=True)
     available = models.BooleanField(default=True, null=True, blank=False) #sold or not
     category = models.CharField(max_length=20, null=True, blank=False, choices=categories)
-    pub_date = models.DateTimeField(null=True, blank=False)
+    req_date = models.DateTimeField(null=True, blank=False, auto_now_add=True)#date when the product is requested to be uploaded by seller
+    pub_date = models.DateTimeField(null=True, blank=False)#date when product is uploaded by us after being verified
     image = models.ImageField(null=True, blank=True)
     condition = models.CharField(max_length=200, null=True, blank=False, choices=conditions)
     amt_available = models.IntegerField(null=True, blank=False, default=1)
+    paid = models.BooleanField(default=False)
+    verified = models.BooleanField(default=False)
+    published = models.BooleanField(default=False)
+    rejected = models.BooleanField(default=False)
 
     #Customer.product_set.all() to get all products of
 
@@ -102,6 +108,7 @@ class Cart(models.Model):
 
 
 class OrderItem(models.Model): #each item which emulates a cart item
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     cart = models.ForeignKey(Cart, null=True, blank=False, on_delete=models.PROTECT)
     product = models.ForeignKey(Product, null=True, blank=False, on_delete=models.CASCADE)
     ordered = models.BooleanField(default=False)

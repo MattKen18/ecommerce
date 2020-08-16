@@ -54,6 +54,7 @@
                 {% else %}
                   <p class="user-username">Guest</p>
                 {% endif %}
+                <a class="go-to profile-dropdown" href="{% url 'cart' %}">My Profile</a>
                 <a class="go-to cart-dropdown" href="{% url 'cart' %}">My Cart</a>
                 <a class="go-to checkout-dropdown" href="{% url 'shipping' %}">Go to Checkout</a>
                 <div class="dropdown-divider"></div>
@@ -68,7 +69,7 @@
           <div class="cart">
             <div class="cart-items">
               <div class="quantity-holder">
-                <p id=cart-item-amt>{{ cartquantity }}</p>
+                <a href="{% url 'cart' %}"><p id=cart-item-amt>{{ cartquantity }}</p></a>
               </div>
               <div class="cart-icon-holder">
                 <a  class="cart-icon-link" href="{% url 'cart' %}">

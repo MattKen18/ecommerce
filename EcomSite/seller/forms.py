@@ -29,12 +29,12 @@ class PersonalForm(forms.Form):
 
 class CreateProductForm(forms.ModelForm):
     name = forms.CharField(max_length=200, label="Title")
-    price = forms.FloatField()
+    price = forms.FloatField(min_value=1)
     details = forms.CharField(max_length=200, help_text="e.g. The Hate You Give hardcover by Angie Thomas 2 years old. ")
     category = forms.ChoiceField(choices=categories)
     image = forms.ImageField(required=False)
     condition = forms.ChoiceField(choices=conditions)
-    amt_available = forms.IntegerField()
+    amt_available = forms.IntegerField(min_value=1)
 
     class Meta:
         model = Product

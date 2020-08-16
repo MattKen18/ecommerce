@@ -96,12 +96,15 @@ def create_product(request):
         condition = productform.cleaned_data['condition']
         amt_available = productform.cleaned_data['amt_available']
         #image = productform.cleaned_data['image']
-        image = request.FILES['image']
+        try:
+            image = request.FILES['image']
+        except:
+            image = request.FILES['image']
 
         product_seller, created = Customer.objects.get_or_create(user=request.user)
 
         product = Product(product_seller=product_seller, name=name, price=price,
-                      details=details, category=category, pub_date=datetime.datetime.now(),
+                      details=details, category=category, req_date=datetime.datetime.now(),
                       image=image, condition=condition, amt_available=amt_available)
         product.save()
 

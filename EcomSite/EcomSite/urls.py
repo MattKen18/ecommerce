@@ -23,6 +23,7 @@ from store import views as sv
 urlpatterns = [
     path('', include('store.urls')),
     path('seller/home/', include('seller.urls')),
+    path('AdminVerify/', include('adminverify.urls')),
     path('User/Profile/', include('sellerprofile.urls')),
     path('register/', rv.register_user, name="register"),
     path('checkout/', include("checkout.urls")),

@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'checkout.apps.CheckoutConfig',
     'seller.apps.SellerConfig',
     'sellerprofile.apps.SellerprofileConfig',
+    'adminverify.apps.AdminverifyConfig',
     'crispy_forms',
 ]
 
