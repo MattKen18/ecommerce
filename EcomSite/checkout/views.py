@@ -2,9 +2,10 @@ from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import ShippingForm
 from store.models import Address, Cart, OrderItem, SingleBuy, Customer
-
+from store.decorators import authenticated_user, unauthenticated_user
 # Create your views here.
 
+@authenticated_user
 def shipping(request):
     template = 'checkout/shipping.html'
     if request.method == "POST":
@@ -51,6 +52,7 @@ def shipping(request):
 
 #    return render(request, template, context)
 
+@authenticated_user
 def checkout(request):
     template = 'checkout/checkout.html'
 

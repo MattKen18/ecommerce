@@ -1,1 +1,6 @@
-Requirement already satisfied: Pillow in c:\users\super slick\desktop\ecommerce\venv\lib\site-packages (7.2.0)
+asgiref==3.2.10
+Django==3.0.8
+django-crispy-forms==1.9.2
+Pillow==7.2.0
+pytz==2020.1
+sqlparse==0.3.1

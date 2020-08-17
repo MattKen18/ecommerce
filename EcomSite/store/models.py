@@ -1,6 +1,6 @@
 import uuid
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from seller.models import Profile
@@ -99,6 +99,24 @@ class Product(models.Model):
         except:
             url = ''
         return url
+
+
+class ProductImages(models.Model):
+    product = models.ForeignKey(Product, blank=True, null=True, on_delete=models.CASCADE)
+    image = models.ImageField(null=True, blank=True)
+
+    def __str__(self):
+        return self.product.product_seller.__str__() + "'s " + "'{}'".format(self.product.name) + " secondary image."
+
+    @property
+    def imageURL(self):
+        try:
+            url = self.image.url
+        except:
+            url = ''
+        return url
+
+
 
 class Cart(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)

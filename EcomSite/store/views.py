@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import *
+from .decorators import authenticated_user, unauthenticated_user, allowed_users
 # Create your views here.
 
 def store(response):  #order by
@@ -57,13 +58,15 @@ def store_categories(response, category):  #order by
 def detail_page(request, pk):
     template = "store/detail.html"
     product, created = Product.objects.get_or_create(id=pk)
+    images = product.productimages_set.all()
+    for image in images:
+        print(image.imageURL)
 
-
-    context = {'product': product}
+    context = {'product': product, 'productimages': images}
 
     return render(request, template, context)
 
-
+@authenticated_user
 def add_to_cart(request, pk):
     product = get_object_or_404(Product, pk=pk)
     cart, created = Cart.objects.get_or_create(user=request.user)
@@ -90,7 +93,7 @@ def add_to_cart(request, pk):
 
     return redirect('cart')
 
-
+@authenticated_user
 def single_buy(request, pk):
     product = get_object_or_404(Product, pk=pk)
     customer = get_object_or_404(Customer, user=request.user)
@@ -120,13 +123,14 @@ def single_buy(request, pk):
     return redirect('shipping')
 
 
-
+@unauthenticated_user
 def del_single_buy(request):
     customer = get_object_or_404(Customer, user=request.user)
     singles = SingleBuy.objects.filter(customer=customer).delete()
 
     return redirect("checkout")
 
+@authenticated_user
 def cart(request):
     template = 'store/cart.html'
     cart, created = Cart.objects.get_or_create(user=request.user)
@@ -143,7 +147,7 @@ def cart(request):
 
     return render(request, template, context)
 
-
+@authenticated_user
 def quantity_change(request, pk):
     template = 'store/cart.html'
     no_more_stock = ''
@@ -172,6 +176,7 @@ def quantity_change(request, pk):
 
     return redirect('cart')
 
+@authenticated_user
 def delete_item(request, pk):
     template = 'store/cart.html'
     deleted = ''
@@ -183,19 +188,20 @@ def delete_item(request, pk):
     deleted = messages.info(request, "Item removed from cart")
     return redirect('cart')
 
-def login(request):
-    context = {}
-    template = 'store/login.html'
 
-    return render(request, template, context)
+#def login(request):
+#    context = {}
+#    template = 'store/login.html'
+
+#    return render(request, template, context)
 
 
-def signup(request):
-    context = {}
-    template = 'store/signup.html'
-    #Customer()
-
-    return render(request, template, context)
+#def signup(request):
+#    context = {}
+#    template = 'store/signup.html'
+#    #Customer()
+#
+#    return render(request, template, context)
 
 
 

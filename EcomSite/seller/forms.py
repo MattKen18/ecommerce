@@ -2,6 +2,7 @@ from django import forms
 from store.models import Customer, Product, conditions, categories
 from django.contrib.auth.models import User
 from .models import *
+from store.models import ProductImages
 
 class AddressForm(forms.Form):
     #home address
@@ -32,10 +33,17 @@ class CreateProductForm(forms.ModelForm):
     price = forms.FloatField(min_value=1)
     details = forms.CharField(max_length=200, help_text="e.g. The Hate You Give hardcover by Angie Thomas 2 years old. ")
     category = forms.ChoiceField(choices=categories)
-    image = forms.ImageField(required=False)
+    image = forms.ImageField(required=False, widget=forms.ClearableFileInput(attrs={'multiple': True}))
     condition = forms.ChoiceField(choices=conditions)
     amt_available = forms.IntegerField(min_value=1)
 
     class Meta:
         model = Product
         fields = ['name', 'price', 'details', 'category', 'image', 'condition', 'amt_available']
+
+class AddSecondaryImages(forms.ModelForm):
+    image = forms.ImageField(required=False, widget=forms.ClearableFileInput(attrs={'multiple': True}))
+    
+    class Meta:
+        model = ProductImages
+        fields = ['image']

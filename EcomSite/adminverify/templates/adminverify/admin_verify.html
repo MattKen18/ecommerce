@@ -36,6 +36,7 @@
             <img class='thumbnail-img' src="{{ product.imageURL }}">
           </div>
           {{ imageform|crispy }}
+          <p><a href="{% url 'viewimages' product.id %}">View Images</a></p>
           <div class="product-name">
             <textarea name="productname">{{ product.name }}</textarea>
           </div>

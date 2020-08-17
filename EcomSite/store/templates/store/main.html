@@ -69,7 +69,11 @@
           <div class="cart">
             <div class="cart-items">
               <div class="quantity-holder">
-                <a href="{% url 'cart' %}"><p id=cart-item-amt>{{ cartquantity }}</p></a>
+                {% if user.is_authenticated %}
+                  <a href="{% url 'cart' %}"><p id="cart-item-amt">{{ cartquantity }}</p></a>
+                {% else %}
+                  <a href="{% url 'cart' %}"><p id="cart-item-amt">0</p></a>
+                {% endif %}
               </div>
               <div class="cart-icon-holder">
                 <a  class="cart-icon-link" href="{% url 'cart' %}">

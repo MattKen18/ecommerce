@@ -322,6 +322,11 @@ transform: scale(0.9);
 
 
 /*detail view*/
+.d-block.w-100{
+  min-height: 400px;
+  max-height: 400px;
+}
+
 .large-image-view {
   max-width: 100%;
   border: 1px solid black;
@@ -610,7 +615,7 @@ a.submit-qty-chg.no{
   height: auto;
   min-height: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
 }
 
 .col-lg-3.product-item.admin-view {

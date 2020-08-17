@@ -1,0 +1,28 @@
+{% extends 'store/main.html' %}
+{% load static %}
+{% block title %} Seller {% endblock title %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<h1>Extra Images</h1><small><p>optional</p></small>
+{% if messages %}
+{% for message in messages %}
+<strong>{{ message }}</strong>
+{% endfor %}
+{% endif %}
+<br>
+<hr>
+<form class="form-group" action="" method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  <select class="" name="productchoice">
+    {% for product in userproducts %}
+      <option value="{{ product.id }}">{{ product.name }}</option>
+    {% endfor%}
+  </select>
+  {{ imagesform|crispy }}
+
+  <button type="submit" name="button" class="btn btn-outline-success">Update</button>
+</form>
+
+{% endblock content %}
