@@ -1,0 +1,53 @@
+{% extends 'seller/home.html' %}
+{% load static %}
+{% block title %} Seller {% endblock %}
+{% load crispy_forms_tags %}
+
+
+{% block activehead %}
+  <a href="{% url 'sellerhome' %}" class="grow">Home</a>
+  <a href="{% url 'createproduct' %}" class="grow">Submit Product</a>
+  <a href="{% url 'sellerproducts' %}" class="grow">My Products</a>
+  <a href="{% url 'sales' %}" class="active-seller-heading grow">My Sales</a>
+  <a href="{% url 'pickup' %}"  class="grow">Request Pick-up</a>
+  <a href="{% url 'inquiries' %}" class="grow">Payment Inquiries</a>
+{% endblock activehead %}
+
+{% block body %}
+
+<h5>Sales</h5>
+<p style="text-align: center;">As of {{ today }} you've earned:</p>
+<p class="total-earned">${{ total|floatformat:2 }} USD</p>
+<br>
+{% for item in order_items %}
+  <div class="row">
+    <div class="sales-view col-lg-12">
+      <div class="sales-view product-image">
+        <img class="sales-view product-thumbnail-img" src="{{ item.imageURL }}" alt="product-thumbnail-image">
+      </div>
+      <div class="sales-view product-details">
+        <div class="sales-view product-details-name">
+          <p>{{ item.name }}</p>
+        </div>
+        <div class="sales-view product-details-details">
+          <p>{{ item.details }}</p>
+        </div>
+        <div class="sales-view product-details-price">
+          <p>Price: ${{ item.price|floatformat:2 }}</p>
+        </div>
+      </div>
+      <div class="sales-view sale-details">
+        <div class="sales-view items-sold">
+          <p>On {{ item.p_date }} at {{ item.p_time }}</p>
+          <p>{{ item.quantity }} item{{ item.quantity|pluralize }} sold /<span> {{ item.products_left }} item{{ item.products_left|pluralize }} remaining </span></p>
+          <hr>
+        </div>
+        <div class="sales-view money-earned">
+          <p>${{ item.total|floatformat:2 }} earned</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <hr>
+{% endfor %}
+{% endblock body%}

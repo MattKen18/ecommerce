@@ -1,0 +1,40 @@
+{% extends 'store/main.html' %}
+{% load static %}
+{% block title %} Register Seller {% endblock %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<h1 style="text-align: center;">Profile Image Upload</h1>
+{% if messages %}
+  {% for message in messages %}
+    <p id="message">{{ message }}</p>
+    <p>Go to <a href="{% url 'sellerhome' %}">Seller Home?</a></p>
+  {% endfor %}
+{% endif %}
+<br>
+<hr>
+<br>
+<div class="profile-image-holder element-container">
+  <div class="seller-profile-pic-holder">
+    <img class="seller-profile-pic" src="{{ profile.imageURL }}" alt="">
+  </div>
+  <br>
+  <hr>
+  <div class="form-holder">
+    <form class="form-inlne upload-profile-img" action="" method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {% for field in propicform %}
+        <label for="{{ field.id_for_label }}" class="form-control" style="text-align: center; font-weight: lighter; display: block;">{{ field.label }}:</label>
+        {{ field }}
+      {% endfor %}
+      <br>
+      <br>
+      <div class="submitbt-holder">
+        <button class="btn btn-outline-primary upload-profilepic-btn" type="submit" name="button" onclick="this.disabled=true;this.form.submit();">Update</button>
+      </div>
+    </form>
+    <br>
+  </div>
+</div>
+
+{% endblock content %}

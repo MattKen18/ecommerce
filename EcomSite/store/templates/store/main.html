@@ -13,7 +13,7 @@
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="{% url 'store' %}">Ecom</a>
+      <a class="navbar-brand site-logo" href="{% url 'store' %}">ChegBase</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -54,7 +54,7 @@
                 {% else %}
                   <p class="user-username">Guest</p>
                 {% endif %}
-                <a class="go-to profile-dropdown" href="{% url 'cart' %}">My Profile</a>
+                <a class="go-to profile-dropdown" href="{% url 'profile' %}">My Profile</a>
                 <a class="go-to cart-dropdown" href="{% url 'cart' %}">My Cart</a>
                 <a class="go-to checkout-dropdown" href="{% url 'shipping' %}">Go to Checkout</a>
                 <div class="dropdown-divider"></div>

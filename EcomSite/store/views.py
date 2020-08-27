@@ -9,7 +9,7 @@ from .decorators import authenticated_user, unauthenticated_user, allowed_users
 def store(response):  #order by
     #option to request order of book
     template = 'store/store.html'
-    products = Product.objects.all().filter(published=True, rejected=False).order_by('-pub_date')
+    products = Product.objects.all().filter(published=True, rejected=False, available=True).order_by('-pub_date')
     choices = Product._meta.get_field('category').choices
     categories = [choice[1] for choice in choices]
 
@@ -27,19 +27,19 @@ def store(response):  #order by
 def store_categories(response, category):  #order by
     if category == 'textbook' or category == 'TB':
         template = 'store/store_textbooks.html'
-        products = Product.objects.filter(category='TB').order_by('-pub_date')
+        products = Product.objects.filter(published=True, rejected=False, category='TB').order_by('-pub_date')
 
     elif category == 'notebook' or category == 'NB' :
         template = 'store/store_notebooks.html'
-        products = Product.objects.filter(category='NB').order_by('-pub_date')
+        products = Product.objects.filter(published=True, rejected=False, category='NB').order_by('-pub_date')
 
     elif category == 'reading book' or category == 'RB':
         template = 'store/store_reading.html'
-        products = Product.objects.filter(category='RB').order_by('-pub_date')
+        products = Product.objects.filter(published=True, rejected=False, category='RB').order_by('-pub_date')
 
     elif category == 'literature book' or category == 'LB':
         template = 'store/store_literature.html'
-        products = Product.objects.filter(category='LB').order_by('-pub_date')
+        products = Product.objects.filter(published=True, rejected=False, category='LB').order_by('-pub_date')
 
     choices = Product._meta.get_field('category').choices
     categories = [choice[1] for choice in choices]
@@ -123,12 +123,13 @@ def single_buy(request, pk):
     return redirect('shipping')
 
 
-@unauthenticated_user
+@authenticated_user
 def del_single_buy(request):
     customer = get_object_or_404(Customer, user=request.user)
     singles = SingleBuy.objects.filter(customer=customer).delete()
 
     return redirect("checkout")
+
 
 @authenticated_user
 def cart(request):
@@ -146,6 +147,7 @@ def cart(request):
     context = {"cart": cart_items, "items":total_items, "total":total_price}
 
     return render(request, template, context)
+
 
 @authenticated_user
 def quantity_change(request, pk):

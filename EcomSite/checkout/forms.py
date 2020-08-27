@@ -9,7 +9,7 @@ class ShippingForm(forms.Form):
     city = forms.CharField(max_length=200, label="Town/City")
     zip_code = forms.CharField(max_length=200, required=False, label="Zip Code")
     country = forms.CharField(max_length=200)
-
+    
     class Meta:
         model = Address
-        fields = ['address_line1', 'address_line2', 'city', 'state', 'zip_code', 'country']
+        fields = ['address_line1', 'address_line2', 'city', 'state', 'zip_code', 'country', 'date']

@@ -3,25 +3,33 @@
 {% block title %} Register Seller {% endblock %}
 {% load crispy_forms_tags %}
 
-
 {% block content %}
 
 <form class="form-group signup-login" action="{% url 'registerseller' %}" method="post">
+  {% csrf_token %}
   <h1> Official Seller Registration </h1>
   <hr>
-  <br>
   <h2>Personal Info</h2>
   <br>
   {{ personalform|crispy }}
+  <hr>
+  <h2>Contact Info</h2>
+  <hr>
+  {{ contactform|crispy }}
+  <br>
+  <br>
 
-  <h2>Home Address</h2><small> ( if same as shipping address leave blank )</small>
+  <small class="subscript">Tick if you are an author, company or publisher</small>
+  {{ miscform|crispy }}
+  <br>
+  <br>
+  <h2>Home Address</h2><small class="subscript"> ( You may leave blank if your home address is the same as your shipping address )</small>
   <br>
   <hr>
-  {% csrf_token %}
   {{ addrform|crispy }}
 
   <div class="submitbt-holder">
-    <button class="btn btn-outline-success submit" type="submit" name="submitbt"><a href="{% url 'profile' %}"></a>Register</button>
+    <button class="btn btn-outline-success submit" type="submit" name="submitbt"><a href="{% url 'profile' %}"></a>Next</button>
   </div> <!-- take out this button when the other form is put in so that one button can submit everything-->
 </form>
 {% endblock %}

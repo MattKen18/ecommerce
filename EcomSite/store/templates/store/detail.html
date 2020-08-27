@@ -6,7 +6,7 @@
 
 {% if messages %}
 {% for message in messages %}
-<strong>{{ message }}</strong>
+<p id="message">{{ message }}</p>
 {% endfor %}
 <br>
 <hr>
@@ -65,7 +65,7 @@
         <p>{{ product.details }}</p>
       </div>
       <div class="detail products-stock">
-        <p>Stock: {{ product.amt_available }}</p>
+        <p>Available: {{ product.amt_available }}</p>
       </div>
       <div class="large-get-product-view">
         <div class="detail amt-change">

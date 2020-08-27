@@ -1,28 +1,52 @@
-{% extends 'store/main.html' %}
+{% extends 'seller/home.html' %}
 {% load static %}
 {% block title %} Seller {% endblock title %}
 {% load crispy_forms_tags %}
 
-{% block content %}
 
-<h1>Extra Images</h1><small><p>optional</p></small>
+
+{% block activehead %}
+  <a href="{% url 'sellerhome' %}" class="grow">Home</a>
+  <a href="{% url 'createproduct' %}" class="active-seller-heading grow">Submit Product</a>
+  <a href="{% url 'sellerproducts' %}" class="grow">My Products</a>
+  <a href="#" class="grow">My Sales</a>
+  <a href="#" class="grow">Request Pick-up</a>
+  <a href="#" class="grow">Payment Inquiries</a>
+{% endblock activehead %}
+
+{% block body %}
+<span style="text-align: center;"><h1>Extra Images</h1><small><p>optional</p></small></span><br>
+<small><p><strong>Note:</strong> If you are updating images after the product has been verified it will be re-evaluated.</p></small>
 {% if messages %}
 {% for message in messages %}
-<strong>{{ message }}</strong>
+<p id="message">{{ message }}</p>
 {% endfor %}
 {% endif %}
 <br>
 <hr>
 <form class="form-group" action="" method="post" enctype="multipart/form-data">
   {% csrf_token %}
-  <select class="" name="productchoice">
-    {% for product in userproducts %}
-      <option value="{{ product.id }}">{{ product.name }}</option>
-    {% endfor%}
-  </select>
-  {{ imagesform|crispy }}
+  <div class="form-group">
+    <label for="user-products" class="addimages-label"> Product: &nbsp</label>
+    <select class="form-control" name="productchoice" id="user-products" style="display: inline-block;">
+      {% for product in userproducts %}
+        <option value="{{ product.id }}">{{ product.name }}</option>
+      {% endfor%}
+    </select>
+  </div>
 
-  <button type="submit" name="button" class="btn btn-outline-success">Update</button>
+  <br>
+  {% for field in imagesform %}
+  <div class="form-group">
+    <label for="{{ field.id_for_label }}" class="addimages-label">{{ field.label_tag }}</label>&nbsp
+    <br>
+    {{ field }}
+  </div>
+  {% endfor %}
+  <br>
+  <div class="btn-upload-holder">
+    <button type="submit" name="button" class="btn-upload">Update</button>
+  </div>
 </form>
 
-{% endblock content %}
+{% endblock body %}

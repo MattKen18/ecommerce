@@ -1,0 +1,44 @@
+{% extends 'seller/home.html' %}
+{% load static %}
+{% block title %} Seller {% endblock %}
+{% load crispy_forms_tags %}
+
+
+{% block activehead %}
+  <a href="{% url 'sellerhome' %}" class="grow">Home</a>
+  <a href="{% url 'createproduct' %}" class="grow">Submit Product</a>
+  <a href="{% url 'sellerproducts' %}" class="active-seller-heading grow">My Products</a>
+  <a href="{% url 'sales' %}" class="grow">My Sales</a>
+  <a href="{% url 'pickup' %}" class="grow">Request Pick-up</a>
+  <a href="{% url 'inquiries' %}" class="grow">Payment Inquiries</a>
+{% endblock activehead %}
+
+
+{% block body %}
+
+{% if messages %}
+{% for message in messages %}
+<p id="message">{{ message }}</p>
+{% endfor %}
+{% endif %}
+<h3 style="text-align: center;">Delete '{{ product.name }}'? </h3>
+<br>
+<br>
+<br>
+<div class="delete-form-holder">
+  <form class="" action="" method="post">
+    {% csrf_token %}
+    <select id="verify-delete" type="" name="verifydelete" class="form-control">
+      <option value="yes">Yes</option>
+      <option value="no">No Take me back</option>
+    </select>
+    <br>
+    <div class="delete-product-btn-holder">
+      <button class="btn btn-outline-secondary" type="submit" name="button">Submit</button>
+    </div>
+  </form>
+</div>
+
+
+
+{% endblock body %}

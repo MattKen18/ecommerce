@@ -1,0 +1,20 @@
+{% extends 'seller/home.html' %}
+{% load static %}
+{% block title %} Seller {% endblock %}
+{% load crispy_forms_tags %}
+
+
+{% block activehead %}
+  <a href="{% url 'sellerhome' %}" class="grow">Home</a>
+  <a href="{% url 'createproduct' %}" class="grow">Submit Product</a>
+  <a href="{% url 'sellerproducts' %}" class="grow">My Products</a>
+  <a href="{% url 'sales' %}" class="grow">My Sales</a>
+  <a href="{% url 'pickup' %}"  class="grow">Request Pick-up</a>
+  <a href="{% url 'inquiries' %}" class="active-seller-heading grow">Payment Inquiries</a>
+{% endblock activehead %}
+
+{% block body %}
+
+<h5>Inquiries</h5>
+
+{% endblock body%}

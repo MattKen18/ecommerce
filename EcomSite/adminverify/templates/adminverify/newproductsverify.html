@@ -1,18 +1,28 @@
-{% extends 'store/main.html' %}
+{% extends 'adminverify/baseverify.html' %}
 {% load static %}
 {% load crispy_forms_tags %}
 
 {% block title %}Verification{% endblock title %}
 
-{% block content %}
-<h1 style="text-align: center;">Product Verification</h1>
-<small style="text-align: center;"><p>for staff use only</p></small>
-<hr>
+{% block body %}
+{% block current %}
+  <h1 style="text-align: center;">Product Verification</h1>
+  <small style="text-align: center;"><p>for staff use only</p></small>
+  <br>
+  <div class="adminverify-links">
+    <a class="enlarge" href="{% url 'verifynew' %}">New Products</a>
+    <a href="{% url 'reevaluate' %}">Re-Evaluating Products</a>
+  </div>
+  <hr>
+{% endblock current %}
+<br>
+<h3>New Products Verification</h3>
+
 <br>
 <br>
 {% if messages %}
 {% for message in messages %}
-<strong>{{ message }}</strong>
+<p id="message">{{ message }}</p>
 {% endfor %}
 <br>
 <hr>
@@ -74,9 +84,9 @@
           </div>
           <div class="paid-verify-publish-btn-holder">
             {% if product.paid == True %}
-              <a class="admin btn btn-outline-success paid-btn paid" href="{% url 'paid' product.id %}"><i class="far fa-check-circle"></i>&nbsp Paid</a>
+              <a class="admin btn btn-outline-success paid-btn paid" href="{% url 'verifyunpay' product.id %}"><i class="far fa-check-circle"></i>&nbsp Paid</a>
             {% else %}
-              <a class="admin btn btn-outline-success paid-btn unpaid" href="{% url 'paid' product.id %}"><i class="far fa-times-circle"></i>&nbsp Paid</a>
+              <a class="admin btn btn-outline-success paid-btn unpaid" href="{% url 'verifypaid' product.id %}"><i class="far fa-times-circle"></i>&nbsp Paid</a>
             {% endif %}
             {% if product.verified == True %}
               <a class="admin btn btn-outline-success verified-btn verified" href="{% url 'unverify' product.id %}"><i class="fas fa-lock"></i>&nbsp Verified</a>
@@ -92,4 +102,4 @@
   {% endfor %}
 </div>
 <hr>
-{% endblock content %}
+{% endblock body %}

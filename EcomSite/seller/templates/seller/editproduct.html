@@ -1,0 +1,42 @@
+{% extends 'seller/home.html' %}
+{% load static %}
+{% block title %} Change Product {% endblock title %}
+{% load crispy_forms_tags %}
+
+
+
+{% block activehead %}
+  <a href="{% url 'sellerhome' %}" class="grow">Home</a>
+  <a href="{% url 'createproduct' %}" class="active-seller-heading grow">Submit Product</a>
+  <a href="{% url 'sellerproducts' %}" class="grow">My Products</a>
+  <a href="#" class="grow">My Sales</a>
+  <a href="#" class="grow">Request Pick-up</a>
+  <a href="#" class="grow">Payment Inquiries</a>
+{% endblock activehead %}
+
+
+
+{% block body %}
+
+{% if messages %}
+  {% for message in messages %}
+    <p id="message">{{ message }}</p>
+  {% endfor %}
+  {% else %}
+    <h1>Edit Product</h1>
+{% endif %}
+
+
+<br>
+<div class="edit-product-image-holder">
+  <img class="edit-product-image" src="{{ product.imageURL }}" alt="product_image">
+</div>
+<form class="create-product-form form-group" action="" method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  {{ editform|crispy }}
+  <div class="submitbt-holder">
+    <button class="btn btn-outline-success create-product-btn" id="submit-product" type="submit" name="button" onclick="this.disabled=true;this.form.submit();">Submit</button>
+  </div>
+</form>
+
+{% endblock body %}

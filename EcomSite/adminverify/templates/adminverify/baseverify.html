@@ -1,0 +1,34 @@
+{% extends 'store/main.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Verification{% endblock title %}
+
+{% block content %}
+
+
+{% block body %}
+
+{% if messages %}
+{% for message in messages %}
+<p id="message">{{ message }}</p>
+{% endfor %}
+<br>
+<hr>
+{% endif %}
+
+{% block current %}
+  <h1 style="text-align: center;">Product Verification</h1>
+  <small style="text-align: center;"><p>for staff use only</p></small>
+  <br>
+  <div class="adminverify-links">
+    <a href="{% url 'verifynew' %}">New Products</a>
+    <a href="{% url 'reevaluate' %}">Re-Evaluating Products</a>
+  </div>
+  <hr>
+{% endblock current %}
+
+{% endblock body %}
+
+
+{% endblock content %}

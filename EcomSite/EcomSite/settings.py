@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'sellerprofile.apps.SellerprofileConfig',
     'adminverify.apps.AdminverifyConfig',
     'crispy_forms',
+    'django_countries',
 ]
 
 MIDDLEWARE = [
@@ -70,6 +71,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'store.context_processors.send_to_main',
+            #    'countries_plus.middleware.AddRequestCountryMiddleware',
             ],
         },
     },
@@ -138,3 +140,11 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
 
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "logoutpage"
+
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = '587'
+EMAIL_HOST_USER = 'djangoecom808@gmail.com'
+EMAIL_HOST_PASSWORD = 'djangoecom1516'
+EMAIL_USE_TLS = True
+#EMAIL_USE_SSL = False

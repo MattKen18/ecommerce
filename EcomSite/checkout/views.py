@@ -1,8 +1,12 @@
 from django.contrib import messages
+from django.core.mail import send_mail
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import ShippingForm
-from store.models import Address, Cart, OrderItem, SingleBuy, Customer
+from store.models import Address, Cart, OrderItem, SingleBuy, Customer, Order, SoldItem
 from store.decorators import authenticated_user, unauthenticated_user
+from django.http import JsonResponse
+import json
+
 # Create your views here.
 
 @authenticated_user
@@ -46,35 +50,141 @@ def shipping(request):
     return render(request, template, context)
 
 
-#def create_shipping_info(request):
-#    template = 'checkout/shipping.html'
-#    context = {}
+def delete_cart_item(request, pk):
+    template = 'store/checkout.html'
+    deleted = ''
 
-#    return render(request, template, context)
+    cart, created = Cart.objects.get_or_create(user=request.user)
+    order_item = get_object_or_404(OrderItem, id=pk, cart=cart)
+
+    order_item.delete()
+    deleted = messages.info(request, "Item removed from cart")
+    return redirect('checkout')
+
+
+def checkout_quantity_change(request, pk):
+    template = 'store/cart.html'
+    no_more_stock = ''
+    order_quantity = request.POST.get('item_quantity')
+    if order_quantity == '':
+        order_quantity = 0
+    else:
+        order_quantity = int(order_quantity)
+    #product = get_object_or_404(Product, pk=pk)
+    cart, created = Cart.objects.get_or_create(user=request.user)
+    order_item, created = OrderItem.objects.get_or_create(id=pk, cart=cart)#, product=product)
+
+    if order_quantity > order_item.product.amt_available:
+        order_item.quantity = order_item.product.amt_available
+        order_item.save()
+        no_more_stock = messages.error(request, 'No more items in stock, currently there are '
+                        + str(order_item.product.amt_available) + ' item(s) available.')
+    elif order_quantity <= order_item.product.amt_available and order_quantity > 0:
+        order_item.quantity = 0
+        order_item.quantity = order_quantity
+        order_item.save()
+
+    elif order_quantity == 0:
+        order_item.delete()
+
+
+    return redirect('checkout')
+
 
 @authenticated_user
 def checkout(request):
     template = 'checkout/checkout.html'
 
-    try:
-        customer = Customer.objects.get(user=request.user)
-        singles = SingleBuy.objects.filter(customer=customer)
-        address = Address.objects.get(user=request.user)
-    except:
+    customer = get_object_or_404(Customer, user=request.user)#Customer.objects.get(user=request.user)
+    address = get_object_or_404(Address, user=request.user)#Address.objects.get(user=request.user)
+    singles = SingleBuy.objects.filter(customer=customer)
+
+    if singles.exists():
+        total = 0
+        for item in singles:
+            total += float(item.total())
+        context = {"address": address, "single": singles, "cart_total": total}
+    else:
         cart, created = Cart.objects.get_or_create(user=request.user)
         cart_items = OrderItem.objects.filter(cart=cart)
-        address = Address.objects.get(user=request.user)
-        context = {"address": address, "order_items": cart_items}
-
-    else:
-        if singles.count() == 0:
-            cart, created = Cart.objects.get_or_create(user=request.user)
-            cart_items = OrderItem.objects.filter(cart=cart)
-            address = Address.objects.get(user=request.user)
-            context = {"address": address, "order_items": cart_items}
-        else:
-            context = {"address": address, "single": singles}
-
-
+        total = 0
+        for item in OrderItem.objects.filter(cart=cart):
+            total += float(item.total())
+        context = {"address": address, "order_items": cart_items, "cart_total": total}
 
     return render(request, template, context)
+
+
+
+def paymentComplete(request):
+    user = request.user
+    cart, created = Cart.objects.get_or_create(user=user)
+    customer = get_object_or_404(Customer, user=user)
+    singles = SingleBuy.objects.filter(customer=customer)
+
+    #make ordered = True on the order_item objects
+
+    if singles.exists():
+        order = Order.objects.create(user=user)
+        for item in singles:
+            item_product = item.product
+            total = item_product.amt_sold + item_product.amt_available
+            item_product.amt_sold += item.quantity
+            item_product.save()
+            item_product.amt_available = total - item_product.amt_sold
+            item_product.save()
+            SoldItem.objects.create(seller=item.product.product_seller, name=item.product.name,
+                                    details=item.product.details, price=item.product.price,
+                                    quantity=item.quantity, products_left=item_product.amt_available,
+                                    image=item.product.image)
+            order.singleitems.add(item)
+            order.sellers.add(item.product.product_seller) #added afterwards
+            sellers = [item.product.product_seller for item in order.singleitems.all()]
+            prices = [item.total() for item in order.singleitems.all()]
+            order_details = list(zip(sellers, prices))
+            seller_emails = [item.product.product_seller.user.email for item in order.singleitems.all()]
+            #print(order_details)
+            send_mail(
+                "You've got an Order!",
+                'Hey %s! You just got an order from %s for \'%s\'.' %(item.product.product_seller, user, item.product.name),
+                'djangoecom808@gmail.com',
+                ['djangoecom808@gmail.com', '{}'.format(item.product.product_seller.user.email) ],
+                fail_silently=False,
+            )
+            item.delete()
+
+
+    else:
+        cart_items = OrderItem.objects.filter(cart=cart)
+        order = Order.objects.create(user=user)
+        for item in cart_items:
+            item_product = item.product
+            total = item_product.amt_sold + item_product.amt_available
+            item_product.amt_sold += item.quantity
+            item_product.save()
+            item_product.amt_available = total - item_product.amt_sold
+            item_product.save()
+            SoldItem.objects.create(seller=item.product.product_seller, name=item.product.name,
+                                    details=item.product.details, price=item.product.price,
+                                    quantity=item.quantity, products_left=item_product.amt_available,
+                                    image=item.product.image)
+            order.items.add(item)
+            order.sellers.add(item.product.product_seller)
+            sellers = [item.product.product_seller for item in order.items.all()]
+            prices = [item.total() for item in order.items.all()]
+            order_details = list(zip(sellers, prices))
+            seller_emails = [item.product.product_seller.user.email for item in order.items.all()]
+            #print(order_details)
+            send_mail(
+                "You've got an Order!",
+                'Hey %s! You just got an order from %s for your product %s.' %(item.product.product_seller, user, item.product.name),
+                'djangoecom808@gmail.com',
+                ['djangoecom808@gmail.com', '{}'.format(item.product.product_seller.user.email) ],
+                fail_silently=False,
+            )
+            item.delete()
+
+    #body = json.loads(request.body)
+    #print("BODY:", body)
+    messages.info(request, "Items successfully purchased")
+    return redirect("checkout")

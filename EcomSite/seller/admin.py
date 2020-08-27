@@ -4,3 +4,4 @@ from .models import *
 
 admin.site.register(HomeAddress)
 admin.site.register(Profile)
+admin.site.register(Pickup)

@@ -1,3 +1,21 @@
+#message {
+  font-size: 30px;
+  text-align: center;
+  font-weight: lighter;
+}
+
+.element-container {
+  display: flex;
+  padding: 5px;
+  height: 150px;
+  box-shadow: 0 0 5px #C1C0BD;
+  border-radius: 30px;
+}
+
+.element-container.profile-holder {
+  flex-direction: column;
+}
+
 .navbar-nav {
   margin-right: 20px;
 }
@@ -467,6 +485,24 @@ a.submit-qty-chg.no{
 }
 
 /* checkout */
+
+.cart-total-heading {
+  font-size: 20px;
+  font-weight: 400;
+
+}
+
+.cart-total-heading span {
+  color: green;
+}
+
+.checkout-heading {
+  font-size: 20px;
+  font-weight: lighter;
+  text-align: center;
+}
+
+
 .row.checkout-content {
   display: flex;
   height: 500px;
@@ -486,10 +522,15 @@ a.submit-qty-chg.no{
 
 .section-content {
   padding: 10px;
-  box-shadow: 0 0 16px hsl(0, 0%, 80%);
+  box-shadow: 1px 1px #C1C0BD;
   height: 100%;
+  border-radius: 30px;
 }
 
+.section-content.left {
+  box-shadow: none;
+  border-radius: 0;
+}
 .section-heading p {
   margin: 0;
   font-size: 20px;
@@ -499,16 +540,36 @@ a.submit-qty-chg.no{
   display: flex;
   padding: 5px;
   height: 150px;
+  box-shadow: 2px 2px #C1C0BD;
+  border-radius: 30px;
+}
+
+.order-item-quantity {
+  display: flex;
+  flex-direction: row;
+}
+
+.seller-info {
+  margin-left: 10px;
+}
+
+.order-item-price {
+  font-size: 15px;
+  font-weight: bold;
+  margin-top: 5px;
 }
 
 .cart-row.item.thumb-img.order {
   padding: 1px;
   width: 120px;
   margin-right: 20px;
+  margin-left: 10px;
+
 }
 
 .cart-row.item.thumb-img.order img {
   width: 100%;
+  border-radius: 10px;
 }
 
 .item-thumb.order {
@@ -531,10 +592,34 @@ a.submit-qty-chg.no{
   height: 50px;
 }
 
+.order-item-name p {
+  font-size: 20px;
+}
+
+.shipping-content-body {
+  margin-left: 20px;
+}
+
 .shipping-content p {
   margin: 0;
 
 }
+
+.x-icon-holder {
+  position: relative;
+  width: 30px;
+}
+
+.x-icon-holder i {
+  position: absolute;
+  top: 10px;
+
+}
+.x-icon-holder .fas.fa-times {
+  color: #888;
+  font-size: 14px;
+}
+
 .far, .fab, .fas {
   font-family: "FontAwesome";
   font-style: normal;
@@ -576,7 +661,7 @@ a.submit-qty-chg.no{
 /* seller */
 
 .box-element.create-product-form-holder {
-  width: 60%;
+  width: 90%;
   margin: auto;
   padding: 30px;
   border-radius: 20px;
@@ -608,8 +693,92 @@ a.submit-qty-chg.no{
   flex: 4;
 }
 
+.addimages-label {
+  font-size: 20px;
+  font-weight: lighter;
+}
 
+.btn-upload-holder {
+  width: 100px;
+  margin: auto;
+}
+
+
+.btn-upload {
+  width: 100px;
+  background-color: dodgerblue;
+  padding: 10px;
+  color: white;
+  border: none;
+
+}
+
+.edit-product-image-holder {
+  margin: auto;
+  width: 200px;
+  margin-bottom: 30px;
+}
+
+.edit-product-image {
+  height: 250px;
+  width: 200px;
+  margin: auto;
+}
+
+.seller-products.fas.fa-circle {
+  font-size: 10px;
+  color: red;
+}
+
+.product-price {
+  display: flex;
+}
+
+.evaluating-icon-holder {
+  width: 50%;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.product-price-text {
+  width: 50%;
+}
+
+.delete-form-holder {
+  margin: auto;
+  width: 500px;
+}
+
+select#verify-delete.form-control {
+  width: 100%;
+}
+
+.delete-product-btn-holder {
+  width: 76px;
+  margin: auto;
+}
 /* admin */
+
+
+
+.adminverify-links {
+  display: flex;
+  justify-content: space-around;
+}
+
+.adminverify-links a {
+  padding: 10px;
+  border: 1px solid lightgrey;
+  border-radius: 5px;
+}
+
+.adminverify-links a:hover {
+  text-decoration: none;
+}
+
+a.enlarge {
+  border-bottom: 3px solid dodgerblue;
+}
 
 .admin.row.items-container {
   height: auto;
@@ -674,4 +843,180 @@ form.form-group.admin-view textarea {
   background-color: #27B91E;
   border-color: #27B91E;
   color: white;
+}
+
+
+
+
+/*seller profile*/
+
+
+.profile-holder {
+  height: auto;
+  min-height: 500px;
+}
+
+.profile-holder.profile-view {
+
+}
+
+.seller-profile-view-details {
+  text-align: center;
+}
+
+.seller-profile-pic-holder {
+  width: 70%;
+  height: 230px;
+  border: 1px solid transparent;
+  margin: auto;
+}
+
+img.seller-profile-pic {
+  width: 100%;
+  height: 100%;
+  border: 1px solid black;
+  border-radius: 50%;
+}
+
+.subscript {
+  font-weight: lighter;
+}
+
+.seller-username-text {
+  text-align: center;
+  font-size: 30px;
+}
+
+.seller-username-text a:hover {
+  text-decoration: none;
+}
+
+.fas.fa-pencil {
+  font-size: 20px;
+  color: black;
+}
+
+.seller-details {
+  display: inline-block;
+  margin: auto;
+}
+
+.seller-details p{
+  text-align: left;
+
+}
+
+
+.detail-view-inner-headings {
+  display: flex;
+  justify-content: space-between;
+}
+
+.seller-view {
+  min-height: 400px;
+}
+
+.col-lg-4.product-item.seller-view.grow-small {
+  margin-bottom: 50px;
+}
+
+.product-item-content.seller-view .thumbnail-holder {
+  width: 80%;
+  height: 220px;
+  margin-bottom: 10px;
+
+}
+
+.active-seller-heading {
+  padding: 10px;
+  border: 1px solid #E4EEE4;
+  border-radius: 10px;
+  font-size: 18px;
+  background-color: #E4EEE4;
+}
+
+.detail-view-inner-headings a:hover {
+  text-decoration: none;
+}
+
+/* sales view */
+.total-earned {
+  text-align: center;
+  font-size: 30px;
+  color: #27D227;
+}
+
+.sales-view.col-lg-12 {
+  display: flex;
+  height: auto;
+  min-height: 100px;
+}
+
+.sales-view.product-image {
+  flex: 2;
+  height: 120px;
+}
+
+.sales-view.product-details {
+  flex: 10;
+  flex-direction: column;
+  text-align: center;
+}
+
+.sales-view.product-details p {
+  font-weight: lighter;
+}
+
+.sales-view.product-details-name p {
+  font-size: 20px;
+  font-weight: lighter;
+}
+
+.sales-view.product-thumbnail-img {
+  width: 100%;
+  height: 100%;
+}
+
+.sales-view.sale-details {
+  flex: 5;
+  flex-direction: column;
+}
+
+.sales-view.money-earned {
+  color: #27D227;
+  text-align: center;
+  font-weight: lighter;
+}
+
+
+/*request pickup*/
+.request-pickup-btn-holder {
+  width: 200px;
+  margin: auto;
+}
+.request-pickup-btn {
+  padding: 10px;
+  font-size: 20px;
+  width: 200px;
+  color: white;
+  background-color: #F7E809;
+  border: 1px solid #F7E809;
+  margin: auto;
+}
+
+/*profile image update */
+.profile-image-holder {
+  border: 1px solid black;
+  padding: 15px;
+  margin: auto;
+  width: 350px;
+  height: 500px;
+}
+
+input#id_profile_pic{
+  width: 100%;
+}
+
+.profile-image-holder.element-container {
+  flex-direction: column;
 }
