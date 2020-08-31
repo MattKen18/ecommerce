@@ -1,9 +1,149 @@
 {% extends 'store/main.html' %}
 {% load static %}
 {% block title %} Profile {% endblock %}
-
+{% load crispy_forms_tags %}
+{% load widget_tweaks %}
 
 {% block content %}
 <h1> Seller Profile </h1>
+<br>
+{% if messages %}
+  {% for message in messages %}
+    <p id="message">{{ message }}</p>
+  {% endfor %}
+{% endif %}
+<br>
+<div class="row">
+  <div class="col-lg-4 profile-image-holder element-container seller-profile-view">
+    <div class="seller-profile-pic-holder">
+      <img class="seller-profile-pic" src="{{ profile.imageURL }}" alt="">
+    </div>
+    <br>
+    <hr>
+    <div class="form-holder">
+      <form class="form-inlne upload-profile-img" action="{% url 'updateprofile' 'propic' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% for field in propicform %}
+          <label for="{{ field.id_for_label }}" class="form-control" style="text-align: center; font-weight: lighter; display: block;">{{ field.label }}:</label>
+          {{ field }}
+        {% endfor %}
+        <br>
+        <br>
+        <div class="submitbt-holder seller-profile-view">
+          <button class="btn btn-outline-primary upload-profilepic-btn" type="submit" name="button" onclick="this.disabled=true;this.form.submit();">Update</button>
+        </div>
+      </form>
+    </div>
+    <hr>
 
+  </div>
+</div>
+
+<div class="space-medium"></div>
+
+<div class="row">
+  <div class="col-lg-6 element-container seller-profile-view left" data-aos="fade-right" data-aos-duration="1000">
+    <div class="seller-profile-view profile-cards-heading-holder">
+      <h2 class="seller-profile-view profile-cards-heading">Personal</h2>
+    </div>
+    <hr>
+    <form class="form-group" action="{% url 'updateprofile' 'personal' %}" method="post">
+      {% csrf_token %}
+      {{ personalform.date_of_birth.label_tag }}
+      {{ personalform.date_of_birth|attr:'required:false'|add_class:"form-control"}}
+      <br>
+      {{ personalform.gender.label_tag }}
+      {{ personalform.gender|attr:'required:false'|add_class:"form-control"}}
+      <br>
+      <hr>
+      <div class="submitbt-holder seller-profile-view">
+        <button class="btn btn-outline-primary update-profile-btn" type="submit" name="button" onclick="this.disabled=true;this.form.submit();">Update</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="space-medium"></div>
+
+<div class="row">
+  <div class="col-lg-6 element-container seller-profile-view right" data-aos="fade-left" data-aos-duration="1000">
+    <div class="seller-profile-view profile-cards-heading-holder">
+      <h2 class="seller-profile-view profile-cards-heading">Contact</h2>
+    </div>
+    <hr>
+    <form class="form-group" action="{% url 'updateprofile' 'contact' %}" method="post">
+      {% csrf_token %}
+      {{ contactform.email.label_tag }}
+      {{ contactform.email|attr:'required:false'|add_class:"form-control"}}
+      <br>
+      {{ contactform.phone.label_tag }}
+      {{ contactform.phone|attr:'required:false'|add_class:"form-control"}}
+      <br>
+      <hr>
+      <div class="submitbt-holder seller-profile-view">
+        <button class="btn btn-outline-primary update-profile-btn" type="submit" name="button" onclick="this.disabled=true;this.form.submit();">Update</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="space-medium"></div>
+
+<div class="row">
+  <div class="col-lg-6 element-container seller-profile-view left" data-aos="fade-right" data-aos-duration="1000">
+    <div class="seller-profile-view profile-cards-heading-holder">
+      <h2 class="seller-profile-view profile-cards-heading">Home Address</h2>
+    </div>
+    <hr>
+    <form class="form-group" action="{% url 'updateprofile' 'homeaddress' %}" method="post">
+      {% csrf_token %}
+      {% for field in homeaddrform %}
+        {{ field.label_tag }}
+        {{ field|attr:'required:false'|add_class:"form-control" }}
+        <br>
+      {% endfor %}
+      <hr>
+      <div class="submitbt-holder seller-profile-view">
+        <button class="btn btn-outline-primary update-profile-btn" type="submit" name="button" onclick="this.disabled=true;this.form.submit();">Update</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="space-medium"></div>
+
+<div class="row">
+  <div class="col-lg-6 element-container seller-profile-view right" data-aos="fade-left" data-aos-duration="1000">
+    <div class="seller-profile-view profile-cards-heading-holder">
+      <h2 class="seller-profile-view profile-cards-heading">Shipping Address</h2>
+    </div>
+    <hr>
+    <form class="form-group" action="{% url 'updateprofile' 'shippingaddress' %}" method="post">
+      {% csrf_token %}
+      {% for field in shippingaddr %}
+        {{ field.label_tag }}
+        {{ field|attr:'required:false'|add_class:"form-control" }}
+        <br>
+      {% endfor %}
+      <hr>
+      <hr>
+      <div class="submitbt-holder seller-profile-view">
+        <button class="btn btn-outline-primary update-profile-btn" type="submit" name="button" onclick="this.disabled=true;this.form.submit();">Update</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="space-medium"></div>
+
+<div class="row">
+  <form class="" action="index.html" method="post">
+    {% csrf_token %}
+    {% for field in miscform %}
+      <p style="font-size: 20px; font-weight: lighter;">Author, Company or Publisher?</p>
+      {{ field|attr:'required:false'|add_class:"form-control" }}
+      <br>
+    {% endfor %}
+  </form>
+</div>
 {% endblock content %}

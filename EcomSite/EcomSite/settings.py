@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'adminverify.apps.AdminverifyConfig',
     'crispy_forms',
     'django_countries',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [

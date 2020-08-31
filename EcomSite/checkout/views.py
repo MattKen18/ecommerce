@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .forms import ShippingForm
 from store.models import Address, Cart, OrderItem, SingleBuy, Customer, Order, SoldItem
 from store.decorators import authenticated_user, unauthenticated_user
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 import json
 
 # Create your views here.
@@ -100,19 +100,56 @@ def checkout(request):
     singles = SingleBuy.objects.filter(customer=customer)
 
     if singles.exists():
+
+        #checks if the product stock of a single buy item has been decreased and if its
+        #less than the item quantity then it pegs it to the remaining product amt_available
+        #and eventually reloads the page
+        reload = False
+        for item in singles:
+            item_product = item.product
+            product_amt = item_product.amt_available
+            if item.quantity > product_amt:
+                reload = True #as long as there is a item that has too much quantity then it has to reload
+                item.quantity = product_amt
+                item.save()
+                messages.info(request, "%s's stock has been decreased to %s" %(item.product.name, item.quantity))
+
         total = 0
         for item in singles:
             total += float(item.total())
+
+        if reload == True:
+            return redirect('checkout')
+
         context = {"address": address, "single": singles, "cart_total": total}
     else:
         cart, created = Cart.objects.get_or_create(user=request.user)
         cart_items = OrderItem.objects.filter(cart=cart)
+
+        reload = False
+        for item in cart_items:
+            item_product = item.product
+            product_amt = item_product.amt_available
+            if item.quantity > product_amt:
+                reload = True #as long as there is a item that has too much quantity then it has to reload
+                item.quantity = product_amt
+                item.save()
+                messages.info(request, "%s's stock has been decreased to %s" %(item.product.name, item.quantity))
+
         total = 0
-        for item in OrderItem.objects.filter(cart=cart):
+        for item in cart_items:
             total += float(item.total())
+
+        if reload == True:
+            return redirect('checkout')
+
         context = {"address": address, "order_items": cart_items, "cart_total": total}
 
     return render(request, template, context)
+
+
+def check_stock(request):
+    return redirect('sellerhome')
 
 
 
@@ -188,3 +225,41 @@ def paymentComplete(request):
     #print("BODY:", body)
     messages.info(request, "Items successfully purchased")
     return redirect("checkout")
+
+
+def update_quantity(request): #this view is the serves the setInterval function in checkout.html to automatically update cart items availability
+    template = "checkout/updatequantity.html"
+    customer = get_object_or_404(Customer, user=request.user)
+    address = get_object_or_404(Address, user=request.user)
+    singles = SingleBuy.objects.filter(customer=customer)
+
+    if singles.exists():
+        for item in singles:
+            item_product = item.product
+            product_amt = item_product.amt_available
+            if item.quantity > product_amt:
+                item.quantity = product_amt
+                item.save()
+        total = 0
+        for item in singles:
+            total += float(item.total())
+
+        context = {"single": singles, "cart_total": total}
+    else:
+        cart, created = Cart.objects.get_or_create(user=request.user)
+        cart_items = OrderItem.objects.filter(cart=cart)
+
+        for item in cart_items:
+            item_product = item.product
+            product_amt = item_product.amt_available
+            if item.quantity > product_amt:
+                item.quantity = product_amt
+                item.save()
+        total = 0
+        for item in cart_items:
+            total += float(item.total())
+
+
+        context = {"order_items": cart_items, "cart_total": total}
+
+    return render(request, template, context)

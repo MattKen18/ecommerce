@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator
 from .forms import *
+from checkout.forms import ShippingForm
 from django.contrib.auth.models import User, Group
 from django.shortcuts import render, redirect, get_object_or_404
 from store.models import Customer, Address, Product, ProductImages, Order, SoldItem
@@ -40,10 +41,129 @@ def seller_profile(request):
     template = 'seller/profile.html'
     user = request.user
     seller = get_object_or_404(Profile, user=user)
+    homeaddr, created = HomeAddress.objects.get_or_create(user=user)
+    shippingaddr, created = Address.objects.get_or_create(user=user)
 
-    context = {"profile": seller}
+    if request.method == "POST":
+        addrform = AddressForm(request.POST)
+        shipaddr = ShippingForm(request.POST)
+        personalform = PersonalForm(request.POST)
+        contactform = ContactForm(request.POST)
+        miscform = MiscForm(request.POST)
+        propicform = ProPicForm(request.POST, request.FILES)
+
+        #if addrform.is_valid() and personalform.is_valid() and contactform.is_valid() and miscform.is_valid():
+    else:
+        addrform = AddressForm(initial={"address_line1": "%s" %homeaddr.address_line1,
+                                        "address_line2": "%s" %homeaddr.address_line2,
+                                        "city": "%s" %homeaddr.city,
+                                        "state": "%s" %homeaddr.state,
+                                        "zip_code": "%s" %homeaddr.zip_code,
+                                        "country": "%s" %homeaddr.country,})
+        shipaddr = ShippingForm(initial={"address_line1": "%s" %shippingaddr.address_line1,
+                                        "address_line2": "%s" %shippingaddr.address_line2,
+                                        "city": "%s" %shippingaddr.city,
+                                        "state": "%s" %shippingaddr.state,
+                                        "zip_code": "%s" %shippingaddr.zip_code,
+                                        "country": "%s" %shippingaddr.country,})
+        personalform = PersonalForm(initial={"date_of_birth": "%s" % seller.date_of_birth,
+                                             "gender": "%s" % seller.gender})
+        contactform = ContactForm(initial={"email": "%s" % request.user.email,
+                                           "phone": "%s" % seller.phone })
+        miscform = MiscForm()
+        propicform = ProPicForm()
+
+    context = {"profile": seller, "homeaddrform": addrform, "shippingaddr": shipaddr,
+               "personalform": personalform, "contactform": contactform,
+               "miscform": miscform, "propicform": propicform}
 
     return render(request, template, context)
+
+
+def update_seller_profile(request, form):
+    user = request.user
+    profile = get_object_or_404(Profile, user=user)
+    homeaddress, created = HomeAddress.objects.get_or_create(user=user)
+    shippingaddress, created = Address.objects.get_or_create(user=user)
+
+    if request.method == "POST":
+        homeaddr = AddressForm(request.POST)
+        shipaddr = ShippingForm(request.POST)
+        personalform = PersonalForm(request.POST)
+        contactform = ContactForm(request.POST)
+        miscform = MiscForm(request.POST)
+        propicform = ProPicForm(request.POST, request.FILES)
+
+
+        if form == 'personal':
+            if personalform.is_valid():
+                dob = personalform.cleaned_data['date_of_birth']
+                gender = personalform.cleaned_data['gender']
+
+                profile.date_of_birth = dob
+                profile.gender = gender
+                profile.save()
+                messages.info(request, "Profile Updated!")
+
+        if form == 'contact':
+            if contactform.is_valid():
+                email = contactform.cleaned_data['email']
+                phone = contactform.cleaned_data['phone']
+
+                profile.email = email
+                profile.phone = phone
+                profile.save()
+                messages.info(request, "Profile Updated!")
+
+        if form == 'homeaddress':
+            if homeaddr.is_valid():
+                adl1 = homeaddr.cleaned_data['address_line1']
+                adl2 = homeaddr.cleaned_data['address_line2']
+                city = homeaddr.cleaned_data['city']
+                state = homeaddr.cleaned_data['state']
+                zip = homeaddr.cleaned_data['zip_code']
+                country = homeaddr.cleaned_data['country']
+
+                homeaddress.address_line1 = adl1
+                homeaddress.address_line2 = adl2
+                homeaddress.city = city
+                homeaddress.state = state
+                homeaddress.zip_code = zip
+                homeaddress.country = country
+
+                homeaddress.save()
+                messages.info(request, "Home Address Updated!")
+
+        if form == 'shippingaddress':
+            if shipaddr.is_valid():
+                adl1 = shipaddr.cleaned_data['address_line1']
+                adl2 = shipaddr.cleaned_data['address_line2']
+                city = shipaddr.cleaned_data['city']
+                state = shipaddr.cleaned_data['state']
+                zip = shipaddr.cleaned_data['zip_code']
+                country = shipaddr.cleaned_data['country']
+
+                shippingaddress.address_line1 = adl1
+                shippingaddress.address_line2 = adl2
+                shippingaddress.city = city
+                shippingaddress.state = state
+                shippingaddress.zip_code = zip
+                shippingaddress.country = country
+
+                shippingaddress.save()
+                messages.info(request, "Shipping Address Updated!")
+
+        if form =='propic':
+            if propicform.is_valid():
+                propic = request.FILES.get('profile_pic')
+
+                profile.profile_pic = propic
+                profile.save()
+                messages.info(request, "Profile picture Updated!")
+
+
+
+    return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
 
 
 @authenticated_user
@@ -289,6 +409,24 @@ def seller_products(request):
     return render(request, template, context)
 
 
+def restock_products(request):
+    template = 'seller/restock.html'
+
+    user = request.user
+    seller = get_object_or_404(Profile, user=user)
+    customer = get_object_or_404(Customer, user=user)
+
+    if customer.seller == True:
+        products = customer.product_set.all().filter(amt_available__lte=0).order_by('-pub_date')
+        paginator = Paginator(products, 6)
+
+        page_number = request.GET.get('page')
+
+        page_obj = paginator.get_page(page_number)
+
+        context = {"profile": seller, "page_obj": page_obj}
+
+    return render(request, template, context)
 
 def add_images(request):
     template = 'seller/addimages.html'

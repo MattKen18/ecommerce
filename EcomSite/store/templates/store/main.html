@@ -5,21 +5,22 @@
   <script src="https://use.fontawesome.com/5253f379a4.js"></script>
   <meta charset="utf-8">
   <title>{% block title %} Ecom {% endblock title %}</title>
-  <script src="https://unpkg.com/@popperjs/core@2"></script>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
         integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
   <link rel="stylesheet" type='text/css' href="{% static 'css/main.css' %}">
+  <link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet'>
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1" />
 </head>
-<body>
+<body id="site-body">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand site-logo" href="{% url 'store' %}">ChegBase</a>
+      <a class="navbar-brand site-logo undo-trans" href="{% url 'store' %}">ChegBase</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         {% block active %}
-        <div class="form-inline right left-content">
+        <div class="form-inline right left-content undo-trans">
           <ul class="navbar-nav">
             <li class="nav-item active">
               <a class="nav-link" href="{% url 'store' %}">Store<span class="sr-only">(current)</span></a>
@@ -36,7 +37,7 @@
           </ul>
         </div>
         {% endblock active %}
-        <div class="form-inline my-2 my-lg-0 right middle-content search-form-container">
+        <div class="form-inline my-2 my-lg-0 right middle-content search-form-container undo-trans">
           <form class="form-inline searchbar-container">
             <input class="form-control mr-sm-2 searchbar" type="search" placeholder="Search" aria-label="Search">
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
@@ -45,18 +46,18 @@
         <div class="form-inline my-2 my-lg-0 right right-content">
           <div class="user-content">
             <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <a class="nav-link dropdown-toggle blur-bg" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="blurBg()">
                 <i class="far fa-user-circle header-icon"></i>
               </a>
-              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <div id="drop-down-trans" class="dropdown-menu" aria-labelledby="navbarDropdown">
                 {% if user.is_authenticated %}
-                  <p class="user-username">Hello! {{ user.username }}</p>
+                  <p class="user-username"><span>Hello!</span> {{ user.username }}</p>
                 {% else %}
                   <p class="user-username">Guest</p>
                 {% endif %}
-                <a class="go-to profile-dropdown" href="{% url 'profile' %}">My Profile</a>
-                <a class="go-to cart-dropdown" href="{% url 'cart' %}">My Cart</a>
-                <a class="go-to checkout-dropdown" href="{% url 'shipping' %}">Go to Checkout</a>
+                <a class="go-to profile-dropdown" href="{% url 'profile' %}"><p>My Profile</p></a>
+                <a class="go-to cart-dropdown" href="{% url 'cart' %}"><p>My Cart</p></a>
+                <a class="go-to checkout-dropdown" href="{% url 'shipping' %}"><p>Go to Checkout</p></a>
                 <div class="dropdown-divider"></div>
                 {% if user.is_authenticated %}
                   <a class="login-logout" href="{% url 'logout' %}">Logout</a>
@@ -75,7 +76,7 @@
                   <a href="{% url 'cart' %}"><p id="cart-item-amt">0</p></a>
                 {% endif %}
               </div>
-              <div class="cart-icon-holder">
+              <div class="cart-icon-holder undo-trans">
                 <a  class="cart-icon-link" href="{% url 'cart' %}">
                   <i class="fas fa-shopping-cart header-icon"></i>
                   <!--<img id='cart-icon' src="{% static 'images/shoppingcart.png' %}" alt="cart">-->
@@ -89,16 +90,77 @@
     <br>
     <br>
 
-    <div class="container">
+    <div class="container undo-trans" id="site-body-container">
         {% block content %}
 
         {% endblock content %}
     </div>
 
-
-
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>AOS.init();</script>
+{% block javascript %}
+<script>
+
+  var body = document.getElementById("site-body-container");
+  var dropdown = document.getElementById("drop-down-trans");
+  var unblurClick = document.getElementById("site-body-container");
+  var profileIcon = document.getElementById("navbarDropdown");
+
+
+  body.style.transition = "all .3s ease-in-out";
+  dropdown.style.transition = "all .3s ease-in-out";
+  profileIcon.style.transition = "all .2s ease-in-out";
+
+  function grow() {
+    profileIcon.style.transform = "scale(1.3)";
+  }
+
+  function unGrow() {
+    profileIcon.style.transform = "none";
+  }
+
+  function blurBg() {
+    var body = document.getElementById("site-body-container");
+    body.style.filter = "blur(50px)";
+    //body.style.opacity = "0.5";
+
+  }
+
+  function UnblurBg() {
+    var body = document.getElementById("site-body-container");
+    body.style.filter = "blur(0)";
+    body.style.opacity = "1";
+  }
+
+
+  unblurClick.addEventListener("mouseenter", event => {
+    UnblurBg()
+  })
+
+  profileIcon.addEventListener("mouseover", event => {
+    grow()
+  })
+
+  //body.addEventListener("mouseenter", event => {
+  //  unGrow()
+  //})
+
+  document.querySelectorAll('.blur-bg').forEach(item => {
+    item.addEventListener('mouseenter', event => {
+      blurBg()
+    })
+  })
+
+  document.querySelectorAll('.undo-trans').forEach(item => {
+    item.addEventListener('mouseenter', event => {
+      UnblurBg()
+      unGrow()
+    })
+  })
+</script>
+{% endblock javascript %}
 </body>
 </html>

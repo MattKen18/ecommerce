@@ -19,7 +19,7 @@ class AddressForm(forms.ModelForm):
 
     class Meta:
         model = HomeAddress
-        fields = ['address_line1', 'address_line2', 'country', 'city', 'state', 'zip_code']
+        fields = ['address_line1', 'address_line2', 'city', 'state', 'zip_code', 'country',]
         widgets = {'country': CountrySelectWidget()}
 
 class DateInput(forms.DateInput):

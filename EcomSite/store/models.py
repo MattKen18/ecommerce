@@ -5,6 +5,8 @@ from django.contrib.auth.models import User, Group
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from seller.models import Profile
+from django_countries.fields import CountryField
+
 
 # Create your models here.
 
@@ -58,7 +60,7 @@ class Address(models.Model):
     city = models.CharField(max_length=200, null=True, blank=False)
     state = models.CharField(max_length=200, null=True, blank=False)
     zip_code = models.CharField(max_length=200, null=True, blank=False)
-    country = models.CharField(max_length=200, null=True, blank=False)
+    country = CountryField(blank_label='select country', null=True, blank=True)
 
     def __str__(self):
         return self.user.username + "'s address"
@@ -77,7 +79,7 @@ class Product(models.Model):
     category = models.CharField(max_length=20, null=True, blank=False, choices=categories)
     req_date = models.DateTimeField(null=True, blank=False, auto_now_add=True)#date when the product is requested to be uploaded by seller
     pub_date = models.DateTimeField(null=True, blank=False, auto_now_add=True)#date when product is uploaded by us after being verified
-    image = models.ImageField(null=True, blank=True)
+    image = models.ImageField(upload_to='products/%Y/%m/%d/', null=True, blank=True)
     condition = models.CharField(max_length=200, null=True, blank=False, choices=conditions)
     amt_sold = models.IntegerField(default=0)
     amt_available = models.IntegerField(null=True, blank=False, default=1)

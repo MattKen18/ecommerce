@@ -53,6 +53,22 @@
   justify-content: space-between;
 }
 
+
+@media all and (min-width: 992px) {
+	.navbar .nav-item .dropdown-menu{ display: none; }
+	.navbar .nav-item:hover .dropdown-menu{ display: block; }
+	.navbar .nav-item .dropdown-menu{ margin-top:0; }
+}
+
+a.go-to {
+  color: black
+}
+
+a.go-to:hover {
+  color: black;
+  text-decoration: none;
+}
+
 .nav-item.dropdown {
   list-style: none;
 }
@@ -61,24 +77,61 @@
   color: black;
 }
 
-.dropdown-menu.show {
-  padding: 10px;
-  text-align: center;
+.dropdown-menu {
+  border: 1px solid black;
   height: auto;
-  min-width: 150px;
+  min-width: 170px;
   width: auto;
 }
 
-.dropdown-menu.show a:hover {
-  background-color: #F9FEFD;
+
+.dropdown-menu p {
+  font-weight: 500;
+  margin: 0;
+  padding-left: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.dropdown-menu a {
+
+}
+
+.dropdown-menu p:hover {
+  background-color: #B4EDE6;
   text-decoration: none;
 }
 
-
-.go-to {
-  display: block;
-  text-align: left;
+.dropdown-menu .user-username {
+  color: ;
+  padding-left: 0;
+  text-align: center;
+  font-size: 20px;
+  font-weight: bolder;
 }
+
+.dropdown-menu .user-username span {
+  color: green;
+}
+
+.dropdown-menu .user-username:hover {
+  cursor: default;
+  background-color: inherit;
+  text-decoration: none;
+}
+
+.login-logout {
+  font-weight: 500;
+  display: block;
+  text-align: center;
+  color: red;
+}
+
+.login-logout:hover {
+  text-decoration: none;
+  color: red;
+}
+
 
 .header-icon {
   color: black;
@@ -340,45 +393,232 @@ transform: scale(0.9);
 
 
 /*detail view*/
+
+.detail-page.top-options {
+}
+
+.see-in-category {
+
+}
+
+.see-in-category, .go-back {
+  opacity: 0.5;
+}
+
+.see-in-category a:hover, .go-back a:hover {
+  text-decoration: none;
+}
+
+.row.product-detail-view-holder {
+  height: auto;
+  justify-content: space-between;
+
+}
+
+.element-container.detail-product-view.col-lg-8.left-section {
+  display: flex;
+  flex-direction: row;
+  height: auto;
+  min-height: 400px;
+  box-shadow: 0 0 16px rgb(220,220,220);
+  font-family: "Raleway";
+}
+
+.element-container.detail-product-view {
+  margin-bottom: 30px;
+  padding: 20px;
+}
+
+.detail-product-view.col-lg-4.right-section {
+
+}
+
+.detail-container.product-images-view {
+  flex: 8;
+  border-radius: 20px;
+}
+
+.large-image-view {
+
+}
+
+.detail-container.product-details-view {
+  flex: 10;
+  margin-left: 20px;
+}
+
 .d-block.w-100{
   min-height: 400px;
   max-height: 400px;
+  border-radius: 20px;
+  border: 1px solid black;
 }
 
 .large-image-view {
   max-width: 100%;
-  border: 1px solid black;
+  border: 1px solid transparent;
 }
 
 .large-image-view img{
   width: 100%;
 }
 
+.flexed-detail-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+}
+
+.detail-container-upper {
+  flex: 5;
+  font-weight: ;
+}
+
+.detail.product-seller {
+  font-weight: bold;
+}
+
+.detail.product-details-holder {
+  min-height: 70px;
+}
+
+.detail.products-price {
+  min-height: 35px;
+  font-weight: bold;
+}
+
+.detail.product-condition {
+  font-weight: bold;
+  margin-top: 30px;
+}
+
+.detail.product-condition p {
+  margin-bottom: 0;
+}
+
+span.highlight-price {
+  color: #70CD27;
+  font-size: 20px;
+  font-weight: bolder;
+  animation-name: showup;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate-reverse;
+}
+
+@keyframes showup {
+  from {font-size: 20px;}
+  to {font-size: 20.1px;}
+}
+
+.detail.products-stock {
+  text-align: center;
+  font-weight: bolder;
+}
+
+.detail-container-upper.inner {
+
+}
+
 .large-get-product-view {
   text-align: center;
-  width: auto;
-  max-width: 300px;
-  margin: auto;
+  flex: 3;
+}
+
+.btn-holder {
+  width: 100%;
 }
 
 .form-group.detail.amt-change-form {
-  width: auto;
-  display: inline-block;
+  margin: 0;
 }
 
 .form-group.detail.amt-change-form input {
-  width: 140px;
+  margin-top: 5px;
+  width: 90px;
 }
 
+.detail-product-name, .detail-container-upper.inner {
+  border: 1px solid rgb(211,211,211);
+  box-shadow: 0 0 1px rgb(211,211,211);
+  border-radius: 10px;
+  padding: 10px;
+
+}
+
+
+.detail.amt-change {
+  width: 100%;
+}
+.btn.btn-outline-success.detail-view {
+  width: 70%;
+}
 
 .detail.detail-add-to-cart-btn {
   margin-bottom: 10px;
 }
 
-.box-element.detail-container {
+.detail.btn.btn-outline-success.detail-view {
+}
+
+.detail.btn.btn-outline-success.add-to-cart-btn, .detail.btn.btn-outline-success.buy-btn  {
+  border-radius: 10px;
+  color: white;
+  border-color: black;/*#EC7063*/
+  transition: all .1s ease-in-out;
+  background-color: black;
+}
+
+.detail.btn.btn-outline-success.add-to-cart-btn:hover, .detail.btn.btn-outline-success.buy-btn:hover {
+  color: black;
+  background-color: white;
+  text-decoration: none;
+}
+
+.element-container.detail-product-view.col-lg-3.right-section {
+  display: flex;
+  flex-direction: column;
+  min-height: 300px;
+  font-family: "Raleway";
+  border: 1px solid transparent;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+.seller-pic {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin: auto;
+}
+
+.seller-pic img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px solid #25E7D0;
+}
+
+.seller-name {
+  margin-top: 10px;
+  text-align: center;
+
+}
+.seller-name p {
+  border: 1px solid rgb(211,211,211);
   border-radius: 5px;
-  box-shadow: 0 0 5px hsl(0, 0%, 80%);
-  padding: 15px;
+  display: inline-block;
+  padding: 5px;
+}
+
+.seller-country {
+  width: 100%;
+  text-align: center;
+}
+
+.seller-country-content {
+  display: inline-block;
 }
 
 
@@ -505,14 +745,13 @@ a.submit-qty-chg.no{
 
 .row.checkout-content {
   display: flex;
-  height: 500px;
+  height: auto;
   justify-content: space-between;
 }
 
 .col-lg.checkout-section.left {
   flex: 2;
   height: auto;
-  min-height: 500px;
 }
 
 .col-lg.checkout-section.right {
@@ -757,6 +996,25 @@ select#verify-delete.form-control {
   width: 76px;
   margin: auto;
 }
+
+.seller-products-heading-toggler {
+  display: flex;
+  justify-content: space-evenly;
+  text-align: center;
+}
+
+.seller-products-heading-toggler a {
+  min-width: 100px;
+  padding: 10px;
+  border: 1px solid lightgrey;
+  border-radius: 5px;
+}
+
+.seller-products-heading-toggler a:hover {
+  text-decoration: none;
+}
+
+
 /* admin */
 
 
@@ -1019,4 +1277,56 @@ input#id_profile_pic{
 
 .profile-image-holder.element-container {
   flex-direction: column;
+}
+
+/*seller profile view*/
+.col-lg-4.profile-image-holder.element-container.seller-profile-view {
+  border: 1px solid transparent;
+  box-shadow: none;
+}
+
+.profile-image-holder.element-container {
+  height: auto;
+}
+
+.col-lg-6.element-container.seller-profile-view {
+  height: auto;
+  width: 500px;
+  padding: 20px;
+}
+
+.col-lg-6.element-container.seller-profile-view.right {
+  margin-left: auto;
+}
+
+.seller-profile-view.profile-cards-heading {
+  text-align: center;
+  font-size: 25px;
+}
+
+div.space-medium {
+  height: 100px;
+}
+
+.seller-profile-view.profile-cards-heading-holder {
+  flex: 1;
+  padding: 10px;
+  padding-top: 20px;
+  border-radius: 20px;
+  position: relative;
+  background-color: #E4EEE3;
+}
+
+.col-lg-6.element-container.seller-profile-view form {
+  margin-top: 50px;
+  margin-left: 20px;
+  flex: 5;
+}
+
+.submitbt-holder.seller-profile-view {
+  width: 100%;
+}
+
+.submitbt-holder.seller-profile-view button {
+  width: 100%;
 }

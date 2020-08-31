@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect, get_object_or_404
+from seller.models import Profile, HomeAddress
 from .models import *
 from .decorators import authenticated_user, unauthenticated_user, allowed_users
 # Create your views here.
@@ -58,11 +59,16 @@ def store_categories(response, category):  #order by
 def detail_page(request, pk):
     template = "store/detail.html"
     product, created = Product.objects.get_or_create(id=pk)
+    customerSeller = product.product_seller.user
     images = product.productimages_set.all()
-    for image in images:
-        print(image.imageURL)
 
-    context = {'product': product, 'productimages': images}
+    seller = get_object_or_404(Profile, user=customerSeller)
+    homeaddress = get_object_or_404(HomeAddress, profile=seller)#check if home address will be automatically created if not made from seller sign up
+
+    #for image in images:
+    #    print(image.imageURL)
+
+    context = {'product': product, 'productimages': images, "seller": seller, "homeaddress": homeaddress}
 
     return render(request, template, context)
 

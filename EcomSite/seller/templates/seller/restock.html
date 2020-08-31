@@ -24,8 +24,8 @@
 
 {% block current %}
 <div class="seller-products-heading-toggler">
-  <a class="enlarge" href="{% url 'sellerproducts' %}">All</a>
-  <a href="{% url 'restock' %}">Re-Stock</a>
+  <a href="{% url 'sellerproducts' %}">All</a>
+  <a class="enlarge" href="{% url 'restock' %}">Re-Stock</a>
 </div>
 {% endblock current %}
 <br>
@@ -53,8 +53,8 @@
           {% endif %}
         </div>
         <div class="add-to-cart-buy-btn-holder">
-          <a class="btn btn-outline-success add-to-cart-btn" href="{% url 'editproduct' product.id %}">Edit</a>
-          <a class="btn btn-outline-success buy-btn" href="{% url 'deleteproduct' product.id %}">Delete</a>
+          <a class="btn btn-outline-success add-to-cart-btn" href="{% url 'editproduct' product.id %}">Restock</a>
+          <a class="btn btn-outline-success buy-btn" href="{% url 'deleteproduct' product.id %}">Remove</a>
         </div>
       </div>
     </div>

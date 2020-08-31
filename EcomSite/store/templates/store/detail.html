@@ -11,9 +11,16 @@
 <br>
 <hr>
 {% endif %}
-<div class="row">
-  <div class="detail col-lg-4 left-section">
-    <div class="box-element detail-container product-images-view">
+
+<div class="detail-page top-options">
+  <h6 class="go-back grow-small"><a href="{% url 'store' %}">Return to store&nbsp<i class="fas fa-backward"></i></a></h6>
+  <h6 class="see-in-category grow-small"><a href="{% url 'categories' product.category %}">Find in {{ product.category }}&nbsp<i class="fas fa-search"></i></a></h6>
+</div>
+<div class="row product-detail-view-holder">
+
+  <div class="element-container detail-product-view col-lg-8 left-section">
+
+    <div class="detail-container product-images-view">
       <div class="large-image-view">
         <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel" data-interval="false">
           <ol class="carousel-indicators">
@@ -47,50 +54,86 @@
         </div>
       </div>
     </div>
-  </div>
 
-  <div class="detail col-lg-4 middle-section">
-    <div class="box-element detail-container">
-      <div class="detail product-name-holder">
-        <h4 class="detail-product-name">{{ product.name }} <small>in</small> <a href="{% url 'categories' product.category %}">{{ product.category }}</a></h4>
-      </div>
-      <div class="detail product-seller">
-        {% if product.product_seller == None %}
-        <p>Seller: <a href="#">Ecom</a></p>
-        {% else %}
-        <p>Seller: <a href="#">{{product.product_seller}}</a></p>
-        {% endif %}
-      </div>
-      <div class="detail product-details-holder">
-        <p>{{ product.details }}</p>
-      </div>
-      <div class="detail products-stock">
-        <p>Available: {{ product.amt_available }}</p>
-      </div>
-      <div class="large-get-product-view">
-        <div class="detail amt-change">
-          <form class="form-group detail amt-change-form" action="{% url 'addtocart' product.id %}" method="post">
-            {% csrf_token %}
-            <input type="number" name="detailorder_amt" value="1" min="0">
+    <div class="detail-container product-details-view">
+      <div class="flexed-detail-container">
+        <div class="detail-container-upper">
+          <div class="detail product-name-holder">
+            <h4 class="detail-product-name">{{ product.name }}</h4>
+          </div>
+          <div class="detail-container-upper inner">
+            <div class="detail product-seller">
+              {% if product.product_seller == None %}
+              <p>By <a href="#">Ecom</a></p>
+              {% else %}
+              <p>By <a href="#">{{product.product_seller}}</a></p>
+              {% endif %}
+            </div>
+            <div class="detail product-details-holder">
+              <p>{{ product.details }}</p>
+            </div>
+            <div class="detail product-condition">
+              <p>Condition: {{ product.get_condition_display }}</p>
+            </div>
+            <div class="detail products-price">
+              <p>Price: <span class="highlight-price">${{ product.price }} USD</span></p>
+            </div>
             <br>
-            <hr>
-            <div class="detail detail-add-to-cart-btn">
-              <button type="submit" name="button" class="btn btn-outline-success add-to-cart-btn">Add to Cart</button>
+            <div class="detail products-stock">
+              <p>Available: {{ product.amt_available }} / {{ product.total }}</p>
             </div>
-            <div class="detail detail-buy-btn">
-              <button type="submit" name="button" class="btn btn-outline-success buy-btn" formaction="{% url 'single' product.id %}">Buy</button>
-            </div>
-          </form>
+          </div>
+
+        </div>
+        <div class="large-get-product-view">
+          <div class="detail amt-change">
+            <form class="form-group detail amt-change-form" action="{% url 'addtocart' product.id %}" method="post">
+              {% csrf_token %}
+              <input type="number" name="detailorder_amt" value="1" min="0">
+              <br>
+              <hr>
+              <div class="btn-holder">
+                <div class="detail detail-add-to-cart-btn">
+                  <button type="submit" name="button" class="detail btn btn-outline-success detail-view add-to-cart-btn">Add to Cart</button>
+                </div>
+                <div class="detail detail-buy-btn">
+                  <button type="submit" name="button" class="detail btn btn-outline-success detail-view buy-btn" formaction="{% url 'single' product.id %}">Buy</button>
+                </div>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </div>
+
   </div>
-  <div class="detail col-lg-4 right-section">
-    <div class="box-element detail-container">
+
+
+  <div class="element-container detail-product-view col-lg-3 right-section">
+
+    <div class="detail-container seller-details-content">
       <div class="right-section-heading-container">
-        <h4>Seller Details</h4>
+        <h4 style="text-align: center;">Seller</h4>
       </div>
+      <div class="seller-pic">
+        <img src="{{ seller.imageURL }}" alt="seller profile picture">
+      </div>
+      <div class="seller-name">
+        <a href="#"><p>{{ seller.user.username}}</p></a>
+      </div>
+      <div class="seller-country">
+        <div class="seller-country-content name">
+          <p>Location:&nbsp &nbsp{{ homeaddress.get_country_display }}</p>
+        </div>
+        <div class="seller-country-content image">
+          <img src="{{ homeaddress.country.flag }}"></img>
+        </div>
+      </div>
+      <!--<div class="seller-contact">
+        <p><i style="color: dodgerblue;"class="far fa-envelope"></i>&nbsp{{ seller.user.email }}</p>
+      </div>-->
     </div>
+
   </div>
 </div>
 

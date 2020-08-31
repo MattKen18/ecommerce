@@ -13,15 +13,6 @@ genders = [
         ('OT', 'Other')
 ]
 
-#list of eligible countries
-countries = [
-            ('JM', 'Jamaica'),
-            ('TT', 'Trinidad and Tobago'),
-            ('US', 'United States of America'),
-            ('CA', 'Canada'),
-            ('OT', 'Other'),
-]
-
 class Profile(models.Model):
     sellerid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
