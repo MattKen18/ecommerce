@@ -50,19 +50,25 @@ def shipping(request):
     return render(request, template, context)
 
 
-def delete_cart_item(request, pk):
+def delete_cart_item(request, pk, mode):
     template = 'store/checkout.html'
-    deleted = ''
 
-    cart, created = Cart.objects.get_or_create(user=request.user)
-    order_item = get_object_or_404(OrderItem, id=pk, cart=cart)
+    if mode == 'cart':
+        cart = get_object_or_404(Cart, user=request.user)
+        order_item = get_object_or_404(OrderItem, id=pk, cart=cart)
 
-    order_item.delete()
-    deleted = messages.info(request, "Item removed from cart")
+        order_item.delete()
+        messages.info(request, "Item removed from cart")
+    elif mode == 'single':
+        order_item = get_object_or_404(SingleBuy, id=pk)
+
+        order_item.delete()
+        messages.info(request, "Item removed from cart")
+
     return redirect('checkout')
 
 
-def checkout_quantity_change(request, pk):
+def checkout_quantity_change(request, pk, mode):
     template = 'store/cart.html'
     no_more_stock = ''
     order_quantity = request.POST.get('item_quantity')
@@ -72,20 +78,38 @@ def checkout_quantity_change(request, pk):
         order_quantity = int(order_quantity)
     #product = get_object_or_404(Product, pk=pk)
     cart, created = Cart.objects.get_or_create(user=request.user)
-    order_item, created = OrderItem.objects.get_or_create(id=pk, cart=cart)#, product=product)
 
-    if order_quantity > order_item.product.amt_available:
-        order_item.quantity = order_item.product.amt_available
-        order_item.save()
-        no_more_stock = messages.error(request, 'No more items in stock, currently there are '
-                        + str(order_item.product.amt_available) + ' item(s) available.')
-    elif order_quantity <= order_item.product.amt_available and order_quantity > 0:
-        order_item.quantity = 0
-        order_item.quantity = order_quantity
-        order_item.save()
+    if mode == "cart":
+        order_item, created = OrderItem.objects.get_or_create(id=pk, cart=cart)#, product=product)
 
-    elif order_quantity == 0:
-        order_item.delete()
+        if order_quantity > order_item.product.amt_available:
+            order_item.quantity = order_item.product.amt_available
+            order_item.save()
+            no_more_stock = messages.error(request, 'No more items in stock, currently there are '
+                            + str(order_item.product.amt_available) + ' item(s) available.')
+        elif order_quantity <= order_item.product.amt_available and order_quantity > 0:
+            order_item.quantity = 0
+            order_item.quantity = order_quantity
+            order_item.save()
+
+        elif order_quantity == 0:
+            order_item.delete()
+
+    elif mode == "single":
+        order_item, created = SingleBuy.objects.get_or_create(id=pk)#, product=product)
+
+        if order_quantity > order_item.product.amt_available:
+            order_item.quantity = order_item.product.amt_available
+            order_item.save()
+            no_more_stock = messages.error(request, 'No more items in stock, currently there are '
+                            + str(order_item.product.amt_available) + ' item(s) available.')
+        elif order_quantity <= order_item.product.amt_available and order_quantity > 0:
+            order_item.quantity = 0
+            order_item.quantity = order_quantity
+            order_item.save()
+
+        elif order_quantity == 0:
+            order_item.delete()
 
 
     return redirect('checkout')
@@ -147,9 +171,6 @@ def checkout(request):
 
     return render(request, template, context)
 
-
-def check_stock(request):
-    return redirect('sellerhome')
 
 
 

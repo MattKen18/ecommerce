@@ -23,6 +23,7 @@ from store import views as sv
 urlpatterns = [
     path('', include('store.urls')),
     path('seller/', include('seller.urls')),
+    path('chat/', include('chat.urls')), #delete
     path('AdminVerify/', include('adminverify.urls')),
     path('register/', rv.register_user, name="register"),
     path('checkout/', include("checkout.urls")),

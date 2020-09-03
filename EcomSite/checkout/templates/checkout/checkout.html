@@ -55,19 +55,30 @@ these items.</p>
         {% if single %}
         {% for single in single %}
         <div class="order-item">
+
           <div class="cart-row item thumb-img order">
             <img class="item-thumb order" src="{{ single.product.imageURL }}">
           </div>
           <div class="order-item-details">
             <div class="order-item-name">
-              <p> <strong>{{ single.product.name }}</strong> </p>
-            </div>
-            <div class="order-item-price">
-              <p> Total: ${{ single.product.price|floatformat:2 }} </p>
+              <p>{{ single.product.name }}</p>
             </div>
             <div class="order-item-quantity">
-              <p> Quantity: {{ single.quantity }} </p>
+              <form id="input" class="form-inline my-2 my-lg-0 chg-quantity chg-form" action="{% url 'checkoutchangeqty' single.id 'single' %}" method="post">
+                {% csrf_token %}
+                <input id="itemquantity" class="chg-quantity qty-input" type="number" name="item_quantity" value="{{ single.quantity }}" />
+                <a class="submit-qty-chg yes" type="submit" name="reload" onclick="reload()"><button type="submit"><i class="submit-qty-chg far fa-check-circle grow yes"></i></button></a>
+              </form>
+              <div class="seller-info">
+                <p>from <a href="#">{{ single.product.product_seller }}</a></p>
+              </div>
             </div>
+            <div class="order-item-price">
+              <p> Total: ${{ single.total|floatformat:2 }} </p>
+            </div>
+          </div>
+          <div class="x-icon-holder">
+            <a href="{% url 'deletecartitem' single.id 'single' %}"><i class="fas fa-times"></i></a>
           </div>
         </div>
         {% endfor %}
@@ -83,7 +94,7 @@ these items.</p>
               <p>{{ item.product.name }}</p>
             </div>
             <div class="order-item-quantity">
-              <form id="input" class="form-inline my-2 my-lg-0 chg-quantity chg-form" action="{% url 'checkoutchangeqty' item.id %}" method="post">
+              <form id="input" class="form-inline my-2 my-lg-0 chg-quantity chg-form" action="{% url 'checkoutchangeqty' item.id 'cart' %}" method="post">
                 {% csrf_token %}
                 <input id="itemquantity" class="chg-quantity qty-input" type="number" name="item_quantity" value="{{ item.quantity }}" />
                 <a class="submit-qty-chg yes" type="submit" name="reload" onclick="reload()"><button type="submit"><i class="submit-qty-chg far fa-check-circle grow yes"></i></button></a>
@@ -97,7 +108,7 @@ these items.</p>
             </div>
           </div>
           <div class="x-icon-holder">
-            <a href="{% url 'deletecartitem' item.id %}"><i class="fas fa-times"></i></a>
+            <a href="{% url 'deletecartitem' item.id 'cart' %}"><i class="fas fa-times"></i></a>
           </div>
         </div>
         <br>
@@ -121,7 +132,7 @@ these items.</p>
               <p>{{address.address_line2}}</p>
               <p>{{address.state}}</p>
               <p>{{address.zip_code}}</p>
-              <p>{{address.country}}</p>
+              <p>{{address.get_country_display}}</p>
             </div>
           </div>
         </div>
@@ -143,7 +154,7 @@ these items.</p>
 
 {% block javascript %}
 <script>
-
+ //checks if the stock has been decreased by another user bying it
   function refresh() {
     $.ajax({
     url: "{% url 'updatequantity' %}",
@@ -163,7 +174,7 @@ these items.</p>
     orderDetails.addEventListener("mouseover", function(){ clearInterval(myTimer)});
     orderDetails.addEventListener("mouseout", function(){ myTimer = setInterval(refresh, 1000);});
   }
-  
+
 
 
 
@@ -192,18 +203,6 @@ these items.</p>
 
 
   var total = "{{ cart_total|floatformat:2 }}"
-
-
-  function checkStock() {
-    var url = "{% url 'checkstock' %}"
-
-    fetch(url, {
-      method: 'GET',
-      headers:{
-        'Content-type': 'application/json',
-      },
-    })
-  }
 
   function completeOrder() {
     var url = "{% url 'complete' %}"

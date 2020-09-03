@@ -151,6 +151,7 @@ class OrderItem(models.Model): #each item which emulates a cart item
 
 
 class SingleBuy(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     customer = models.ForeignKey(Customer, null=True, blank=False, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, null=True, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=0)

@@ -1,64 +1,73 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<div id="order-details" class="section-content left">
-  <div class="section-heading">
-    <p class="checkout-heading"></p>
+<div class="section-heading">
+  <p class="checkout-heading"></p>
+</div>
+<hr>
+<div class="cart-total-heading">
+  <p>Cart total: <span>${{ cart_total|floatformat:2 }} USD</span></p>
+</div>
+<br>
+<div class="order-details-content" style="height: 100%;">
+  {% if single %}
+  {% for single in single %}
+  <div class="order-item">
+
+    <div class="cart-row item thumb-img order">
+      <img class="item-thumb order" src="{{ single.product.imageURL }}">
+    </div>
+    <div class="order-item-details">
+      <div class="order-item-name">
+        <p>{{ single.product.name }}</p>
+      </div>
+      <div class="order-item-quantity">
+        <form id="input" class="form-inline my-2 my-lg-0 chg-quantity chg-form" action="{% url 'checkoutchangeqty' single.id 'single' %}" method="post">
+          {% csrf_token %}
+          <input id="itemquantity" class="chg-quantity qty-input" type="number" name="item_quantity" value="{{ single.quantity }}" />
+          <a class="submit-qty-chg yes" type="submit" name="reload" onclick="reload()"><button type="submit"><i class="submit-qty-chg far fa-check-circle grow yes"></i></button></a>
+        </form>
+        <div class="seller-info">
+          <p>from <a href="#">{{ single.product.product_seller }}</a></p>
+        </div>
+      </div>
+      <div class="order-item-price">
+        <p> Total: ${{ single.total|floatformat:2 }} </p>
+      </div>
+    </div>
+    <div class="x-icon-holder">
+      <a href="{% url 'deletecartitem' single.id 'single' %}"><i class="fas fa-times"></i></a>
+    </div>
   </div>
-  <hr>
-  <div class="cart-total-heading">
-    <p>Cart total: <span>${{ cart_total|floatformat:2 }} USD</span></p>
+  {% endfor %}
+  {% else %}
+  {% for item in order_items %}
+  <div class="order-item">
+
+    <div class="cart-row item thumb-img order">
+      <img class="item-thumb order" src="{{ item.product.imageURL }}">
+    </div>
+    <div class="order-item-details">
+      <div class="order-item-name">
+        <p>{{ item.product.name }}</p>
+      </div>
+      <div class="order-item-quantity">
+        <form id="input" class="form-inline my-2 my-lg-0 chg-quantity chg-form" action="{% url 'checkoutchangeqty' item.id 'cart' %}" method="post">
+          {% csrf_token %}
+          <input id="itemquantity" class="chg-quantity qty-input" type="number" name="item_quantity" value="{{ item.quantity }}" />
+          <a class="submit-qty-chg yes" type="submit" name="reload" onclick="reload()"><button type="submit"><i class="submit-qty-chg far fa-check-circle grow yes"></i></button></a>
+        </form>
+        <div class="seller-info">
+          <p>from <a href="#">{{ item.product.product_seller }}</a></p>
+        </div>
+      </div>
+      <div class="order-item-price">
+        <p> Total: ${{ item.total|floatformat:2 }} </p>
+      </div>
+    </div>
+    <div class="x-icon-holder">
+      <a href="{% url 'deletecartitem' item.id 'cart' %}"><i class="fas fa-times"></i></a>
+    </div>
   </div>
   <br>
-  <div class="order-details-content" style="height: 100%;">
-    {% if single %}
-    {% for single in single %}
-    <div class="order-item">
-      <div class="cart-row item thumb-img order">
-        <img class="item-thumb order" src="{{ single.product.imageURL }}">
-      </div>
-      <div class="order-item-details">
-        <div class="order-item-name">
-          <p> <strong>{{ single.product.name }}</strong> </p>
-        </div>
-        <div class="order-item-price">
-          <p> Total: ${{ single.product.price|floatformat:2 }} </p>
-        </div>
-        <div class="order-item-quantity">
-          <p> Quantity: {{ single.quantity }} </p>
-        </div>
-      </div>
-    </div>
-    {% endfor %}
-    {% else %}
-    {% for item in order_items %}
-    <div class="order-item">
-
-      <div class="cart-row item thumb-img order">
-        <img class="item-thumb order" src="{{ item.product.imageURL }}">
-      </div>
-      <div class="order-item-details">
-        <div class="order-item-name">
-          <p>{{ item.product.name }}</p>
-        </div>
-        <div class="order-item-quantity">
-          <form id="input" class="form-inline my-2 my-lg-0 chg-quantity chg-form" action="{% url 'checkoutchangeqty' item.id %}" method="post">
-            {% csrf_token %}
-            <input id="itemquantity" class="chg-quantity qty-input" type="number" name="item_quantity" value="{{ item.quantity }}" />
-            <a class="submit-qty-chg yes" type="submit" name="reload" onclick="reload()"><button type="submit"><i class="submit-qty-chg far fa-check-circle grow yes"></i></button></a>
-          </form>
-          <div class="seller-info">
-            <p>from <a href="#">{{ item.product.product_seller }}</a></p>
-          </div>
-        </div>
-        <div class="order-item-price">
-          <p> Total: ${{ item.total|floatformat:2 }} </p>
-        </div>
-      </div>
-      <div class="x-icon-holder">
-        <a href="{% url 'deletecartitem' item.id %}"><i class="fas fa-times"></i></a>
-      </div>
-    </div>
-    <br>
-    {% endfor %}
-    {% endif %}
-  </div>
+  {% endfor %}
+  {% endif %}
 </div>

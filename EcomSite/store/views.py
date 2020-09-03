@@ -79,13 +79,14 @@ def add_to_cart(request, pk):
     order_item, created = OrderItem.objects.get_or_create(cart=cart, product=product)
 
     try:
-        detail_amt = request.POST['detailorder_amt']
+        detail_amt = request.POST['detailorder_amt'] #adding to cart from the detail page
 
     except:
         if order_item.quantity < order_item.product.amt_available:
             order_item.quantity += 1
             order_item.save()
         else:
+            order_item.delete()
             no_more_stock = messages.error(request, 'No more items in stock, currently there are ' + str(order_item.product.amt_available) + ' item(s) available.')
 
     else:
@@ -94,6 +95,7 @@ def add_to_cart(request, pk):
             order_item.quantity += detail_amt
             order_item.save()
         else:
+            order_item.delete()
             no_more_stock = messages.error(request, 'No more items in stock, currently there are ' + str(order_item.product.amt_available) + ' item(s) available.')
 
 
@@ -112,6 +114,7 @@ def single_buy(request, pk):
 
     except:
         if single_buy.quantity >= single_buy.product.amt_available:
+            single_buy.delete()
             no_more_stock = messages.error(request, 'No more items in stock, currently there are ' + str(single_buy.product.amt_available) + ' item(s) available.')
             return redirect('store')
         else:
@@ -120,6 +123,7 @@ def single_buy(request, pk):
 
     else:
         if single_buy.quantity >= single_buy.product.amt_available or single_buy.quantity + detail_single_amt > single_buy.product.amt_available:
+            single_buy.delete()
             no_more_stock = messages.error(request, 'No more items in stock, currently there are ' + str(single_buy.product.amt_available) + ' item(s) available.')
             return redirect('detail', pk=pk)
         else:
