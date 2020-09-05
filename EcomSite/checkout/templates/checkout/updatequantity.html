@@ -1,4 +1,5 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
 <div class="section-heading">
   <p class="checkout-heading"></p>
 </div>
@@ -23,8 +24,9 @@
         <form id="input" class="form-inline my-2 my-lg-0 chg-quantity chg-form" action="{% url 'checkoutchangeqty' single.id 'single' %}" method="post">
           {% csrf_token %}
           <input id="itemquantity" class="chg-quantity qty-input" type="number" name="item_quantity" value="{{ single.quantity }}" />
-          <a class="submit-qty-chg yes" type="submit" name="reload" onclick="reload()"><button type="submit"><i class="submit-qty-chg far fa-check-circle grow yes"></i></button></a>
+          <!--<a class="submit-qty-chg yes" type="submit" name="reload" onclick="reload()"><button type="submit"><i class="submit-qty-chg far fa-check-circle grow yes"></i></button></a>-->
         </form>
+        <button id="quantity-submit" type="button"><i class="submit-qty-chg far fa-check-circle grow yes"></i></button>
         <div class="seller-info">
           <p>from <a href="#">{{ single.product.product_seller }}</a></p>
         </div>
@@ -52,9 +54,10 @@
       <div class="order-item-quantity">
         <form id="input" class="form-inline my-2 my-lg-0 chg-quantity chg-form" action="{% url 'checkoutchangeqty' item.id 'cart' %}" method="post">
           {% csrf_token %}
-          <input id="itemquantity" class="chg-quantity qty-input" type="number" name="item_quantity" value="{{ item.quantity }}" />
-          <a class="submit-qty-chg yes" type="submit" name="reload" onclick="reload()"><button type="submit"><i class="submit-qty-chg far fa-check-circle grow yes"></i></button></a>
+          <input class="chg-quantity qty-input" type="number" name="item_quantity" value="{{ item.quantity }}" />
+          <!--<a id="quantity-submit" class="submit-qty-chg yes" type="submit" name="reload" ><button type="submit"><i class="submit-qty-chg far fa-check-circle grow yes"></i></button></a>-->
         </form>
+        <button id="quantity-submit" type="button" onclick="setId({{ forloop.counter0 }})"><i class="submit-qty-chg far fa-check-circle grow yes"></i></button>
         <div class="seller-info">
           <p>from <a href="#">{{ item.product.product_seller }}</a></p>
         </div>

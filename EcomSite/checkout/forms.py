@@ -15,3 +15,11 @@ class ShippingForm(forms.ModelForm):
         model = Address
         fields = ['address_line1', 'address_line2', 'city', 'state', 'zip_code', 'country']
         widgets = {'country': CountrySelectWidget()}
+
+
+    # to add form control to all fields    
+	#def __init__(self, *args, **kwargs):
+	#	super(ContactForm, self).__init__(*args, **kwargs)
+	#	for field in self.fields:
+	#		self.fields[field].widget.attrs.update({
+	#	    'class': 'form-control'})

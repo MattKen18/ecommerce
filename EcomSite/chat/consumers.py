@@ -93,3 +93,94 @@ class ChatConsumer(WebsocketConsumer):
             'message': message
         }))
 '''
+
+#checkout consumer
+'''
+# checkout/consumers.py
+import json
+from channels.generic.websocket import AsyncWebsocketConsumer
+from channels.db import database_sync_to_async
+from store.models import Product, OrderItem
+
+class CheckoutConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
+        #self.room_name = self.scope#['url_route']['kwargs']['room_name']
+        self.groupname = 'checkoutusers'
+        #self.room_group_name = 'chat_%s' % self.room_name
+
+        # Join room group
+        await self.channel_layer.group_add(
+            self.groupname,
+            self.channel_name
+        )
+
+        await self.accept()
+        print('connect')
+
+    async def disconnect(self, close_code):
+        # Leave room group
+        await self.channel_layer.group_discard(
+            self.groupname,
+            self.channel_name
+        )
+
+    # Receive message from WebSocket
+    async def receive(self, text_data):
+        text_data_json = json.loads(text_data)
+        quantity = text_data_json['quantity']
+        product_id = text_data_json['productid']
+        orderitem_id = text_data_json['orderitemid']
+        # Send message to room group
+        await self.channel_layer.group_send(
+            self.groupname,
+            {
+                'type': 'item_quantity',
+                'quantity': quantity,
+                'productid': product_id,
+                'orderitemid': orderitem_id,
+            }
+        )
+
+        print('received')
+
+
+    # Receive message from room group
+    async def item_quantity(self, event):
+        quantity = event['quantity']
+        product_id = event['productid']
+        product = self.get_product()
+
+        # Send message to WebSocket
+        await self.send(text_data=json.dumps({
+            'quantity': quantity,
+            'productid': product_id,
+            'orderitemid': orderitem_id,
+
+        }))
+        print('sent')
+        print(product)
+
+    @database_sync_to_async
+    def update_data(self):
+        product = Product.objects.get(id=product_id)
+        orderItem = OrderItem.objects.get(id=orderitem_id)
+        orderItem.quantity = quantity
+        orderItem.save()
+
+        order_items = OrderItems.objects.filter(product=product)
+        for item in order_items:
+            if item.quantity > item.product.amt_available:
+                pass
+        return product
+
+    @database_sync_to_async
+    def get_product(self):
+        product = Product.objects.get(id=product_id)
+        return product
+
+    @database_sync_to_async
+    def get_orderitems(self):
+        order_items = OrderItem.objects.all()
+        return products
+
+'''

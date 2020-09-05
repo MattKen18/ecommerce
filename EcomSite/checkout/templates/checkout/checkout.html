@@ -140,12 +140,18 @@ these items.</p>
     </div>
     <br>
     <div class="col-lg checkout-section right lower">
+      <p class="section-content" style="font-weight: lighter; font-size: 13px; padding-left: 15px; text-align: center;">It is highly recommended to refresh page before paying, this is
+        to ensure that the products you have added to your cart hasn't been bought by another
+        user.</p>
       <div class="section-content right">
         <div class="payment-info">
           <div class="payment-heading">
             <p class="checkout-heading"> Payment Options </p>
           </div>
-            <div id="paypal-button-container"></div>
+              <div id="paypal-holder">
+                <div id="paypal-button-container" onmouseover="ishovered()" onmouseout="unhovered()"></div>
+                <div id="paypal-refreshbtn"></div>
+              </div>
         </div>
       </div>
     </div>
@@ -153,7 +159,103 @@ these items.</p>
 </div>
 
 {% block javascript %}
+
+
 <script>
+/*
+    window.onload = function() {
+      $('form input').keydown(function (e) {
+          if (e.keyCode == 13) {
+              e.preventDefault();
+              return false;
+          }
+      });
+    }
+
+  const checkoutSocket = new WebSocket(
+      'ws://'
+      + window.location.host
+      + '/ws/checkout/'
+  );
+
+  function setId(itemid, productid, orderitemid) {
+    var id = 'itemquantity' + itemid;
+    var productId = productid;
+    var orderItemId = orderitemid;
+
+    var qtyinput = document.getElementById(id);
+    var quantityid = '#'+id;
+    var submitBtnHolderId = 'submitbtn-holder' + itemid;
+    var submitbtnid = 'quantity-submit' + itemid;
+    var submitbtnidhash = '#'+submitbtnid;
+    //console.log(submitBtnHolderId);
+
+    var getBtn = document.getElementById(submitbtnid);
+
+    if (typeof(getBtn) != 'undefined' && getBtn != null) {
+      // do nothing;
+    } else {
+      var btn = document.createElement('a');
+      var btnHolder = document.getElementById(submitBtnHolderId);
+      btn.setAttribute('id', submitbtnid);
+      icon = document.createElement('i');
+      icon.setAttribute('class', 'submit-qty-chg far fa-check-circle grow yes');
+      btn.appendChild(icon);
+      btnHolder.appendChild(btn);
+      //console.log(btn);
+    }
+
+    //console.log(qtyinput);
+    //console.log(quantityid);
+
+
+    checkoutSocket.onopen =function(e){
+      console.log('Connection established');
+    };
+
+
+    checkoutSocket.onmessage = function(e) {
+      //console.log(e.data);
+      const data = JSON.parse(e.data);
+      console.log(data)
+      document.querySelector(quantityid).value += data.quantity;
+    };
+
+
+    checkoutSocket.onclose = function(e) {
+        console.error('Checkout socket closed unexpectedly');
+    };
+
+
+    document.querySelector(quantityid).onkeyup = function(e) {
+        if (e.keyCode === 13) {  // enter, return
+            console.log('done');
+            document.querySelector(submitbtnidhash).click();
+        }
+    };
+
+    document.querySelector(submitbtnidhash).onclick = function(e) {
+        const quantityInputDom = document.querySelector(quantityid);
+        const quantity = quantityInputDom.value;
+        console.log(quantity);
+        checkoutSocket.send(JSON.stringify({
+            'quantity': quantity,
+            'productid': productId,
+            'orderitemid': orderItemId
+        }));
+        quantityInputDom.value = '';
+    };
+  }
+
+  function delIcon(itemid) {
+    btnToDelete = document.getElementById('quantity-submit' + itemid);
+    try {
+      btnToDelete.remove();
+    } catch {
+      // do nothing
+    }
+  }
+
  //checks if the stock has been decreased by another user bying it
   function refresh() {
     $.ajax({
@@ -173,18 +275,88 @@ these items.</p>
 
     orderDetails.addEventListener("mouseover", function(){ clearInterval(myTimer)});
     orderDetails.addEventListener("mouseout", function(){ myTimer = setInterval(refresh, 1000);});
-  }
-
-
-
-
+*/
 </script>
 {% endblock javascript %}
 <script src="https://www.paypal.com/sdk/js?client-id=Afsx3QmWygAjv6jlgNdeziMPx42M3IEJd61E-enTff0qsAlYfZJHXOqsv-nv8c7ZcVBRF5mZongj0Zoa&currency=USD&disable-funding=credit"></script>
 
 <script>
 
-  function getCookie(name) {
+
+//  paypalBtnContainer = document.getElementById('paypal-button-container');
+//  paypalBtnContainer.setAttribute('onhover', checkRefresh());
+  var count = 0;
+  var showPaypal = true;
+  var mouseover = false;
+
+  console.log("hovered is "+ mouseover);
+  function ishovered() {
+    mouseover = true;
+    console.log(mouseover);
+  }
+
+  function unhovered() {
+    mouseover = false;
+    count = 1;
+  }
+
+  window.onload = function() {
+
+    function reload() {
+      location.reload();
+    }
+
+
+    function counter() {
+      setInterval(
+      function increment() {
+          count++;
+          if (count >= 20) {
+            showPaypal = false;
+            if (mouseover == false && count == 20) {
+              hidePaypal();
+            }
+          }
+
+          if (showPaypal == true && count == 1) {
+            paypalStuff();
+          }
+          if (showPaypal == false){
+
+          }
+        console.log(count);
+        console.log(showPaypal);
+      }, 1000);
+    }
+    counter()
+  }
+
+  function hidePaypal() {
+    document.getElementById('paypal-button-container').style.display = 'none';
+    let paypalHolder = document.getElementById('paypal-holder');
+    let refreshBtnHolder = document.getElementById('paypal-refreshbtn');
+    console.log(refreshBtnHolder)
+    let refreshButtoninnerHldr = document.createElement('div');
+    let refreshButton = document.createElement('button');
+    let p = document.createElement('p');
+    let text = document.createTextNode('To safeguard against incorrectly displayed stock, please refresh this page to view payment options. Note: after refreshing page, if no action is taken within 20 seconds this message will be re-displayed.');
+
+    refreshButtoninnerHldr.setAttribute('class', 'refreshbtn-holder');
+    refreshButton.setAttribute('onclick', "location.reload()")
+    p.setAttribute('class', 'refresh-p');
+    refreshButton.setAttribute('type', 'button');
+    refreshButton.textContent = "Refresh";
+    refreshButton.setAttribute('class', 'btn btn-outline-primary refreshbtn');
+
+    paypalHolder.appendChild(p);
+    p.appendChild(text);
+    paypalHolder.appendChild(refreshBtnHolder);
+    refreshButtoninnerHldr.appendChild(refreshButton);
+    refreshBtnHolder.appendChild(refreshButtoninnerHldr);
+  }
+
+  function paypalStuff() {
+    function getCookie(name) {
       let cookieValue = null;
       if (document.cookie && document.cookie !== '') {
           const cookies = document.cookie.split(';');
@@ -198,55 +370,58 @@ these items.</p>
           }
       }
       return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
+
+
+    var total = "{{ cart_total|floatformat:2 }}"
+
+    function completeOrder() {
+      var url = "{% url 'complete' %}"
+
+      fetch(url, {
+        method: 'POST',
+        headers:{
+          'Content-type': 'application/json',
+          'X-CSRFToken': csrftoken,
+        },
+      })
+    }
+
+    // Render the PayPal button into #paypal-button-container
+    paypal.Buttons({
+        style: {
+            color:  'blue',
+            shape:  'pill',
+            label:  'pay',
+            height: 40,
+        },
+
+        // place the check stock right here
+        // Set up the transaction
+        createOrder: function(data, actions) {
+            return actions.order.create({
+                purchase_units: [{
+                    amount: {
+                        value: total
+                    }
+                }]
+            });
+        },
+        // Finalize the transaction
+        onApprove: function(data, actions) {
+            return actions.order.capture().then(function(details) {
+                // Show a success message to the buyer
+                completeOrder()
+                alert('Transaction completed by ' + details.payer.name.given_name + '!');
+            });
+        }
+
+
+    }).render('#paypal-button-container');
   }
-  const csrftoken = getCookie('csrftoken');
 
 
-  var total = "{{ cart_total|floatformat:2 }}"
-
-  function completeOrder() {
-    var url = "{% url 'complete' %}"
-
-    fetch(url, {
-      method: 'POST',
-      headers:{
-        'Content-type': 'application/json',
-        'X-CSRFToken': csrftoken,
-      },
-    })
-  }
-
-  // Render the PayPal button into #paypal-button-container
-  paypal.Buttons({
-      style: {
-          color:  'blue',
-          shape:  'pill',
-          label:  'pay',
-          height: 40,
-      },
-
-      // place the check stock right here
-      // Set up the transaction
-      createOrder: function(data, actions) {
-          return actions.order.create({
-              purchase_units: [{
-                  amount: {
-                      value: total
-                  }
-              }]
-          });
-      },
-      // Finalize the transaction
-      onApprove: function(data, actions) {
-          return actions.order.capture().then(function(details) {
-              // Show a success message to the buyer
-              completeOrder()
-              alert('Transaction completed by ' + details.payer.name.given_name + '!');
-          });
-      }
-
-
-  }).render('#paypal-button-container');
 </script>
 
 

@@ -854,6 +854,11 @@ span.cart-product-price-span {
 
 /* checkout */
 
+#paypal-holder {
+  position: relative;
+  z-index: 6;
+}
+
 .cart-total-heading {
   font-size: 20px;
   font-weight: 400;
@@ -963,6 +968,10 @@ span.cart-product-price-span {
   font-size: 20px;
 }
 
+.checkoutsubmitbtn-holder {
+
+}
+
 .shipping-content-body {
   margin-left: 20px;
 }
@@ -1022,6 +1031,24 @@ span.cart-product-price-span {
 .btn.btn-outline-success.checkout-submit-btn:hover {
   background-color: white;
   color: black;
+}
+
+.btn.btn-outline-primary.refreshbtn {
+  margin-top: 10px;
+}
+
+.refreshbtn-holder {
+  width: 80px;
+  margin: auto;
+}
+.refresh-p {
+  margin-top: 10px;
+  border: 1px solid lightgrey;
+  border-radius: 10px;
+  padding: 5px;
+  font-size: 15px;
+  text-align: center;
+  font-weight: lighter;
 }
 
 
