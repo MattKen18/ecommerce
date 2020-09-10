@@ -11,7 +11,7 @@
         <a class="nav-link" href="{% url 'cart' %}">Cart<span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="{% url 'shipping' %}">Checkout</a>
+        <a class="nav-link" href="{% url 'checkout' %}">Checkout</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="{% url 'sellerhome' %}">Sell</a>
@@ -45,7 +45,7 @@
     <p>Cart Total: ${{ total|floatformat:2 }} USD</p>
   </div>
   <div class="col-lg-4 cart-btn cart-go-to-checkout">
-    <a class="btn btn-outline-primary cart-heading" href="{% url 'shipping' %}"><p>Checkout</p></a>
+    <a class="btn btn-outline-primary cart-heading" href="{% url 'checkout' %}"><p>Checkout</p></a>
   </div>
 </div>
 <hr>
@@ -54,7 +54,9 @@
     <div class="element-container cart-item">
       <div class="cart-product product-image">
         <div class="product-image-holder">
-          <img src="{{ item.product.imageURL }}" alt="">
+          <a class="link-to-product" href="{% url 'detail' item.product.id %}">
+            <img src="{{ item.product.imageURL }}" alt="">
+          </a>
         </div>
       </div>
       <div class="cart-product cdetail product-details">
@@ -67,11 +69,11 @@
       </div>
       <div class="cart-product cdetail product-quantity">
         <div class="chg-quantity-form-holder">
-          <form id="input" class="form-inline my-2 my-lg-0 chg-quantity chg-form" action="{% url 'changeqty' item.id %}" method="post">
+          <form id="quantityinput{{ forloop.counter0 }}" class="form-inline my-2 my-lg-0 chg-quantity chg-form" action="{% url 'changeqty' item.id %}" method="post">
             {% csrf_token %}
-            <input class="chg-quantity qty-input" type="number" name="item_quantity" value="{{ item.quantity }}" min="0"/>
+            <input class="chg-quantity qty-input" type="number" name="item_quantity" value="{{ item.quantity }}" min="0" />
             <span style="font-size: 20px;">/{{ item.product.amt_available }}</span>
-            <a class="submit-qty-chg yes" type="submit" name="reload" onclick="reload()"><button type="submit"><i class="submit-qty-chg far fa-check-circle grow yes"></i></button></a>
+            <a class="submit-qty-chg yes" type="submit" name="reload"><button type="submit"><i class="submit-qty-chg far fa-check-circle grow yes"></i></button></a>
             <a class="submit-qty-chg no" href="{% url 'deleteitem' item.id %}" title="Delete"><i class="submit-qty-chg far fa-times-circle grow no"></i></a>
           </form>
         </div>
@@ -137,6 +139,7 @@
 </div>-->
 
 <script type="text/javascript">
+
   var x = document.getElementsByClassName('submit-qty-chg');
   var i;
   for (i = 0; i < x.length; i++) {

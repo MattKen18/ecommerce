@@ -34,7 +34,7 @@
   <div class="row">
     <div class="col-lg-4">
       <div class="element-container profile-holder profile-view">
-        <div class="seller-profile-pic-holder">
+        <div id="tier-style" class="seller-profile-pic-holder">
           <img class="seller-profile-pic" src="{{ profile.imageURL }}" alt="">
         </div>
         <div class="seller-profile-view-details">
@@ -44,8 +44,10 @@
           <br>
           <div class="seller-details">
             <p>Age: {{ profile.age }}</p>
-            <p>Gender: {{ profile.gender }}</p>
-            <p>Country: {{ address.country }}</p>
+            <p>Gender: {{ profile.get_gender_display }}</p>
+            <p style="display: inline-block;" >Country: {{ address.get_country_display }} </p>
+            <img style="display: inline-block;" src="{{ address.country.flag }}"></img>
+
           </div>
         </div>
       </div>
@@ -74,5 +76,15 @@
   </div>
 
 {% endif %}
+
+<script>
+// let sellerName = "{{ profile.user.username }}";
+// let sellerVouches = "{{ profile.vouches_amt }}";
+// let sellerOrders = "{{ sellerorders }}";
+  let sellerTier = "{{ profile.tier }}";
+  console.log(sellerTier);
+</script>
+
+<script src="{% static 'js/tier.js' %}"></script>
 
 {% endblock content%}

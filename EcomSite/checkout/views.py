@@ -2,12 +2,14 @@ from django.contrib import messages
 from django.core.mail import send_mail
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import ShippingForm
+from .decorators import has_shipping
 from store.models import Address, Cart, OrderItem, SingleBuy, Customer, Order, SoldItem
 from store.decorators import authenticated_user, unauthenticated_user
 from django.http import JsonResponse, HttpResponse
 import json
 
 # Create your views here.
+
 
 @authenticated_user
 def shipping(request):
@@ -49,7 +51,7 @@ def shipping(request):
 
     return render(request, template, context)
 
-
+@authenticated_user
 def delete_cart_item(request, pk, mode):
     template = 'store/checkout.html'
 
@@ -68,6 +70,7 @@ def delete_cart_item(request, pk, mode):
     return redirect('checkout')
 
 
+@authenticated_user
 def checkout_quantity_change(request, pk, mode):
     template = 'store/cart.html'
     no_more_stock = ''
@@ -116,6 +119,7 @@ def checkout_quantity_change(request, pk, mode):
 
 
 @authenticated_user
+@has_shipping
 def checkout(request):
     template = 'checkout/checkout.html'
 
@@ -173,7 +177,7 @@ def checkout(request):
 
 
 
-
+@authenticated_user
 def paymentComplete(request):
     user = request.user
     cart, created = Cart.objects.get_or_create(user=user)
@@ -246,41 +250,3 @@ def paymentComplete(request):
     #print("BODY:", body)
     messages.info(request, "Items successfully purchased")
     return redirect("checkout")
-
-
-def update_quantity(request): #this view is the serves the setInterval function in checkout.html to automatically update cart items availability
-    template = "checkout/updatequantity.html"
-    customer = get_object_or_404(Customer, user=request.user)
-    address = get_object_or_404(Address, user=request.user)
-    singles = SingleBuy.objects.filter(customer=customer)
-
-    if singles.exists():
-        for item in singles:
-            item_product = item.product
-            product_amt = item_product.amt_available
-            if item.quantity > product_amt:
-                item.quantity = product_amt
-                item.save()
-        total = 0
-        for item in singles:
-            total += float(item.total())
-
-        context = {"single": singles, "cart_total": total}
-    else:
-        cart, created = Cart.objects.get_or_create(user=request.user)
-        cart_items = OrderItem.objects.filter(cart=cart)
-
-        for item in cart_items:
-            item_product = item.product
-            product_amt = item_product.amt_available
-            if item.quantity > product_amt:
-                item.quantity = product_amt
-                item.save()
-        total = 0
-        for item in cart_items:
-            total += float(item.total())
-
-
-        context = {"order_items": cart_items, "cart_total": total}
-
-    return render(request, template, context)

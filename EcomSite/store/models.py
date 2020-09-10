@@ -52,7 +52,7 @@ class Customer(models.Model): # a customer is the equivalent of a user
 
 
 
-class Address(models.Model):
+class Address(models.Model): #shipping address
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     profile = models.ForeignKey(Profile, null=True, blank=False, on_delete=models.CASCADE)
     address_line1 = models.CharField(max_length=200, null=True, blank=False)

@@ -3,7 +3,7 @@ import datetime
 from django.db import models
 from django.contrib.auth.models import User
 from django_countries.fields import CountryField
-
+#from store.models import Customer
 # Create your models here.
 
 genders = [
@@ -11,6 +11,12 @@ genders = [
         ('F', 'Female'),
         ('NS', 'Prefer not to say'),
         ('OT', 'Other')
+]
+
+tiers = [
+        ('T1', 'Tier 1'),
+        ('T2', 'Tier 2'),
+        ('T3', 'Tier 3'),
 ]
 
 class Profile(models.Model):
@@ -22,6 +28,9 @@ class Profile(models.Model):
     email = models.CharField(max_length=200, null=True, blank=False)
     business = models.BooleanField(default=False)
     profile_pic = models.ImageField(upload_to='profilepics/%Y/%m/%d/', null=True, blank=True)
+    note = models.CharField(max_length=200, null=True, blank=False)
+    vouches = models.ManyToManyField('store.Customer')
+    tier = models.CharField(max_length=50, null=True, blank=False, choices=tiers)
 
     def __str__(self):
         return self.user.username + "'s profile"
@@ -37,6 +46,9 @@ class Profile(models.Model):
 
     def first_name(self):
         return self.user.get_short_name()
+
+    def vouches_amt(self):
+        return self.vouches.all().count()
 
     @property
     def imageURL(self):

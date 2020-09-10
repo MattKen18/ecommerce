@@ -38,11 +38,37 @@
 
   </div>
 </div>
-
 <div class="space-medium"></div>
 
 <div class="row">
   <div class="col-lg-6 element-container seller-profile-view left" data-aos="fade-right" data-aos-duration="1000">
+    <div class="seller-profile-view profile-cards-heading-holder">
+      <h2 class="seller-profile-view profile-cards-heading">User</h2>
+    </div>
+    <hr>
+    <form class="form-group" action="{% url 'updateprofile' 'user' %}" method="post">
+      {% csrf_token %}
+      {{ userform.first_name.label_tag }}
+      {{ userform.first_name|attr:'required:false'|add_class:"form-control"}}
+      <br>
+      {{ userform.last_name.label_tag }}
+      {{ userform.last_name|attr:'required:false'|add_class:"form-control"}}
+      <br>
+      {{ userform.username.label_tag }}
+      {{ userform.username|attr:'required:false'|add_class:"form-control"}}
+      <br>
+      <hr>
+      <div class="submitbt-holder seller-profile-view">
+        <button class="btn btn-outline-primary update-profile-btn" type="submit" name="button" onclick="this.disabled=true;this.form.submit();">Update</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="space-medium"></div>
+
+<div class="row">
+  <div class="col-lg-6 element-container seller-profile-view right" data-aos="fade-left" data-aos-duration="1000">
     <div class="seller-profile-view profile-cards-heading-holder">
       <h2 class="seller-profile-view profile-cards-heading">Personal</h2>
     </div>
@@ -66,7 +92,7 @@
 <div class="space-medium"></div>
 
 <div class="row">
-  <div class="col-lg-6 element-container seller-profile-view right" data-aos="fade-left" data-aos-duration="1000">
+  <div class="col-lg-6 element-container seller-profile-view left" data-aos="fade-right" data-aos-duration="1000">
     <div class="seller-profile-view profile-cards-heading-holder">
       <h2 class="seller-profile-view profile-cards-heading">Contact</h2>
     </div>
@@ -90,7 +116,7 @@
 <div class="space-medium"></div>
 
 <div class="row">
-  <div class="col-lg-6 element-container seller-profile-view left" data-aos="fade-right" data-aos-duration="1000">
+  <div class="col-lg-6 element-container seller-profile-view right" data-aos="fade-left" data-aos-duration="1000">
     <div class="seller-profile-view profile-cards-heading-holder">
       <h2 class="seller-profile-view profile-cards-heading">Home Address</h2>
     </div>
@@ -113,7 +139,7 @@
 <div class="space-medium"></div>
 
 <div class="row">
-  <div class="col-lg-6 element-container seller-profile-view right" data-aos="fade-left" data-aos-duration="1000">
+  <div class="col-lg-6 element-container seller-profile-view left" data-aos="fade-right" data-aos-duration="1000">
     <div class="seller-profile-view profile-cards-heading-holder">
       <h2 class="seller-profile-view profile-cards-heading">Shipping Address</h2>
     </div>
@@ -135,15 +161,41 @@
 </div>
 
 <div class="space-medium"></div>
-
+<!--
 <div class="row">
-  <form class="" action="index.html" method="post">
-    {% csrf_token %}
-    {% for field in miscform %}
-      <p style="font-size: 20px; font-weight: lighter;">Author, Company or Publisher?</p>
-      {{ field|attr:'required:false'|add_class:"form-control" }}
-      <br>
-    {% endfor %}
-  </form>
+  <div class="col-lg-6 element-container seller-profile-view right" data-aos="fade-left" data-aos-duration="1000">
+    <div class="seller-profile-view profile-cards-heading-holder">
+      <h2 class="seller-profile-view profile-cards-heading">Misc</h2>
+    </div>
+    <hr>
+    <form class="form-group" action="{% url 'updateprofile' 'miscbusiness' %}" method="post">
+      {% csrf_token %}
+      <div class="form-inline">
+        {{ miscform.business.label_tag }}&nbsp
+        {{ miscform.business|attr:'required:false'|add_class:"form-control"}}
+      </div>
+      <hr>
+      <div class="submitbt-holder seller-profile-view">
+        <button class="btn btn-outline-primary update-profile-btn" type="submit" name="button" onclick="this.disabled=true;this.form.submit();">Update</button>
+      </div>
+    </form>
+  </div>
 </div>
+-->
+<div class="space-medium"></div>
+<div class="row">
+  <div class="col-lg-8 sellers-note-profile">
+    <form class="form-group" action="{% url 'updateprofile' 'miscnote' %}" method="post">
+      {% csrf_token %}
+      <label for="id_for_label" class="seller-note-label">{{ miscform.note.label_tag }}</label>
+      {{ miscform.note|attr:'required:false'|add_class:"form-control"}}
+      <hr>
+      <div class="submitbt-holder seller-profile-view">
+        <button class="btn btn-outline-primary update-profile-btn" type="submit" name="button" onclick="this.disabled=true;this.form.submit();">Update</button>
+      </div>
+    </form>
+  </div>
+</div>
+<br>
+<div class="space-medium"></div>
 {% endblock content %}

@@ -158,141 +158,14 @@ these items.</p>
   </div>
 </div>
 
-{% block javascript %}
-
-
-<script>
-/*
-    window.onload = function() {
-      $('form input').keydown(function (e) {
-          if (e.keyCode == 13) {
-              e.preventDefault();
-              return false;
-          }
-      });
-    }
-
-  const checkoutSocket = new WebSocket(
-      'ws://'
-      + window.location.host
-      + '/ws/checkout/'
-  );
-
-  function setId(itemid, productid, orderitemid) {
-    var id = 'itemquantity' + itemid;
-    var productId = productid;
-    var orderItemId = orderitemid;
-
-    var qtyinput = document.getElementById(id);
-    var quantityid = '#'+id;
-    var submitBtnHolderId = 'submitbtn-holder' + itemid;
-    var submitbtnid = 'quantity-submit' + itemid;
-    var submitbtnidhash = '#'+submitbtnid;
-    //console.log(submitBtnHolderId);
-
-    var getBtn = document.getElementById(submitbtnid);
-
-    if (typeof(getBtn) != 'undefined' && getBtn != null) {
-      // do nothing;
-    } else {
-      var btn = document.createElement('a');
-      var btnHolder = document.getElementById(submitBtnHolderId);
-      btn.setAttribute('id', submitbtnid);
-      icon = document.createElement('i');
-      icon.setAttribute('class', 'submit-qty-chg far fa-check-circle grow yes');
-      btn.appendChild(icon);
-      btnHolder.appendChild(btn);
-      //console.log(btn);
-    }
-
-    //console.log(qtyinput);
-    //console.log(quantityid);
-
-
-    checkoutSocket.onopen =function(e){
-      console.log('Connection established');
-    };
-
-
-    checkoutSocket.onmessage = function(e) {
-      //console.log(e.data);
-      const data = JSON.parse(e.data);
-      console.log(data)
-      document.querySelector(quantityid).value += data.quantity;
-    };
-
-
-    checkoutSocket.onclose = function(e) {
-        console.error('Checkout socket closed unexpectedly');
-    };
-
-
-    document.querySelector(quantityid).onkeyup = function(e) {
-        if (e.keyCode === 13) {  // enter, return
-            console.log('done');
-            document.querySelector(submitbtnidhash).click();
-        }
-    };
-
-    document.querySelector(submitbtnidhash).onclick = function(e) {
-        const quantityInputDom = document.querySelector(quantityid);
-        const quantity = quantityInputDom.value;
-        console.log(quantity);
-        checkoutSocket.send(JSON.stringify({
-            'quantity': quantity,
-            'productid': productId,
-            'orderitemid': orderItemId
-        }));
-        quantityInputDom.value = '';
-    };
-  }
-
-  function delIcon(itemid) {
-    btnToDelete = document.getElementById('quantity-submit' + itemid);
-    try {
-      btnToDelete.remove();
-    } catch {
-      // do nothing
-    }
-  }
-
- //checks if the stock has been decreased by another user bying it
-  function refresh() {
-    $.ajax({
-    url: "{% url 'updatequantity' %}",
-    success: function(data) {
-      $('#order-details').html(data);
-      console.log(5);
-    }
-   });
-  };
-  window.onload = function() {
-    refresh();
-    var myTimer = setInterval("refresh()", 1000);
-
-
-    var orderDetails = document.getElementById("order-details");
-
-    orderDetails.addEventListener("mouseover", function(){ clearInterval(myTimer)});
-    orderDetails.addEventListener("mouseout", function(){ myTimer = setInterval(refresh, 1000);});
-*/
-</script>
-{% endblock javascript %}
 <script src="https://www.paypal.com/sdk/js?client-id=Afsx3QmWygAjv6jlgNdeziMPx42M3IEJd61E-enTff0qsAlYfZJHXOqsv-nv8c7ZcVBRF5mZongj0Zoa&currency=USD&disable-funding=credit"></script>
-
 <script>
-
-
-//  paypalBtnContainer = document.getElementById('paypal-button-container');
-//  paypalBtnContainer.setAttribute('onhover', checkRefresh());
   var count = 0;
   var showPaypal = true;
   var mouseover = false;
 
-  console.log("hovered is "+ mouseover);
   function ishovered() {
     mouseover = true;
-    console.log(mouseover);
   }
 
   function unhovered() {
@@ -324,8 +197,6 @@ these items.</p>
           if (showPaypal == false){
 
           }
-        console.log(count);
-        console.log(showPaypal);
       }, 1000);
     }
     counter()
@@ -335,7 +206,6 @@ these items.</p>
     document.getElementById('paypal-button-container').style.display = 'none';
     let paypalHolder = document.getElementById('paypal-holder');
     let refreshBtnHolder = document.getElementById('paypal-refreshbtn');
-    console.log(refreshBtnHolder)
     let refreshButtoninnerHldr = document.createElement('div');
     let refreshButton = document.createElement('button');
     let p = document.createElement('p');

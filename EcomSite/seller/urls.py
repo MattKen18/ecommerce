@@ -18,5 +18,6 @@ urlpatterns = [
     path('sales/', views.seller_sales, name='sales'),
     path('paymentinquiries/', views.payment_inquiries, name='inquiries'),
     path('editproduct/<uuid:pk>/', views.editproduct, name='editproduct'),
+    path('vouch/<uuid:pk>/', views.vouch, name='vouch'),
 
 ]

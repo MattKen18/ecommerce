@@ -81,7 +81,13 @@
             <br>
             <div class="detail products-stock">
               <p>Available: {{ product.amt_available }} / {{ product.total }}</p>
+              {% if detailproduct != None %}
+                <a href="{% url 'cart' %}"><span><p>{{ detailproduct.quantity }} in Cart</p></span></a>
+              {% else %}
+                <a href="{% url 'cart' %}"><span><p> 0 in Cart</p></span></a>
+              {% endif %}
             </div>
+
           </div>
 
         </div>
@@ -115,18 +121,39 @@
       <div class="right-section-heading-container">
         <h4 style="text-align: center;">Seller</h4>
       </div>
-      <div class="seller-pic">
-        <img src="{{ seller.imageURL }}" alt="seller profile picture">
+      <div class="image-holder-exterior">
+        <a href="{% url 'vouch' seller.sellerid %}"><i class="fas fa-thumbs-up grow"></i></a>
+        <div id="tier-style" class="seller-pic">
+          <img src="{{ seller.imageURL }}" alt="seller profile picture">
+        </div>
       </div>
       <div class="seller-name">
         <a href="#"><p>{{ seller.user.username}}</p></a>
       </div>
       <div class="seller-country">
-        <div class="seller-country-content name">
-          <p>Location:&nbsp &nbsp{{ homeaddress.get_country_display }}</p>
+        <p class="seller-headings">Location:</p>
+        <div class="seller-details-detailpg seller-country-content name">
+          <p>{{ homeaddress.get_country_display }}</p>
         </div>
-        <div class="seller-country-content image">
+        <div class="seller-details-detailpg seller-country-content image">
           <img src="{{ homeaddress.country.flag }}"></img>
+        </div>
+      </div>
+      <br>
+      <div class="seller-contact">
+        <p class="seller-headings">Contact:</p>
+        <div class="seller-details-detailpg seller-email">
+          <p><i class="far fa-envelope"></i>&nbsp{{ seller.email }}</p>
+        </div>
+        <div class="seller-details-detailpg seller-phone">
+          <p><i class="fas fa-phone"></i>&nbsp{{ seller.phone }}</p>
+        </div>
+        <br>
+        <div class="">
+        </div>
+        <p class="seller-headings">Vouches:</p>
+        <div class="seller-details-detailpg seller-vouches">
+          <p>{{seller.vouches_amt}}</p>
         </div>
       </div>
       <!--<div class="seller-contact">
@@ -136,5 +163,15 @@
 
   </div>
 </div>
+
+<script>
+// let sellerName = "{{ seller.user.username }}";
+// let sellerVouches = "{{ seller.vouches_amt }}";
+// let sellerOrders = "{{ sellerorders }}";
+  let sellerTier = "{{ seller.tier }}";
+  console.log(sellerTier);
+</script>
+
+<script src="{% static 'js/tier.js' %}"></script>
 
 {% endblock content %}

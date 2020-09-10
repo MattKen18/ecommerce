@@ -5,8 +5,10 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from store.models import Product, ProductImages, categories, conditions
 from .forms import ImageUpload
+from store.decorators import allowed_users
 # Create your views here.
 
+@allowed_users(allowed_roles=['staff'])
 def admin_verify(request):
     template = 'adminverify/baseverify.html'
 
@@ -22,6 +24,8 @@ def admin_verify(request):
     context = {'products': unverified, 'categories': categories, 'conditions': conditions, 'imageform': imageform}
     return render(request, template, context)
 
+
+@allowed_users(allowed_roles=['staff'])
 def verify_new(request):
     template = "adminverify/newproductsverify.html"
     unverified = Product.objects.all().filter(published=False, re_evaluating=False).order_by('-req_date')
@@ -36,7 +40,7 @@ def verify_new(request):
     context = {'products': unverified, 'categories': categories, 'conditions': conditions, 'imageform': imageform}
     return render(request, template, context)
 
-
+@allowed_users(allowed_roles=['staff'])
 def re_evaluate(request):
     template = "adminverify/re_evaluate.html"
     unverified = Product.objects.all().filter(published=False, re_evaluating=True).order_by('-req_date')
@@ -52,6 +56,7 @@ def re_evaluate(request):
     return render(request, template, context)
 
 
+@allowed_users(allowed_roles=['staff'])
 def view_images(request, pk):
     template = 'adminverify/product_images.html'
 
@@ -67,6 +72,7 @@ def view_images(request, pk):
     return render(request, template, context)
 
 
+@allowed_users(allowed_roles=['staff'])
 def delete_product_image(request, pk):
     image = ProductImages.objects.get(pk=pk)
 
@@ -76,6 +82,7 @@ def delete_product_image(request, pk):
     return redirect('adminverify')
 
 
+@allowed_users(allowed_roles=['staff'])
 def change_product_image(request, pk):
     image_obj = ProductImages.objects.get(pk=pk)
 
@@ -93,7 +100,7 @@ def change_product_image(request, pk):
 
     return redirect('adminverify')
 
-
+@allowed_users(allowed_roles=['staff'])
 def paid(request, pk):
     product, created = Product.objects.get_or_create(pk=pk)
     #if product.paid == True
@@ -103,6 +110,7 @@ def paid(request, pk):
 
     return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
 
+@allowed_users(allowed_roles=['staff'])
 def unpay(request, pk):
     product, created = Product.objects.get_or_create(pk=pk)
     #if product.paid == True
@@ -112,6 +120,7 @@ def unpay(request, pk):
 
     return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
 
+@allowed_users(allowed_roles=['staff'])
 def verify(request, pk):
     product, created = Product.objects.get_or_create(pk=pk)
     if product.paid == True:
@@ -123,6 +132,7 @@ def verify(request, pk):
     return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
 
 
+@allowed_users(allowed_roles=['staff'])
 def unverify(request, pk):
     product, created = Product.objects.get_or_create(pk=pk)
     if product.verified == True:
@@ -132,6 +142,7 @@ def unverify(request, pk):
     return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
 
 
+@allowed_users(allowed_roles=['staff'])
 def product_update(request, pk):
 
     product, created = Product.objects.get_or_create(pk=pk)
@@ -166,7 +177,7 @@ def product_update(request, pk):
 
     return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
 
-
+@allowed_users(allowed_roles=['staff'])
 def product_update_evaluate(request, pk):
 
     product, created = Product.objects.get_or_create(pk=pk)

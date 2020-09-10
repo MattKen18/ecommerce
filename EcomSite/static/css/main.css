@@ -1,3 +1,13 @@
+body, html {
+  position: relative;
+  height: auto;
+  min-height: 2000px;
+}
+
+#site-body-container {
+  padding-bottom: 50px;
+}
+
 #message {
   font-size: 30px;
   text-align: center;
@@ -81,7 +91,7 @@ a.go-to:hover {
   border: 1px solid black;
   height: auto;
   min-width: 170px;
-  width: auto;
+  max-width: 170px;
 }
 
 
@@ -91,6 +101,7 @@ a.go-to:hover {
   padding-left: 10px;
   padding-top: 5px;
   padding-bottom: 5px;
+  word-wrap: break-word;
 }
 
 .dropdown-menu a {
@@ -102,12 +113,18 @@ a.go-to:hover {
   text-decoration: none;
 }
 
+.dropdown-menu .user-username-holder {
+  margin-bottom: 5px;
+  height: auto;
+}
+
 .dropdown-menu .user-username {
   color: ;
-  padding-left: 0;
+  padding: 5px;
   text-align: center;
   font-size: 20px;
   font-weight: bolder;
+
 }
 
 .dropdown-menu .user-username span {
@@ -227,6 +244,144 @@ transition: all .2s ease-in-out;
 transform: scale(0.9);
 }
 
+.carousel-container {
+  height: 250px;
+  background-image: linear-gradient(dodgerblue, aqua);
+}
+
+.carousel-container .carousel-inner {
+  height: 100%;
+  /*border: 1px solid black;*/
+  display: flex;
+}
+
+.carousel-container .carousel-item {
+  height: 100%;
+  margin-top: auto;
+}
+
+.carousel-container .carousel-item.active{
+  height: 100%;
+  display: flex;
+}
+
+.carousel-container .carousel-propic-holder-container-flexed {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  position: relative;
+}
+
+.carousel-container .carousel-propic-holder-container-flexed.inner {
+  width: auto;
+  height: 200px;
+  margin: auto;
+  align-items: center;
+}
+
+
+.carousel-seller-details {
+  width: 220px;
+  padding: 10px;
+  height: auto;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+
+.carousel-seller-details p{
+  margin: 0;
+  text-align: left;
+  font-size: 20px;
+}
+
+.carousel-seller.seller-tier {
+  font-size: 15px;
+  border-bottom: 3px solid #099A00;
+  padding: 1px;
+  opacity: 0.5;
+  width: 50px;
+  text-align: center;
+  font-weight: bolder;
+  font-family: "Raleway";
+}
+
+.carousel-seller.seller-rank span{
+  font-size: 50px;
+  font-family: "Titan One";
+  border: 3px solid black;/*#D503FF;*/
+  padding-left: 20px;
+  padding-right: 20px;
+  border-top-right-radius: 20px;
+  border-bottom-left-radius: 20px;
+  background: -webkit-linear-gradient(white, black/*#A38F14, #cd7f32*/);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+#rank-style0 {
+  border: 3px solid #DBC431;
+  background: -webkit-linear-gradient(white, #A38F14/*gold*/);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+#rank-style1 {
+  border: 3px solid #C0C0C0;
+  background: -webkit-linear-gradient(white, #C0C0C0/*silver*/);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+#rank-style2 {
+  border: 3px solid #cd7f32;
+  background: -webkit-linear-gradient(white, #cd7f32/*bronze*/);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.carousel-container .carousel-propic-holder {
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  margin: auto;
+  overflow: hidden;
+  position: relative;
+}
+
+/*
+.carousel-seller-username {
+  position: absolute;
+  z-index: 10;
+  font-size: 50px;
+  color: red;
+  width: 100%;
+  text-align: center;
+}
+*/
+
+.carousel-container .carousel-propic-holder img.d-block {
+  width: 100%;
+  height: 100%;
+}
+
+.carousel-seller.seller-name {
+  font-weight: lighter;
+  font-family: "Titan One";
+  font-size: 25px;
+  color: white;
+  line-height: 25px;
+  word-wrap: break-word;
+  height: auto;
+  min-height: 45px;
+  max-height: 51px;
+  margin-top: 5px;
+  margin-bottom: 2px;
+  overflow: hidden;
+  padding-bottom: 5px;
+}
+
 .categories {
   display: flex;
   flex-direction: row;
@@ -274,7 +429,7 @@ transform: scale(0.9);
 
 
 .col-lg-3.product-item {
-  margin-bottom: 25px;
+  margin-bottom: 100px;
   height: auto;
   min-height: 350px;
   padding: 0;
@@ -360,14 +515,15 @@ transform: scale(0.9);
 
 .btn.btn-outline-success.add-to-cart-btn, .btn.btn-outline-success.buy-btn  {
   border-radius: 0;
-  color: #EC7063;
-  border-color: #EC7063;
+  color: black;/*#EC7063;*/
+  border-color: black;/*#EC7063;*/
+  background-color: white;
   transition: all .1s ease-in-out;
 }
 
 .btn.btn-outline-success.add-to-cart-btn:hover, .btn.btn-outline-success.buy-btn:hover {
   color: white;
-  background-color: #EC7063;
+  background-color: black;/*#EC7063;*/
   text-decoration: none;
 }
 
@@ -382,8 +538,10 @@ transform: scale(0.9);
 }
 .pagination {
   text-align: center;
-  width: 200px;
+  width: 250px;
   margin: auto;
+  font-weight: bolder;
+  font-family: 'Raleway';
 }
 
 .pagination-inner {
@@ -515,6 +673,22 @@ span.highlight-price {
 .detail.products-stock {
   text-align: center;
   font-weight: bolder;
+
+}
+
+.detail.products-stock p{
+  display: inline-block;
+  margin: 0;
+}
+
+.detail.products-stock span {
+  display: inline-block;
+  border: 1px solid grey;
+  border-radius: 5px;
+  opacity: 0.5;
+  padding: 2px;
+  margin-left: 10px;
+  color: black;
 }
 
 .detail-container-upper.inner {
@@ -579,12 +753,30 @@ span.highlight-price {
 .element-container.detail-product-view.col-lg-3.right-section {
   display: flex;
   flex-direction: column;
+  height: auto;
   min-height: 300px;
   font-family: "Raleway";
   border: 1px solid transparent;
   box-shadow: none;
   border-radius: 0;
 }
+
+.image-holder-exterior {
+  position: relative;
+  width: 200px;
+  max-width: 200px;
+  margin: auto;
+
+}
+
+.image-holder-exterior .fas.fa-thumbs-up {
+  position: absolute;
+  right: 20px;
+  top: 10px;
+  font-size: 20px;
+  color: #EC7063;
+}
+
 
 .seller-pic {
   width: 100px;
@@ -593,11 +785,27 @@ span.highlight-price {
   margin: auto;
 }
 
+
 .seller-pic img {
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  border: 2px solid #25E7D0;
+  /*border: 2px solid #25E7D0;*/
+}
+
+.seller-headings, .seller-details-detailpg p {
+  margin-bottom: 0;
+  word-wrap: break-word;
+
+}
+
+.seller-details-detailpg p {
+  font-size: 15px;
+}
+
+.seller-headings {
+  font-weight: bolder;
+  color: dodgerblue;
 }
 
 .seller-name {
@@ -621,7 +829,9 @@ span.highlight-price {
   display: inline-block;
 }
 
-
+.seller-contact {
+  text-align: center;
+}
 /*cart*/
 
 span.item-price {
@@ -745,11 +955,16 @@ a.cart-heading {
   border-radius: inherit;
 }
 
+a.link-to-product, a.link-to-product img {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+}
+
 .product-image-holder img {
   width: 100%;
   height: 100%;
   border-radius: inherit;
-
 }
 
 .cart-product {
@@ -1281,14 +1496,15 @@ form.form-group.admin-view textarea {
   width: 70%;
   height: 230px;
   border: 1px solid transparent;
+  border: 1px solid black;
+  border-radius: 50%;
   margin: auto;
+  overflow: hidden;
 }
 
 img.seller-profile-pic {
   width: 100%;
   height: 100%;
-  border: 1px solid black;
-  border-radius: 50%;
 }
 
 .subscript {
@@ -1450,6 +1666,21 @@ input#id_profile_pic{
   padding: 20px;
 }
 
+.col-lg-8.sellers-note-profile {
+  margin: auto;
+  height: 200px;
+}
+
+.col-lg-8.sellers-note-profile textarea {
+  height: 100px;
+}
+
+.seller-note-label {
+  font-weight: lighter;
+  font-size: 20px;
+  font-family: "Raleway";
+}
+
 .col-lg-6.element-container.seller-profile-view.right {
   margin-left: auto;
 }
@@ -1484,4 +1715,32 @@ div.space-medium {
 
 .submitbt-holder.seller-profile-view button {
   width: 100%;
+}
+
+/*footer*/
+footer {
+  /*border: 1px solid black;*/
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  bottom: 0;
+  margin-top: 50px;
+
+}
+
+.footer-content {
+  flex: 10;
+  display: flex;
+  flex-direction: row;
+
+}
+
+.footer-content div {
+  /*border: 1px solid black;*/
+  flex: 1;
+}
+
+.footer-bottom {
+  flex: 2;
 }

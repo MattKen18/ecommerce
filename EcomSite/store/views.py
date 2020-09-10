@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
+from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from seller.models import Profile, HomeAddress
 from .models import *
@@ -13,6 +14,7 @@ def store(response):  #order by
     products = Product.objects.all().filter(published=True, rejected=False, available=True).order_by('-pub_date')
     choices = Product._meta.get_field('category').choices
     categories = [choice[1] for choice in choices]
+    sellers = Profile.objects.all()
 
     paginator = Paginator(products, 20)
 
@@ -20,7 +22,7 @@ def store(response):  #order by
 
     page_obj = paginator.get_page(page_number)
 
-    context = {"products": products, "categories": categories, 'page_obj': page_obj}
+    context = {"products": products, "categories": categories, 'page_obj': page_obj, 'sellers': sellers}
 
     return render(response, template, context)
 
@@ -58,17 +60,32 @@ def store_categories(response, category):  #order by
 
 def detail_page(request, pk):
     template = "store/detail.html"
-    product, created = Product.objects.get_or_create(id=pk)
+    user = request.user
+    product = get_object_or_404(Product, id=pk)
     customerSeller = product.product_seller.user
     images = product.productimages_set.all()
+    customer = get_object_or_404(Customer, user=customerSeller) #seller of the current product in the detail page i.e the customer whose user field is the seller of the product
+    #this 'block' is to get the order item of the product that the user has in his/her cart, this is to get the amt that the user has in his/her cart
+    #to show in the detail page
+    if user.is_authenticated:
+        cart, created = Cart.objects.get_or_create(user=user)
+        order_items = OrderItem.objects.filter(product=product)
+        detail_product = None #this will be the specific order_item
+        for item in order_items:
+            if item.cart == cart:
+                detail_product = item
+    else:
+        detail_product = None
 
     seller = get_object_or_404(Profile, user=customerSeller)
+    seller_orders = SoldItem.objects.filter(seller=customer).count() #all the completed orders for the products of this seller
     homeaddress = get_object_or_404(HomeAddress, profile=seller)#check if home address will be automatically created if not made from seller sign up
 
     #for image in images:
     #    print(image.imageURL)
 
-    context = {'product': product, 'productimages': images, "seller": seller, "homeaddress": homeaddress}
+    context = {'product': product, 'productimages': images, "seller": seller,
+               "homeaddress": homeaddress, "sellerorders": seller_orders, 'detailproduct': detail_product}
 
     return render(request, template, context)
 
@@ -81,23 +98,39 @@ def add_to_cart(request, pk):
     try:
         detail_amt = request.POST['detailorder_amt'] #adding to cart from the detail page
 
-    except:
+    except: # adding to cart from store
         if order_item.quantity < order_item.product.amt_available:
             order_item.quantity += 1
             order_item.save()
-        else:
+            added_to_cart = messages.error(request, 'Item added to cart')
+        elif order_item.quantity <= 0: #if adding item that has no stock, then prevent it from showing in cart i.e deleting it
             order_item.delete()
+        elif order_item.quantity == order_item.product.amt_available:
             no_more_stock = messages.error(request, 'No more items in stock, currently there are ' + str(order_item.product.amt_available) + ' item(s) available.')
+            return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+        else:
+            no_more_stock = messages.error(request, 'No more items in stock, currently there are ' + str(order_item.product.amt_available) + ' item(s) available.')
+            return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
 
     else:
         detail_amt = int(detail_amt)
-        if order_item.quantity + detail_amt <= order_item.product.amt_available:
-            order_item.quantity += detail_amt
-            order_item.save()
+        if detail_amt != 0:
+            if order_item.quantity + detail_amt <= order_item.product.amt_available:
+                order_item.quantity += detail_amt
+                order_item.save()
+                added_to_cart = messages.error(request, 'Item added to cart')
+            else:
+                if order_item.quantity <= 0:
+                    order_item.delete()
+                no_more_stock = messages.error(request, 'No more items in stock, currently there are ' + str(order_item.product.amt_available) + ' item(s) available.')
+                return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
         else:
-            order_item.delete()
-            no_more_stock = messages.error(request, 'No more items in stock, currently there are ' + str(order_item.product.amt_available) + ' item(s) available.')
-
+            if order_item.quantity >= 1:
+                add_more = messages.error(request, 'Quantity should be at least 1.')
+            else:
+                order_item.delete()
+                add_more = messages.error(request, 'Quantity should be at least 1.')
+            return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
 
     return redirect('cart')
 
