@@ -1,0 +1,54 @@
+{% extends 'seller/home.html' %}
+{% load static %}
+{% block title %} Seller {% endblock %}
+{% load crispy_forms_tags %}
+{% load widget_tweaks %}
+
+{% block activehead %}
+  <a href="{% url 'sellerhome' %}" class="grow">Home</a>
+  <a href="{% url 'createproduct' %}" class="grow">Submit Product</a>
+  <a href="{% url 'sellerproducts' %}" class="active-seller-heading grow">My Products</a>
+  <a href="{% url 'sales' %}" class="grow">My Sales</a>
+  <a href="{% url 'pickup' %}" class="grow">Request Pick-up</a>
+  <a href="{% url 'inquiries' %}" class="grow">Payment Inquiries</a>
+{% endblock activehead %}
+
+
+{% block body %}
+
+{% if messages %}
+  {% for message in messages %}
+    <p id="message">{{ message }}</p>
+  {% endfor %}
+  {% else %}
+    <br>
+    <p class="light-large-heading">Restock product</p>
+    <br>
+{% endif %}
+
+<br>
+<div class="product-restock-image">
+  <img src="{{ product.imageURL }}" alt="product image">
+</div>
+<form class="" action="{% url 'restockproduct' product.id %}" method="post">
+  {% csrf_token %}
+  <br>
+  <br>
+  <div class="restock-form form-inline">
+    <div class="">
+      {{ restockform.amt_available.label_tag }}
+      <div class="restock-input-holder">
+        {{ restockform.amt_available|add_class:"form-control"}}
+      </div>
+    </div>
+  </div>
+  <br>
+  <br>
+  <small style="text-align: center; display: block;"><span style="color: red;">Warning:</span>&nbsp Product will not be re-published until stock is verified.</small>
+  <br>
+  <div class="submitbt-holder">
+    <button class="small-btn" type="submit" name="button" onclick="this.disabled=true;this.form.submit();">Submit&nbsp<i class="fas fa-history"></i></button>
+  </div>
+</form>
+
+{% endblock body%}

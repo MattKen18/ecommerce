@@ -21,8 +21,11 @@
 <p id="message">{{ message }}</p>
 {% endfor %}
 {% endif %}
-<h3 style="text-align: center;">Delete '{{ product.name }}'? </h3>
 <br>
+<h3 class="light-large-heading">Delete '{{ product.name }}'? </h3>
+<br>
+
+<small style="text-align: center; display: block;"><span style="color: red;">Warning:</span>&nbsp Product will be permanently removed from store.</small>
 <br>
 <br>
 <div class="delete-form-holder">
@@ -30,7 +33,7 @@
     {% csrf_token %}
     <select id="verify-delete" type="" name="verifydelete" class="form-control">
       <option value="yes">Yes</option>
-      <option value="no">No Take me back</option>
+      <option value="no" selected>No Take me back</option>
     </select>
     <br>
     <div class="delete-product-btn-holder">

@@ -25,9 +25,13 @@
 {% block current %}
 <div class="seller-products-heading-toggler">
   <a href="{% url 'sellerproducts' %}">All</a>
-  <a class="enlarge" href="{% url 'restock' %}">Re-Stock</a>
+  <a class="enlarge" href="{% url 'restockproducts' %}">Re-Stock</a>
 </div>
 {% endblock current %}
+<br>
+<br>
+<i class="seller-restock fas fa-circle" style="color: yellow;"></i> <span style="font-weight: lighter; font-family: Raleway; opacity: 0.7;"> Restocking</span>
+<br>
 <br>
 <br>
 <div class="row items-container">
@@ -46,14 +50,14 @@
         </div>
         <div class="product-price">
           <p class="product-price-text"><strong>${{ product.price|floatformat:2 }}</strong></p>
-          {% if product.re_evaluating %}
-          <div class="evaluating-icon-holder">
-            <i class="seller-products fas fa-circle"></i>
-          </div>
+          {% if product.restocking %}
+            <div class="evaluating-icon-holder">
+              <i class="seller-restock fas fa-circle" style="color: yellow"></i>
+            </div>
           {% endif %}
         </div>
         <div class="add-to-cart-buy-btn-holder">
-          <a class="btn btn-outline-success add-to-cart-btn" href="{% url 'editproduct' product.id %}">Restock</a>
+          <a class="btn btn-outline-success add-to-cart-btn" href="{% url 'restockproduct' product.id %}">Restock</a>
           <a class="btn btn-outline-success buy-btn" href="{% url 'deleteproduct' product.id %}">Remove</a>
         </div>
       </div>

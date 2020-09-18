@@ -54,7 +54,7 @@ class Customer(models.Model): # a customer is the equivalent of a user
 
 class Address(models.Model): #shipping address
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    profile = models.ForeignKey(Profile, null=True, blank=False, on_delete=models.CASCADE)
+    profile = models.ForeignKey(Profile, null=True, blank=True, on_delete=models.CASCADE)
     address_line1 = models.CharField(max_length=200, null=True, blank=False)
     address_line2 = models.CharField(max_length=200, null=True, blank=False) #post office
     city = models.CharField(max_length=200, null=True, blank=False)
@@ -75,7 +75,7 @@ class Product(models.Model):
     name = models.CharField(max_length=200, null=True, blank=False)
     price = models.FloatField(null=True, blank=False)
     details = models.CharField(max_length=200, null=True, blank=True)
-    available = models.BooleanField(default=True, null=True, blank=False) #sold or not
+    available = models.BooleanField(default=True, null=True, blank=False) #sold or not (restock also)
     category = models.CharField(max_length=20, null=True, blank=False, choices=categories)
     req_date = models.DateTimeField(null=True, blank=False, auto_now_add=True)#date when the product is requested to be uploaded by seller
     pub_date = models.DateTimeField(null=True, blank=False, auto_now_add=True)#date when product is uploaded by us after being verified
@@ -88,7 +88,8 @@ class Product(models.Model):
     published = models.BooleanField(default=False)
     rejected = models.BooleanField(default=False)
     re_evaluating = models.BooleanField(default=False)
-
+    restocking = models.BooleanField(default=False) #if the seller restocked product
+    edited = models.BooleanField(default=False) #if the seller edited a product
     #Customer.product_set.all() to get all products of
 
     def __str__(self):

@@ -29,6 +29,8 @@ urlpatterns = [
     path('Logoutpage/', rv.logout, name="logoutpage"),
     path('', include("django.contrib.auth.urls")),
     path('admin/', admin.site.urls),
+    path('api/', include("api.urls")),
+
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

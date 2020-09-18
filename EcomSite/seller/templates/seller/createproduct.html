@@ -24,7 +24,7 @@
 
 
 <div class="box-element create-product-form-holder form-group">
-  <h5 style="text-align: center;">Submit a product</h5>
+  <h5 class="light-large-heading">Submit a product</h5>
   <br>
   <div class="inner-form">
     <form class="create-product-form form-group" action="{% url 'createproduct' %}" method="post" enctype="multipart/form-data">
@@ -32,7 +32,7 @@
       {{ productform|crispy }}
       <br>
       <div class="submitbt-holder">
-        <button class="btn btn-outline-success create-product-btn" id="submit-product" type="submit" name="button" onclick="this.disabled=true;this.form.submit();">Submit</button>
+        <button class="medium-btn" id="submit-product" type="submit" name="button" onclick="this.disabled=true;this.form.submit();">Submit&nbsp <i class="fas fa-upload"></i></button>
       </div>
 
       {% if created %}

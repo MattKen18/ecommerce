@@ -4,17 +4,24 @@
 <link rel="stylesheet" type='text/css' href="{% static 'css/main.css' %}">
 
 {% block body %}
+{% block activecat %}
 <div class="categories">
-  <div class="categories-options heading-introduce">
+<!--  <div class="categories-options heading-introduce">
     <strong>Categories: </strong>
-  </div>
+  </div>-->
   <div class="categories-options">
-    <p class="categories-options-items grow"><a href="{% url 'store' %}" class="categories-links-btn">all</a></p>
+    <a href="{% url 'store'  %}" class="categories-links-btn grow-medium"><p class="categories-options-items">all</p></a>
     {% for category in categories %}
-    <p class="categories-options-items grow"><a href="{% url 'categories' category %}" class="categories-links-btn">{{ category }}s</a></p>
+      {% if forloop.counter0 == 0 %}
+      <a href="{% url 'categories' category %}" id="cat-{{ forloop.counter0 }}" class="categories-links-btn grow-medium activecat"><p class="categories-options-items">{{ category }}s</p></a>
+      {% else %}
+      <a href="{% url 'categories' category %}" id="cat-{{ forloop.counter0 }}" class="categories-links-btn grow-medium"><p class="categories-options-items">{{ category }}s</p></a>
+      {% endif %}
     {% endfor %}
   </div>
 </div>
+{% endblock activecat %}
+
 <br>
 <hr>
 <br>
@@ -26,6 +33,7 @@
 <hr>
 {% endif %}
 
+{% if products %}
 <div class="row items-container">
   {% for product in page_obj %}
   <a class="product-link" href="{% url 'detail' product.id %}">
@@ -73,5 +81,15 @@
     </span>
   </div>
 </div>
+
+{% else %}
+  <br>
+  <br>
+<div class="no-results-notice notice">
+  <div class="">
+    <h3 class='no-results'>No products to display</h3>
+  </div>
+</div>
+{% endif %}
 
 {% endblock body %}

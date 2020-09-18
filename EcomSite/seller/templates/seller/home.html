@@ -28,7 +28,6 @@
 <h3>Why become a seller?</h3>
 
 {% else %}
-  <h1>Seller Homepage</h1>
   <br>
   <br>
   <div class="row">
@@ -42,19 +41,41 @@
             <h5 class="seller-username-text">{{ profile.user.username }} <a href="{% url 'profile' %}"><i class="fas fa-pencil"></i></a></h5>
           </div>
           <br>
-          <div class="seller-details">
-            <p>Age: {{ profile.age }}</p>
-            <p>Gender: {{ profile.get_gender_display }}</p>
-            <p style="display: inline-block;" >Country: {{ address.get_country_display }} </p>
-            <img style="display: inline-block;" src="{{ address.country.flag }}"></img>
-
+          <div class="seller-profile-view seller-details">
+            <div class="seller-details-item age grow">
+              <div class="seller-details-svg-holder">
+                <img src="{% static 'images/sitesvgs/age.svg' %}" alt="age-svg">
+              </div>
+              <div class="seller-details-content">
+                <p>{{ profile.age }}</p>
+              </div>
+            </div>
+            <div class="seller-details-item gender grow">
+              <div class="seller-details-svg-holder">
+                <img src="{% static 'images/sitesvgs/gender.svg' %}" alt="">
+              </div>
+              <div class="seller-details-content">
+                <p>{{ profile.get_gender_display }}</p>
+              </div>
+            </div>
+            <div class="seller-details-item tier grow">
+              <div class="seller-details-svg-holder">
+                <img src="{% static 'images/sitesvgs/ranking.svg' %}" alt="tier">
+              </div>
+              <div class="seller-details-content">
+                <p>{{ profile.tier }}</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
     <div class="col-lg-8">
       <div class="profile-holder detail-view">
-        <h5>Hey {{ profile.user.first_name }}! </h5>
+        <h5 class="greet-seller" style="display: inline-block;">Hey {{ profile.user.first_name }}! </h5>
+        <img class="hand-wave" src="{% static 'images/sitesvgs/wave.svg'%}" alt="hello waving">
+        <br>
+        <br>
         <br>
         <div class="detail-view-inner">
           <div class="detail-view-inner-headings">
@@ -82,7 +103,6 @@
 // let sellerVouches = "{{ profile.vouches_amt }}";
 // let sellerOrders = "{{ sellerorders }}";
   let sellerTier = "{{ profile.tier }}";
-  console.log(sellerTier);
 </script>
 
 <script src="{% static 'js/tier.js' %}"></script>

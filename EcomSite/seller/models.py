@@ -14,6 +14,7 @@ genders = [
 ]
 
 tiers = [
+        ('T0', 'Tier 0'),
         ('T1', 'Tier 1'),
         ('T2', 'Tier 2'),
         ('T3', 'Tier 3'),
@@ -25,12 +26,14 @@ class Profile(models.Model):
     date_of_birth = models.DateField(null=True, blank=False)
     gender = models.CharField(max_length=20, null=True, blank=False, choices=genders)
     phone = models.CharField(max_length=20, null=True, blank=False)
-    email = models.CharField(max_length=200, null=True, blank=False)
+    email = models.CharField(max_length=200, null=True, blank=False) #business email
     business = models.BooleanField(default=False)
-    profile_pic = models.ImageField(upload_to='profilepics/%Y/%m/%d/', null=True, blank=True)
-    note = models.CharField(max_length=200, null=True, blank=False)
+    profile_pic = models.ImageField(upload_to='profilepics/%Y/%m/%d/', default="profilepics/defaultpropic.svg", null=True, blank=True)
+    note = models.CharField(max_length=200, null=True, blank=True)
     vouches = models.ManyToManyField('store.Customer')
     tier = models.CharField(max_length=50, null=True, blank=False, choices=tiers)
+    tier_points = models.IntegerField(default=0)
+    created_date = models.DateTimeField(auto_now_add=True, null=True, blank=False)
 
     def __str__(self):
         return self.user.username + "'s profile"
@@ -39,7 +42,7 @@ class Profile(models.Model):
         today = datetime.date.today()
         age = today.year - self.date_of_birth.year - ((today.month, today.day) < (self.date_of_birth.month, self.date_of_birth.day))
 
-        return '{} years'.format(age)
+        return '{}'.format(age)
 
     def full_name(self):
         return self.user.get_full_name()
@@ -60,7 +63,7 @@ class Profile(models.Model):
 
 class HomeAddress(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    profile = models.ForeignKey(Profile, null=True, blank=False, on_delete=models.CASCADE)
+    profile = models.ForeignKey(Profile, null=True, blank=True, on_delete=models.CASCADE)
     address_line1 = models.CharField(max_length=200, null=True, blank=False)
     address_line2 = models.CharField(max_length=200, null=True, blank=False) #post office
     city = models.CharField(max_length=200, null=True, blank=False)

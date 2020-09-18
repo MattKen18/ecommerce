@@ -7,7 +7,7 @@ from .forms import *
 from checkout.forms import ShippingForm
 from django.contrib.auth.models import User, Group
 from django.shortcuts import render, redirect, get_object_or_404
-from store.models import Customer, Address, Product, ProductImages, Order, SoldItem
+from store.models import Customer, Address, Product, ProductImages, Order, SoldItem, OrderItem
 from store.decorators import authenticated_user, unauthenticated_user, allowed_users
 from .decorators import not_seller, is_seller
 from .models import *
@@ -110,12 +110,16 @@ def update_seller_profile(request, form):
                 fname = userform.cleaned_data['first_name']
                 lname = userform.cleaned_data['last_name']
                 uname = userform.cleaned_data['username']
-
+                print(fname)
+                print(lname)
+                print(uname)
                 user.first_name = fname
                 user.last_name = lname
-                user.username = uname
+                user.username = uname #check if username exists first
                 user.save()
                 messages.info(request, "Profile Updated!")
+            else:
+                print('invalid')
 
         if form == 'personal':
             if personalform.is_valid():
@@ -202,36 +206,87 @@ def registerseller(request):
     template = 'seller/register.html'
 
     if request.method == "POST":
-        addrform = AddressForm(request.POST)
+        addrform = AddressForm(request.POST) #home address
         personalform = PersonalForm(request.POST)
         contactform = ContactForm(request.POST)
         miscform = MiscForm(request.POST)
         #propicform = ProPicForm(request.POST, request.FILES)
 
         if addrform.is_valid() and personalform.is_valid() and contactform.is_valid() and miscform.is_valid():
+
+            add1 = addrform.cleaned_data['address_line1']
+            add2 = addrform.cleaned_data['address_line2']
+            city = addrform.cleaned_data['city']
+            state = addrform.cleaned_data['state']
+            zip = addrform.cleaned_data['zip_code']
+            country = addrform.cleaned_data['country']
+            print(country)
+
+            if add1 == '' and add2 == '' and city == '' and state == '' and zip == '' and country == None:
+                try:
+                    shipping_addr = Address.objects.get(user=request.user) # tries to get the user's shipping address because they left the home address form empty
+                except:
+                    messages.info(request, "We don't have a shipping address for you, please give us your home address.")
+                    return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+                else:
+                    home_address = HomeAddress(user=request.user, address_line1=shipping_addr.address_line1, address_line2=shipping_addr.address_line2,
+                                               city=shipping_addr.city, state=shipping_addr.state, zip_code=shipping_addr.zip_code, country=shipping_addr.country)
+
+                    home_address.save()
+                    messages.info(request, "We set your shipping address to also be your home address.")
+            else:
+
+                home_address = HomeAddress(user=request.user, address_line1=add1, address_line2=add2,
+                                           city=city, state=state, zip_code=zip, country=country)
+                                           #try addrform.save() instead of the above code
+                home_address.save()
+
+                try: #if the user completed the home address and doesn't have a shipping address
+                    shipping_address = Address.objects.get(user=request.user) # tries to get the user's shipping address because they left the home address form empty
+                except:
+                    shipping_address = Address(user=request.user, address_line1=add1, address_line2=add2,
+                                           city=city, state=state, zip_code=zip, country=country) #set the shipping address to the home address if the seller does not have a shipping address
+                    shipping_address.save()
+
+
             dob = personalform.cleaned_data['date_of_birth']
             gender = personalform.cleaned_data['gender']
 
             phone = contactform.cleaned_data['phone']
             email = contactform.cleaned_data['email']
 
-            business = miscform.cleaned_data['business']
+            note = miscform.cleaned_data['note']
+
+            if note == None:
+                note = ''
 
             try:
                 profile = Profile.objects.get(user=request.user)
-
             except Profile.DoesNotExist:
                 profile = Profile(user=request.user, date_of_birth=dob,
                                   gender=gender, phone=phone,
-                                  email=email, business=business)
+                                  email=email, note=note, tier="T0")#initially setst the seller tier to tier 0
                 profile.save()
+
+                try:
+                    home_address = get_object_or_404(HomeAddress, user=request.user)
+                    home_address.profile = profile #a profile is set to a shipping address model if the seller did not set his/her homeaddress
+                    home_address.save()
+                except:
+                    pass
+
+                try:
+                    shipping_address = get_object_or_404(Address, user=request.user)
+                    shipping_address.profile = profile
+                    shipping_address.save()
+                except:
+                    pass
 
             else:
                 profile.phone = phone
                 profile.email = email
-                profile.business = business
-
                 profile.save()
+
 
                 customer = get_object_or_404(Customer, user=request.user)
                 customer.seller = True
@@ -240,25 +295,8 @@ def registerseller(request):
                 messages.info(request, "You're already a seller")
                 return redirect('sellerhome')
 
-
-            add1 = addrform.cleaned_data['address_line1']
-            add2 = addrform.cleaned_data['address_line2']
-            city = addrform.cleaned_data['city']
-            state = addrform.cleaned_data['state']
-            zip = addrform.cleaned_data['zip_code']
-            country = addrform.cleaned_data['country']
-            if (add1 and add2 and city and state and zip and country) == None:
-                user_address, created = Address.objects.get_or_create(user=request.user)
-                user_address.profile = profile
-            else:
-                user_address = HomeAddress(user=request.user, profile=profile, address_line1=add1, address_line2=add2,
-                                           city=city, state=state, zip_code=zip, country=country)
-                user_address.save()
-                print(user_address.country)
-
             customer = get_object_or_404(Customer, user=request.user)
             customer.seller = True
-
             customer.save()
 
             return redirect('profilepic')
@@ -366,7 +404,6 @@ def editproduct(request, pk): #make so that only the owner of the product can se
                 details = editform.cleaned_data['details']
                 category = editform.cleaned_data['category']
                 condition = editform.cleaned_data['condition']
-                amt_available = editform.cleaned_data['amt_available']
                 #image = productform.cleaned_data['image']
                 image = request.FILES.get('image')
                 if image not in ['', None]: #if no image is selected
@@ -379,14 +416,14 @@ def editproduct(request, pk): #make so that only the owner of the product can se
                 product.details = details
                 product.category = category
                 product.condition = condition
-                product.amt_available = amt_available
                 product.req_date = datetime.datetime.now()
                 product.re_evaluating = True
                 product.published = False
                 product.verified = False
+                product.edited = True
                 product.save()
 
-                messages.info(request, "Product was successfully updated. Your product will be evaluated and re-published if deemed fit.")
+                messages.info(request, "Product was successfully updated! Your product will be evaluated and re-published if deemed fit.")
                 return redirect('editproduct', pk=pk)
         else:
             messages.info(request, "Don't be sneeky, that's not your product :-P")
@@ -398,8 +435,7 @@ def editproduct(request, pk): #make so that only the owner of the product can se
         editform = EditProduct(initial={'name': '%s' %product.name,
                                         'price': '%s' %product.price,
                                         'details': '%s' %product.details,
-                                        'category':'%s' %product.category,
-                                        'amt_available':'%s' %product.amt_available, })
+                                        'category':'%s' %product.category, })
 
     context = {"profile": seller, "editform": editform, "product": product, "address": addr}
 
@@ -468,7 +504,7 @@ def seller_products(request):
 @authenticated_user
 @is_seller
 @allowed_users(allowed_roles=['seller', 'staff'])
-def restock_products(request):
+def restock(request):
     template = 'seller/restock.html'
 
     user = request.user
@@ -477,7 +513,7 @@ def restock_products(request):
     addr = HomeAddress.objects.get(profile=seller)
 
     if customer.seller == True:
-        products = customer.product_set.all().filter(amt_available__lte=0).order_by('-pub_date')
+        products = customer.product_set.all().filter(available=False).order_by('-pub_date') #amt_available__lte=0,
         paginator = Paginator(products, 6)
 
         page_number = request.GET.get('page')
@@ -485,6 +521,8 @@ def restock_products(request):
         page_obj = paginator.get_page(page_number)
 
         context = {"profile": seller, "page_obj": page_obj, "address": addr}
+    else:
+        return redirect('registerseller')
 
     return render(request, template, context)
 
@@ -555,22 +593,33 @@ def pickup(request):
 @authenticated_user
 @is_seller
 @allowed_users(allowed_roles=['seller', 'staff'])
-def seller_sales(request):
+def seller_sales(response):
     template = 'seller/sales.html'
 
-    user = request.user
+    user = response.user
     customer = get_object_or_404(Customer, user=user)
     seller = get_object_or_404(Profile, user=user)
     solditems = SoldItem.objects.filter(seller=customer).order_by('-purchased_date')
+    seller_products = Product.objects.filter(product_seller=customer)
+
     today = datetime.datetime.today()
     addr = HomeAddress.objects.get(profile=seller)
+
+    paginator = Paginator(solditems, 5)
+
+    page_number = response.GET.get('page')
+
+    page_obj = paginator.get_page(page_number)
+
 
     total = 0
     for item in solditems:
         total += item.total()
 
-    context = {"profile": seller, "order_items": solditems, "total": total, "today": today, "address": addr}
-    return render(request, template, context)
+    context = {"profile": seller, "order_items": solditems, "total": total,
+               "today": today, "address": addr, 'page_obj': page_obj}
+
+    return render(response, template, context)
 
 @authenticated_user
 @is_seller
@@ -619,6 +668,8 @@ def vouch(request, pk):
         seller.save()
 
         tier_points = tierCalc()
+        seller.tier_points = tier_points
+        seller.save()
 
         # this if else block sets the tier the seller should be in based on their tier_points
         if tier_points >= tier3:
@@ -637,3 +688,37 @@ def vouch(request, pk):
         return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
 
     return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+
+
+@authenticated_user
+@is_seller
+@allowed_users(allowed_roles=['seller', 'staff'])
+def restock_product(request, pk):
+    template = "seller/restockproduct.html"
+    product = Product.objects.get(id=pk)
+
+    if request.method == "POST":
+        restockform = Restock(request.POST)
+
+        if restockform.is_valid():
+            amt = restockform.cleaned_data['amt_available']
+            if int(amt) <= 0:
+                messages.info(request, "Invalid quantity!")
+                return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+            else:
+                product.amt_available = amt
+                product.req_date = datetime.datetime.now()
+                product.re_evaluating = True
+                product.published = False
+                product.verified = False
+                product.restocking = True #sent for restocking in AdminVerify
+                product.save()
+                messages.info(request, "Success! Please await stock verification")
+                return redirect('restockproducts')
+
+    else:
+        restockform = Restock(initial={"amt_available": "%s" %product.amt_available})
+
+    context = {"restockform": restockform, "product": product}
+
+    return render(request, template, context)

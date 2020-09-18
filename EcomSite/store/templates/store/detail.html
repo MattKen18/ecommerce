@@ -14,7 +14,7 @@
 
 <div class="detail-page top-options">
   <h6 class="go-back grow-small"><a href="{% url 'store' %}">Return to store&nbsp<i class="fas fa-backward"></i></a></h6>
-  <h6 class="see-in-category grow-small"><a href="{% url 'categories' product.category %}">Find in {{ product.category }}&nbsp<i class="fas fa-search"></i></a></h6>
+  <h6 class="see-in-category grow-small"><a href="{% url 'categories' product.category %}">Find in {{ product.get_category_display }}&nbsp<i class="fas fa-search"></i></a></h6>
 </div>
 <div class="row product-detail-view-holder">
 
@@ -170,6 +170,7 @@
 // let sellerOrders = "{{ sellerorders }}";
   let sellerTier = "{{ seller.tier }}";
   console.log(sellerTier);
+  console.log("{{ seller.tier_points }}");
 </script>
 
 <script src="{% static 'js/tier.js' %}"></script>

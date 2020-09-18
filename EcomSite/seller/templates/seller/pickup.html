@@ -15,8 +15,9 @@
 
 {% block body %}
 
-<h5>Pickup</h5>
-
+<br>
+<h5 class="light-large-heading">PickUp</h5>
+<br>
 {% if messages %}
 {% for message in messages %}
 <p id="message">{{ message }}</p>
@@ -45,7 +46,7 @@
     <br>
   </div>
   <div class="request-pickup-btn-holder">
-    <button class="request-pickup-btn" type="submit" name="button">Request</button>
+    <button class="medium-btn" type="submit" name="button">Request</button>
   </div>
 </form>
 

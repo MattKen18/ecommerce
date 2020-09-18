@@ -43,9 +43,11 @@ INSTALLED_APPS = [
     'seller.apps.SellerConfig',
     'sellerprofile.apps.SellerprofileConfig',
     'adminverify.apps.AdminverifyConfig',
+    'api.apps.ApiConfig',
     'crispy_forms',
     'django_countries',
     'widget_tweaks',
+    'rest_framework',
     #'channels',
     #'chat.apps.ChatConfig',
 ]

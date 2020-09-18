@@ -46,15 +46,17 @@ class ContactForm(forms.ModelForm):
         fields = ['email', 'phone']
         widgets = {'email': forms.EmailInput()}
 
+        labels = {"email": "Business email"}
+
+
 
 class MiscForm(forms.ModelForm):
     class Meta:# add business help text
         model = Profile
-        fields = ['business', 'note']
+        fields = ['note']
         widgets = {'note': forms.Textarea(attrs={"placeholder":"This is the perfect time to lay out your terms...",
                                                  "style": "resize: none;"})}
-        labels = {"business": "Author, Store or Publisher?",
-                  "note":"Seller's Note"}
+        labels = {"note": "Seller's Note"}
 
 
 
@@ -92,7 +94,14 @@ class EditProduct(forms.ModelForm):
     category = forms.ChoiceField(required=False, choices=categories)
     image = forms.ImageField(required=False, widget=forms.ClearableFileInput(attrs={'multiple': True}))
     condition = forms.ChoiceField(required=False, choices=conditions)
-    amt_available = forms.IntegerField(required=False, min_value=1)
     class Meta:
         model = Product
-        fields = [ 'image', 'name', 'price', 'details', 'category', 'condition', 'amt_available']
+        fields = [ 'image', 'name', 'price', 'details', 'category', 'condition']
+
+
+class Restock(forms.ModelForm):
+
+    class Meta:
+        model = Product
+        fields = ['amt_available']
+        labels = {'amt_available': 'Restock To'}

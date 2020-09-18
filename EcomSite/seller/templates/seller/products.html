@@ -25,9 +25,12 @@
 {% block current %}
 <div class="seller-products-heading-toggler">
   <a class="enlarge" href="{% url 'sellerproducts' %}">All</a>
-  <a href="{% url 'restock' %}">Re-Stock</a>
+  <a href="{% url 'restockproducts' %}">Re-Stock</a>
 </div>
 {% endblock current %}
+<br>
+<br>
+<i class="seller-products fas fa-circle"></i> <span style="font-weight: lighter; font-family: Raleway; opacity: 0.7;"> Re-evaluating</span>
 <br>
 <br>
 <div class="row items-container">

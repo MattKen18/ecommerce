@@ -7,11 +7,11 @@
 
 {% block activehead %}
   <a href="{% url 'sellerhome' %}" class="grow">Home</a>
-  <a href="{% url 'createproduct' %}" class="active-seller-heading grow">Submit Product</a>
-  <a href="{% url 'sellerproducts' %}" class="grow">My Products</a>
-  <a href="#" class="grow">My Sales</a>
-  <a href="#" class="grow">Request Pick-up</a>
-  <a href="#" class="grow">Payment Inquiries</a>
+  <a href="{% url 'createproduct' %}" class="grow">Submit Product</a>
+  <a href="{% url 'sellerproducts' %}" class="active-seller-heading grow">My Products</a>
+  <a href="{% url 'sales' %}"class="grow">My Sales</a>
+  <a href="{% url 'pickup' %}" class="grow">Request Pick-up</a>
+  <a href="{% url 'inquiries' %}" class="grow">Payment Inquiries</a>
 {% endblock activehead %}
 
 
@@ -23,7 +23,9 @@
     <p id="message">{{ message }}</p>
   {% endfor %}
   {% else %}
-    <h1>Edit Product</h1>
+    <br>
+    <h1 class="light-large-heading">Edit Product</h1>
+    <br>
 {% endif %}
 
 
@@ -31,11 +33,15 @@
 <div class="edit-product-image-holder">
   <img class="edit-product-image" src="{{ product.imageURL }}" alt="product_image">
 </div>
+<br>
 <form class="create-product-form form-group" action="" method="post" enctype="multipart/form-data">
   {% csrf_token %}
   {{ editform|crispy }}
+  <br>
+  <small style="text-align: center; display: block;"><span style="color: red;">Warning:</span>&nbsp Editing and existing product will subject that product to re-evaluation.</small>
+  <br>
   <div class="submitbt-holder">
-    <button class="btn btn-outline-success create-product-btn" id="submit-product" type="submit" name="button" onclick="this.disabled=true;this.form.submit();">Submit</button>
+    <button class="medium-btn" type="submit" name="button" onclick="this.disabled=true;this.form.submit();">Submit&nbsp<i class="fas fa-history"></i></button>
   </div>
 </form>
 

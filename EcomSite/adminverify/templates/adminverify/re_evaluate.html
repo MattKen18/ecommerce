@@ -29,6 +29,12 @@
 <hr>
 {% endif %}
 
+{% block reevaluate %}
+<div class="adminverify-links">
+  <a class="enlarge" href="{% url 'reevaluate' %}">Edited Products</a>
+  <a href="{% url 'restock' %}">Restocking products</a>
+</div>
+<hr>
 <div class="admin row items-container">
   {% for product in products %}
   <form class="form-group admin-view" action="{% url 'productupdateevaluate' product.id %}" method="post" enctype="multipart/form-data">
@@ -103,4 +109,5 @@
   {% endfor %}
 </div>
 <hr>
+{% endblock reevaluate %}
 {% endblock body %}

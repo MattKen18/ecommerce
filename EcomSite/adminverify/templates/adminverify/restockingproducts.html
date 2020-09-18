@@ -1,0 +1,72 @@
+{% extends 'adminverify/re_evaluate.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Verification{% endblock title %}
+
+{% block body %}
+
+{% block current %}
+  <h1 style="text-align: center;">Product Verification</h1>
+  <small style="text-align: center;"><p>for staff use only</p></small>
+  <br>
+  <div class="adminverify-links">
+    <a href="{% url 'verifynew' %}">New Products</a>
+    <a class="enlarge" href="{% url 'reevaluate' %}">Re-Evaluating Products</a>
+  </div>
+  <hr>
+{% endblock current %}
+
+<br>
+<br>
+{% if messages %}
+{% for message in messages %}
+<p id="message">{{ message }}</p>
+{% endfor %}
+<br>
+<hr>
+{% endif %}
+<br>
+<h3>Re-Evaluating Verification</h3>
+<br>
+<br>
+{% block reevaluate %}
+<div class="adminverify-links">
+  <a href="{% url 'reevaluate' %}">Edited Products</a>
+  <a class="enlarge" href="{% url 'restock' %}">Restocking products</a>
+</div>
+<hr>
+<div class="admin row items-container">
+  {% for product in products %}
+  <form class="form-group admin-view" action="{% url 'updaterestock' product.id %}" method="post">
+    {% csrf_token %}
+    <a class="product-link admin-view">
+      <div class="col-lg-3 product-item admin-view">
+        <p><small>{{ product.req_date }}</small></p>
+        {% if product.product_seller == None %}
+          <p>Seller: <a href="#">ChegBase</a></p>
+        {% else %}
+          <p>Seller: <a href="#">{{product.product_seller}}</a></p>
+        {% endif %}
+
+        <div class="product-item-content">
+          <div class="thumbnail-holder">
+            <img class='thumbnail-img' src="{{ product.imageURL }}">
+          </div>
+          <div class="product-amtavailable">
+            <label for="amt_available">Restock To: &nbsp</label>
+            <input id="amt_available" type="number" name="productavailable" value="{{ product.amt_available }}">
+          </div>
+          <div class="paid-verify-publish-btn-holder">
+            <button class="admin btn btn-outline-success verified-btn unverified">Verify & Re-Publish</button>
+          </div>
+        </div>
+      </div>
+    </a>
+  </form>
+  {% endfor %}
+</div>
+<hr>
+{% endblock reevaluate %}
+
+{% endblock body %}

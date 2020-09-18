@@ -5,16 +5,17 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from seller.models import Profile, HomeAddress
 from .models import *
+from checkout.decorators import has_shipping
 from .decorators import authenticated_user, unauthenticated_user, allowed_users
 # Create your views here.
 
 def store(response):  #order by
     #option to request order of book
     template = 'store/store.html'
-    products = Product.objects.all().filter(published=True, rejected=False, available=True).order_by('-pub_date')
+    products = Product.objects.all().filter(published=True, rejected=False, available=True, amt_available__gt=0).order_by('-pub_date')
     choices = Product._meta.get_field('category').choices
     categories = [choice[1] for choice in choices]
-    sellers = Profile.objects.all()
+    sellers = Profile.objects.all().filter(tier="T3").order_by('-tier_points')[:10]
 
     paginator = Paginator(products, 20)
 
@@ -28,6 +29,8 @@ def store(response):  #order by
 
 
 def store_categories(response, category):  #order by
+    sellers = Profile.objects.all().filter(tier="T3").order_by('-tier_points')[:10]
+
     if category == 'textbook' or category == 'TB':
         template = 'store/store_textbooks.html'
         products = Product.objects.filter(published=True, rejected=False, category='TB').order_by('-pub_date')
@@ -53,7 +56,7 @@ def store_categories(response, category):  #order by
 
     page_obj = paginator.get_page(page_number)
 
-    context = {"products": products, "categories": categories, 'page_obj': page_obj}
+    context = {"products": products, "categories": categories, 'page_obj': page_obj, 'sellers': sellers}
 
     return render(response, template, context)
 
@@ -88,6 +91,30 @@ def detail_page(request, pk):
                "homeaddress": homeaddress, "sellerorders": seller_orders, 'detailproduct': detail_product}
 
     return render(request, template, context)
+
+def search_results(response):
+    template = "store/search_results.html"
+    search_query = response.GET['searchprompt'].strip()
+    if search_query == '':
+        return redirect('store')
+    else:
+        products = Product.objects.all()
+        filtered_products = products.filter(name__icontains=search_query,
+                                            available=True, published=True,
+                                            restocking=False, verified=True,
+                                            paid=True)
+        paginator = Paginator(filtered_products, 5)
+
+        page_number = response.GET.get('page')
+
+        page_obj = paginator.get_page(page_number)
+
+
+
+        context = {"results": filtered_products, "prompt": search_query, 'page_obj': page_obj,}
+
+    return render(response, template, context)
+
 
 @authenticated_user
 def add_to_cart(request, pk):
@@ -135,6 +162,7 @@ def add_to_cart(request, pk):
     return redirect('cart')
 
 @authenticated_user
+@has_shipping
 def single_buy(request, pk):
     product = get_object_or_404(Product, pk=pk)
     customer = get_object_or_404(Customer, user=request.user)
@@ -163,7 +191,7 @@ def single_buy(request, pk):
             single_buy.quantity = detail_single_amt
             single_buy.save()
 
-    return redirect('shipping')
+    return redirect('checkout')
 
 
 @authenticated_user
@@ -232,6 +260,8 @@ def delete_item(request, pk):
     order_item.delete()
     deleted = messages.info(request, "Item removed from cart")
     return redirect('cart')
+
+
 
 
 #def login(request):

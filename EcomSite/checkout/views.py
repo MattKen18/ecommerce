@@ -194,6 +194,8 @@ def paymentComplete(request):
             item_product.amt_sold += item.quantity
             item_product.save()
             item_product.amt_available = total - item_product.amt_sold
+            if item_product.amt_available <= 0:
+                item_product.available = False #restock
             item_product.save()
             SoldItem.objects.create(seller=item.product.product_seller, name=item.product.name,
                                     details=item.product.details, price=item.product.price,
@@ -225,6 +227,8 @@ def paymentComplete(request):
             item_product.amt_sold += item.quantity
             item_product.save()
             item_product.amt_available = total - item_product.amt_sold
+            if item_product.amt_available <= 0:
+                item_product.available = False #restock
             item_product.save()
             SoldItem.objects.create(seller=item.product.product_seller, name=item.product.name,
                                     details=item.product.details, price=item.product.price,

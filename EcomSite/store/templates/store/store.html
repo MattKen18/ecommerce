@@ -3,7 +3,8 @@
 
 <link rel="stylesheet" type='text/css' href="{% static 'css/main.css' %}">
 {% block carousel %}
-  <div style="transition: all .2s ease-in-out;" id="carouselExampleIndicators" class="carousel-container carousel slide" data-ride="carousel" data-interval="10000" data-pause="false">
+{% if sellers %}
+  <div style="transition: all .2s ease-in-out;" id="carouselExampleIndicators" class="carousel-container carousel slide undo-trans" data-ride="carousel" data-interval="10000" data-pause="false">
     <!--<ol class="carousel-indicators">
       <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
       <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
@@ -56,22 +57,34 @@
     </a>
   </div>
   <br>
+{% else %}
+  <div class="chegbase-banner-holder">
+    <div class="chegbase-banner-inner">
+      <h1 class="banner-text">Chegbase</h1>
+    </div>
+  </div>
+  <br>
+  <br>
+  <br>
+{% endif %}
 {% endblock carousel %}
-
 
 {% block content %}
 {% block body %}
+
+{% block activecat %}
 <div class="categories">
-  <div class="categories-options heading-introduce">
+<!--  <div class="categories-options heading-introduce">
     <strong>Categories: </strong>
-  </div>
+  </div>-->
   <div class="categories-options">
-    <p class="categories-options-items grow"><a href="{% url 'store'  %}" class="categories-links-btn">all</a></p>
+    <a href="{% url 'store'  %}" class="categories-links-btn grow-medium activecat"><p class="categories-options-items">all</p></a>
     {% for category in categories %}
-      <p class="categories-options-items grow"><a href="{% url 'categories' category %}" class="categories-links-btn">{{ category }}s</a></p>
+      <a href="{% url 'categories' category %}" id="cat-{{ forloop.counter0 }}" class="categories-links-btn grow-medium"><p class="categories-options-items">{{ category }}s</p></a>
     {% endfor %}
   </div>
 </div>
+{% endblock activecat %}
 <br>
 <hr>
 <br>
@@ -129,6 +142,18 @@
     </span>
   </div>
 </div>
-
+Icons made by <a href="https://www.flaticon.com/authors/pixel-perfect" title="Pixel perfect">Pixel perfect</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
+<div>Icons made by <a href="https://www.flaticon.com/authors/icongeek26" title="Icongeek26">Icongeek26</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
+Icons made by <a href="http://www.freepik.com/" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
+Icons made by <a href="https://www.flaticon.com/authors/good-ware" title="Good Ware">Good Ware</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
+Icons made by <a href="https://icon54.com/" title="Pixel perfect">Pixel perfect</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
+<div>Icons made by <a href="http://www.freepik.com/" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
+Icons made by <a href="https://www.flaticon.com/free-icon/loupe_875623" title="Kiranshastry">Kiranshastry</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
 {% endblock body %}
 {% endblock content %}
+
+{% block space %}
+  <div class="space" style="height: 200px;">
+{% endblock space %}
