@@ -80,6 +80,10 @@ class CreateProductForm(forms.ModelForm):
         model = Product
         fields = ['name', 'price', 'details', 'category', 'image', 'condition', 'amt_available']
 
+class AddPrimaryImage(forms.Form):
+    image = forms.ImageField(required=True)
+
+
 class AddSecondaryImages(forms.ModelForm):
     image = forms.ImageField(required=True, widget=forms.ClearableFileInput(attrs={'multiple': True}))
 

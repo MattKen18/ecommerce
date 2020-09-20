@@ -1,6 +1,6 @@
 {% extends 'store/main.html' %}
 {% load static %}
-{% block title %} MyCart {% endblock %}
+{% block title %} Cart {% endblock %}
 {% block active %}
   <div class="form-inline right left-content mr-auto">
     <ul class="navbar-nav">
@@ -36,22 +36,23 @@
 {% endif %}
 <br>
 <br>
-
-<div class="row row-heading element-container">
-  <div class="col-lg-4 cart-btn cart-go-back">
-    <a class="btn btn-outline-secondary cart-heading" href="{% url 'store' %}">Continue Shopping</a>
+<div class="cart-headings-holder">
+  <div class="cart-heading continue-shopping">
+    <a href="{% url 'store' %}">&#8592; Continue Shopping</a>
   </div>
-  <div class="col-lg-4 cart-total">
-    <p>Cart Total: ${{ total|floatformat:2 }} USD</p>
+  <div class="cart-heading cart-total">
+    <p>Total: <span>${{ total|floatformat:2 }} JMD</span></p>
   </div>
-  <div class="col-lg-4 cart-btn cart-go-to-checkout">
-    <a class="btn btn-outline-primary cart-heading" href="{% url 'checkout' %}"><p>Checkout</p></a>
+  <div class="cart-heading checkout">
+    <p class="grow"><a href="{% url 'checkout' %}">Checkout</a></p>
   </div>
 </div>
 <hr>
+{% if cart %}
 <div class="row cart-content">
   {% for item in cart%}
     <div class="element-container cart-item">
+      <span class="delete-cart-item-x"><a href="{% url 'deleteitem' item.id %}">&#xd7</a></span>
       <div class="cart-product product-image">
         <div class="product-image-holder">
           <a class="link-to-product" href="{% url 'detail' item.product.id %}">
@@ -63,8 +64,12 @@
         <div class="cart-product-name">
           <p>{{ item.product.name }}</p>
         </div>
-        <div class="cart-product-price">
-          <p>Price: <span class="cart-product-price-span">${{ item.product.price }} USD</span></p>
+        <div class="cart-product-details">
+          <p>{{ item.product.details }}</p>
+        </div>
+        <div class="cart-product-price-seller-holder">
+          <p class="cart-product-price"><span class="cart-product-price-span">${{ item.product.price }} USD</span></p>
+          <a href="#" class="cart-product-seller grow"><p>{{ item.product.product_seller }}</p></a>
         </div>
       </div>
       <div class="cart-product cdetail product-quantity">
@@ -80,63 +85,28 @@
 
       </div>
       <div class="cart-product cdetail product-price">
-        <p>= ${{ item.total|floatformat:2 }} USD</p>
+        <div class="cost-calculate-display">
+          <p class="cart-product-price-calculate"><span class="cart-product-price-span">${{ item.product.price }}</span>&nbsp&#xd7&nbsp{{ item.quantity }}</p>
+          <p class="cart-product-price-full">${{ item.total|floatformat:2 }} JMD</p>
+        </div>
       </div>
 
     </div>
     <br>
   {% endfor %}
 </div>
-<!--
-<div class="row">
-  <div class="col-lg-12">
-    <div class="box-element table-responsive">
-      <a class= "btn btn-outline-secondary" onclick="history.back()">&#8592; Continue Shopping</a>
-      <br>
-      <hr>
+{% else %}
+<br>
+<br>
+<div class="empty-cart notice">
+  <h3>No items in cart</h3>
+</div>
+{% endif %}
+{% block space %}
+<div class="" style="height: 100px;">
 
-      <table class='table'>
-        <tr>
-          <th>Items: {{ items }}</th>
-          <th>Total: ${{ total|floatformat:2 }}</th>
-          <th style="float: right;"><a class='btn btn-outline-success' href="{% url 'shipping' %}">Checkout</a></th>
-        </tr>
-      </table>
-    </div>
-
-    <br>
-
-    <div class="box-element">
-        <div class="cart-row heading-holder">
-          <div class="cart-row-heading" style="flex: 1;"></div>
-          <div class="cart-row-heading" style="flex: 2;"><strong>Item</strong></div>
-          <div class="cart-row-heading" style="flex: 1;"><strong>Price</strong></div>
-          <div class="cart-row-heading" style="flex: 1;"><strong>Quantity</strong></div>
-          <div class="cart-row-heading" style="flex: 1;"><strong>Total</strong></div>
-        </div>
-        <hr>
-        {% for item in cart %}
-        <div class="cart-row item-row">
-          <div class="cart-row item thumb-img" style="flex: 1;"><img class="item-thumb" src="{{ item.product.imageURL }}"></div>
-          <div class="cart-row item product-text" style="flex: 2;"><p class="item-details name">{{ item }}</p></div>
-          <div class="cart-row item product-price" style="flex: 1;"><p class="item-details price">${{ item.product.price|floatformat:2 }}</p></div>
-          <div class="cart-row item product-quantity" style="flex: 1;">
-            <form id="input" class="form-inline my-2 my-lg-0 chg-quantity chg-form" action="{% url 'changeqty' item.id %}" method="post">
-              {% csrf_token %}
-              <input class="chg-quantity qty-input" type="number" name="item_quantity" value="{{ item.quantity }}" />
-              <a class="submit-qty-chg yes" type="submit" name="reload" onclick="reload()"><button type="submit"><i class="submit-qty-chg far fa-check-circle grow yes"></i></button></a>
-              <a class="submit-qty-chg no" href="{% url 'deleteitem' item.id %}" title="Delete"><i class="submit-qty-chg far fa-times-circle grow no"></i></a>
-            </form>
-            <!--<p class="item-details item-amt">{{ item.quantity }}</p>
-          </div>
-          <div class="cart-row item product-total-price" style="flex: 1;"><p class="item-details total">${{ item.total|floatformat:2 }}</p></div>
-        </div>
-        <hr>
-        {% endfor %}
-    </div>
-
-  </div>
-</div>-->
+</div>
+{% endblock space%}
 
 <script type="text/javascript">
 

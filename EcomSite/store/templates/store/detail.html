@@ -13,7 +13,7 @@
 {% endif %}
 
 <div class="detail-page top-options">
-  <h6 class="go-back grow-small"><a href="{% url 'store' %}">Return to store&nbsp<i class="fas fa-backward"></i></a></h6>
+  <h6 class="go-back grow-small"><a href="{% url 'store' %}">Return to Store&nbsp<i class="fas fa-backward"></i></a></h6>
   <h6 class="see-in-category grow-small"><a href="{% url 'categories' product.category %}">Find in {{ product.get_category_display }}&nbsp<i class="fas fa-search"></i></a></h6>
 </div>
 <div class="row product-detail-view-holder">
@@ -64,9 +64,9 @@
           <div class="detail-container-upper inner">
             <div class="detail product-seller">
               {% if product.product_seller == None %}
-              <p>By <a href="#">Ecom</a></p>
+              <p>From <a href="#">Ecom</a></p>
               {% else %}
-              <p>By <a href="#">{{product.product_seller}}</a></p>
+              <p>From <a href="#">{{product.product_seller}}</a></p>
               {% endif %}
             </div>
             <div class="detail product-details-holder">

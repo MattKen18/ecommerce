@@ -20,6 +20,14 @@
 {% for message in messages %}
 <p id="message">{{ message }}</p>
 {% endfor %}
+<br>
+<br>
+{% endif %}
+
+{% if created %}
+  <p></p>
+  <br>
+  <br>
 {% endif %}
 
 
@@ -31,15 +39,16 @@
       {% csrf_token %}
       {{ productform|crispy }}
       <br>
-      <div class="submitbt-holder">
-        <button class="medium-btn" id="submit-product" type="submit" name="button" onclick="this.disabled=true;this.form.submit();">Submit&nbsp <i class="fas fa-upload"></i></button>
-      </div>
+      {% if not created %}
+        <div class="submitbt-holder">
+          <button class="medium-btn" id="submit-product" type="submit" name="button" onclick="this.disabled=true;this.form.submit();">Submit&nbsp <i class="fas fa-upload"></i></button>
+        </div>
+      {% endif %}
 
       {% if created %}
-        <script>deactivate()</script>
         <br>
         <div class="submitbt-holder">
-          <a class="btn btn-outline-success create-product-btn" href="{% url 'addimages' %}">Add Images</a>
+          <a class="medium-btn" href="{% url 'addimages' %}">Add Images</a>
         </div>
         <hr>
         <div id="paypal-button-container" style="display: block;"></div>
@@ -50,6 +59,7 @@
     </form>
   </div>
 </div>
+
 
 <script>
   function deactivate(){

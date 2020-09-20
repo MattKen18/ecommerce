@@ -360,7 +360,7 @@ def create_product(request):
             #image = productform.cleaned_data['image']
             image = request.FILES.get('image')
 
-            product_seller, created = Customer.objects.get_or_create(user=user)
+            product_seller = get_object_or_404(Customer, user=user)
 
             product = Product(product_seller=product_seller, name=name, price=price,
                           details=details, category=category, req_date=datetime.datetime.now(),
@@ -368,6 +368,7 @@ def create_product(request):
             product.save()
             product_created = True
             created_product_success = messages.info(request, 'Product successfully created')
+            return redirect('addimages', product.id, "view")
             #return redirect('addimages')#'sellerhome')
 
     else:
@@ -475,7 +476,7 @@ def seller_paid(request):
     product.paid = True
     product.save()
 
-    return redirect('addimages')
+    return redirect('addimages', product.id, "view")
 
 @authenticated_user
 @is_seller
@@ -529,33 +530,49 @@ def restock(request):
 @authenticated_user
 @is_seller
 @allowed_users(allowed_roles=['seller', 'staff'])
-def add_images(request):
+def add_images(request, pk, mode):
     template = 'seller/addimages.html'
     customer = Customer.objects.get(user=request.user)
     seller_products = Product.objects.filter(product_seller=customer)
     user = request.user
     seller = get_object_or_404(Profile, user=user)
     addr = HomeAddress.objects.get(profile=seller)
-
+    product = Product.objects.get(id=pk) #the product just created by the create product view
+    product_sec_images = ProductImages.objects.filter(product=product) #secondary images for the product
 
     if request.method == 'POST':
         imagesform = AddSecondaryImages(request.POST, request.FILES)
+        primageform = AddPrimaryImage(request.POST, request.FILES)
 
-        if imagesform.is_valid():
-            product_id = request.POST['productchoice']
-            product = Product.objects.get(pk=product_id)
+        if mode == "secondary":
+            if imagesform.is_valid():
 
-            image = request.FILES.get('image')
+                image = request.FILES.get('image')
+                extraimages, created = ProductImages.objects.get_or_create(product=product, image=image)
+                product.edited = True
+                product.published = False
+                messages.info(request, 'Secondary Image added')
+                return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+        elif mode == "primary":
+            if primageform.is_valid():
 
-            extraimages, created = ProductImages.objects.get_or_create(product=product, image=image)
+                image = request.FILES.get('image')
+                product.image = image
+                product.save()
+                product.edited = True
+                product.published = False
+                messages.info(request, 'Primary image updated')
+                return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
 
-            images_updated = messages.info(request, 'images updated')
-            return redirect('addimages')
+        else:
+            pass
 
     else:
         imagesform = AddSecondaryImages()
-
-    context = {"profile": seller, 'imagesform': imagesform, 'userproducts': seller_products, "address": addr}
+        primageform = AddPrimaryImage()
+    context = {"profile": seller, 'imagesform': imagesform, 'userproducts': seller_products,
+               "address": addr, "secondaryimages": product_sec_images, "product": product,
+               "primageform": primageform}
     return render(request, template, context)
 
 
