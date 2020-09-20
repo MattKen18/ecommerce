@@ -81,7 +81,7 @@ class CreateProductForm(forms.ModelForm):
         fields = ['name', 'price', 'details', 'category', 'image', 'condition', 'amt_available']
 
 class AddPrimaryImage(forms.Form):
-    image = forms.ImageField(required=True)
+    primaryimage = forms.ImageField(required=True)
 
 
 class AddSecondaryImages(forms.ModelForm):

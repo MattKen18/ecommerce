@@ -1384,7 +1384,7 @@ span.cart-product-price-span {
 
 .cart-product-name p {
   font-size: 25px;
-  font-weight: 400;
+  font-weight: 300;
   height: auto;
   min-height: 50px;
   max-height: 100px;
@@ -1403,7 +1403,7 @@ span.cart-product-price-span {
   font-weight: lighter;
   font-size: 17px;
   padding: 5px;
-  opacity: 0.8;
+  opacity: 0.7;
   text-align: left;
 
 }
@@ -1764,6 +1764,82 @@ img.hand-wave {
 
 .create-product-form .form-group div {
   flex: 4;
+}
+
+
+.product-addimages-view {
+  display: flex;
+  height: auto;
+}
+
+.image-type-heading-holder {
+  text-align: center;
+}
+
+.image-type-heading-holder h6 {
+  font-weight: 400;
+}
+
+.image-holder {
+  width: 150px;
+  height: 200px;
+}
+
+.image-holder img {
+  width: inherit;
+  height: inherit;
+}
+
+.product-add-image {
+  border: 2px solid lightgrey;
+  padding: 10px;
+}
+
+.product-add-image.primary-view {
+  margin-right: 20px;
+}
+
+.secondary-image-holder {
+  display: flex;
+  flex-direction: row;
+  overflow-x: scroll;
+  height: 90%;
+}
+
+.product-add-image.secondary-view {
+  width: 70%;
+}
+
+.product-add-image.secondary-view .image-holder {
+  margin-right: 10px;
+  width: 120px;
+  height: 160px
+}
+
+.image-holder.secondary-image {
+  display: flex;
+  flex-direction: column;
+}
+
+a.delete-secondary-image {
+  background-color: white;
+  border: 1px solid transparent;
+  color: black;
+  text-align: center;
+  transition: all .1s ease-in-out;
+  font-size: 12px;
+}
+
+a.delete-secondary-image::after {
+  content: " \f1f8";
+  font-family: "FontAwesome";
+}
+
+a.delete-secondary-image:hover {
+  text-decoration: none;
+  background-color: #F36969;
+  border: 1px solid #F36969;
+  color: white;
 }
 
 .addimages-label {

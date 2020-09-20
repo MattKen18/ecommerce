@@ -556,7 +556,7 @@ def add_images(request, pk, mode):
         elif mode == "primary":
             if primageform.is_valid():
 
-                image = request.FILES.get('image')
+                image = request.FILES.get('primaryimage')
                 product.image = image
                 product.save()
                 product.edited = True
