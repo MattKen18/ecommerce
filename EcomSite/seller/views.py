@@ -13,6 +13,7 @@ from .decorators import not_seller, is_seller
 from .models import *
 from django.http import JsonResponse
 import json
+from store.context_processors import FEE
 
 
 # Create your views here.
@@ -470,6 +471,17 @@ def delete_product(request, pk):
 @authenticated_user
 @is_seller
 @allowed_users(allowed_roles=['seller', 'staff'])
+def product_payment(request, pk):
+    template = "seller/productpay.html"
+    product = get_object_or_404(Product, id=pk)
+    total = product.amt_available * FEE #payment fee of ChegBase ($100 JMD)
+
+    context = {"product": product, "total": total}
+    return render(request, template, context)
+
+@authenticated_user
+@is_seller
+@allowed_users(allowed_roles=['seller', 'staff'])
 def seller_paid(request):
     body = json.loads(request.body)
     product = get_object_or_404(Product, id=body['product_id'])
@@ -539,6 +551,7 @@ def add_images(request, pk, mode):
     addr = HomeAddress.objects.get(profile=seller)
     product = Product.objects.get(id=pk) #the product just created by the create product view
     product_sec_images = ProductImages.objects.filter(product=product) #secondary images for the product
+    paystream = False #if accessing from create product to add images then this would be True
 
     if request.method == 'POST':
         imagesform = AddSecondaryImages(request.POST, request.FILES)
@@ -551,6 +564,7 @@ def add_images(request, pk, mode):
                 extraimages, created = ProductImages.objects.get_or_create(product=product, image=image)
                 product.edited = True
                 product.published = False
+                product.save()
                 messages.info(request, 'Secondary Image added')
                 return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
         elif mode == "primary":
@@ -558,22 +572,33 @@ def add_images(request, pk, mode):
 
                 image = request.FILES.get('primaryimage')
                 product.image = image
-                product.save()
                 product.edited = True
                 product.published = False
+                product.save()
                 messages.info(request, 'Primary image updated')
                 return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
 
-        else:
-            pass
+        elif mode == "paystream":
+            paystream = True
 
     else:
         imagesform = AddSecondaryImages()
         primageform = AddPrimaryImage()
     context = {"profile": seller, 'imagesform': imagesform, 'userproducts': seller_products,
                "address": addr, "secondaryimages": product_sec_images, "product": product,
-               "primageform": primageform}
+               "primageform": primageform, "paystream": paystream}
     return render(request, template, context)
+
+
+@authenticated_user
+@is_seller
+@allowed_users(allowed_roles=['seller', 'staff'])
+def delete_image(request, pk):
+    image = ProductImages.objects.get(id=pk)
+    image.delete()
+
+    messages.info(request, 'Secondary Image removed')
+    return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
 
 
 @authenticated_user

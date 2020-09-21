@@ -3,6 +3,8 @@ from django.shortcuts import get_object_or_404
 from .models import *
 from seller.models import Profile
 
+FEE = 100 #cost per item (product fee)
+
 def send_to_main(request): #use this to add context variables available to all templates
     template = 'store/main.html'
     user = request.user
@@ -20,9 +22,9 @@ def send_to_main(request): #use this to add context variables available to all t
 
         if customer.seller == True:
             profile  = get_object_or_404(Profile, user=user)
-            context = {"cart": cart_order_items, "cartquantity": total_items, "profile": profile, "cart_total": cart_total}
+            context = {"fee": FEE, "cart": cart_order_items, "cartquantity": total_items, "profile": profile, "cart_total": cart_total}
         else:
-            context = {"cart": cart_order_items, "cartquantity": total_items, "cart_total": cart_total}
+            context = {"fee": FEE, "cart": cart_order_items, "cartquantity": total_items, "cart_total": cart_total}
 
         return context
     else:
