@@ -22,12 +22,14 @@
 {% endblock active %}
 {% block content %}
 
+
 {% if isseller == False %}
 <p>I see you're not a seller. <a href="{% url 'registerseller' %}">Register</a> to become an official seller</p>
 <h3>What's a seller?</h3>
 <h3>Why become a seller?</h3>
 
 {% else %}
+
   <br>
   <br>
   <div class="row">
@@ -90,6 +92,11 @@
           </div>
           <hr>
           {% block body %}
+            {% if messages %}
+            {% for message in messages %}
+            <p id="message">{{ message }}</p>
+            {% endfor %}
+            {% endif %}
           {% endblock body%}
         </div>
       </div>

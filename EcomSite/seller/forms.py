@@ -72,7 +72,7 @@ class CreateProductForm(forms.ModelForm):
     price = forms.FloatField(min_value=1)
     details = forms.CharField(max_length=200, help_text="e.g. The Hate You Give hardcover by Angie Thomas 2 years old. ")
     category = forms.ChoiceField(choices=categories)
-    image = forms.ImageField(required=False, widget=forms.ClearableFileInput(attrs={'multiple': True}))
+    image = forms.ImageField(required=False)
     condition = forms.ChoiceField(choices=conditions)
     amt_available = forms.IntegerField(min_value=1)
 
@@ -85,7 +85,7 @@ class AddPrimaryImage(forms.Form):
 
 
 class AddSecondaryImages(forms.ModelForm):
-    image = forms.ImageField(required=True, widget=forms.ClearableFileInput(attrs={'multiple': True}))
+    image = forms.ImageField(required=True)
 
     class Meta:
         model = ProductImages

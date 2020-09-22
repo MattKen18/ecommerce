@@ -66,7 +66,7 @@
   <div class="payment-amt-container">
     <h5>Your total Payment Fee:</h5>
     <br>
-    <p class="product-calc">${{ fee }} &#215; {{ product.amt_available }} items</p>
+    <p class="product-calc">${{ fee }} &#215; {{ product.amt_available }} item{{ product.amt_available|pluralize }}</p>
     <p class="payment-amt">${{ total }} JMD</p>
   </div>
 </div>
@@ -134,7 +134,7 @@
           return actions.order.create({
               purchase_units: [{
                   amount: {
-                      value: total * fee
+                      value: {{ total }}
                   }
               }]
           });

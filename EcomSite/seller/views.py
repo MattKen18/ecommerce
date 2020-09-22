@@ -369,7 +369,7 @@ def create_product(request):
             product.save()
             product_created = True
             created_product_success = messages.info(request, 'Product successfully created')
-            return redirect('addimages', product.id, "view")
+            return redirect('addimages', product.id, "paystream")
             #return redirect('addimages')#'sellerhome')
 
     else:
@@ -473,8 +473,19 @@ def delete_product(request, pk):
 @allowed_users(allowed_roles=['seller', 'staff'])
 def product_payment(request, pk):
     template = "seller/productpay.html"
+    customer = get_object_or_404(Customer, user=request.user)
     product = get_object_or_404(Product, id=pk)
-    total = product.amt_available * FEE #payment fee of ChegBase ($100 JMD)
+    seller_products = Product.objects.filter(product_seller=customer)
+    info = ''
+    if product in seller_products:
+        if product.paid == True:
+            info = messages.info(request, "Payment fee for product is already paid.")
+            return redirect("sellerhome")
+        else:
+            total = product.amt_available * FEE #payment fee of ChegBase ($100 JMD)
+    else:
+        info = messages.info(request, "That's not your product!")
+        return redirect('sellerhome')
 
     context = {"product": product, "total": total}
     return render(request, template, context)
@@ -577,13 +588,17 @@ def add_images(request, pk, mode):
                 product.save()
                 messages.info(request, 'Primary image updated')
                 return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
-
-        elif mode == "paystream":
-            paystream = True
-
     else:
         imagesform = AddSecondaryImages()
         primageform = AddPrimaryImage()
+        if mode == "paystream":
+            paystream = True
+        elif mode == "modify":
+            pass #if the page is being visited from seller page
+        else:
+            return redirect("sellerhome")
+
+
     context = {"profile": seller, 'imagesform': imagesform, 'userproducts': seller_products,
                "address": addr, "secondaryimages": product_sec_images, "product": product,
                "primageform": primageform, "paystream": paystream}
