@@ -22,63 +22,66 @@
 <p id="message">{{ message }}</p>
 {% endfor %}
 {% else %}
-<h1 class="light-large-heading">Product Payment</h1>
+<h1 class="light-large-heading" id="paysuccess">Product Payment</h1>
 <br>
 <br>
 {% endif %}
 
-<div class="product-payment-view">
-  <div class="payment-product-view product-payment-image">
-    <div class="payment-inner-image-holder">
-      <div class="payment-image-holder">
-        <img src="{{ product.imageURL }}" alt="">
+
+<div class="payment-container" id="payment-container">
+  <div class="product-payment-view" id="paymentview">
+    <div class="payment-product-view product-payment-image">
+      <div class="payment-inner-image-holder">
+        <div class="payment-image-holder">
+          <img src="{{ product.imageURL }}" alt="">
+        </div>
+      </div>
+    </div>
+    <div class="payment-product-view product-payment-name">
+      <div class="payment-inner-holder">
+        <p class="payment-inner-heading">Title:</p>
+        <p class="payment-inner-info">{{ product.name }}</p>
+      </div>
+    </div>
+    <div class="payment-product-view product-payment-details">
+      <div class="payment-inner-holder">
+        <p class="payment-inner-heading">Details:</p>
+        <p class="payment-inner-info">{{ product.details }}</p>
       </div>
     </div>
   </div>
-  <div class="payment-product-view product-payment-name">
-    <div class="payment-inner-holder">
-      <p class="payment-inner-heading">Title:</p>
-      <p class="payment-inner-info">{{ product.name }}</p>
-    </div>
-  </div>
-  <div class="payment-product-view product-payment-details">
-    <div class="payment-inner-holder">
-      <p class="payment-inner-heading">Details:</p>
-      <p class="payment-inner-info">{{ product.details }}</p>
-    </div>
-  </div>
-</div>
-<br>
-<hr>
-<br>
-<div class="payment-info-details">
-  <p class="payment-info-tell">For a product to be verified and published a <mark>non-refundable</mark> payment fee of
-    ${{ fee }} JMD per available items of your product must be paid i.e. the total
-    payment fee of a product with 5 available items (stock) would be 5 &#215; {{ fee }} =
-    $<span id="totalcostex"></span> JMD. Please select a suitable payment option below.
-    As soon as payment is received the product verification process will begin.
-  </p>
   <br>
-  <p class="payment-info-tell"><span style="color: red;"><i class="fas fa-exclamation-triangle"></i></span> Proceed only
-    if you are sure and willing to pay the non-refundable payment fee.
-  </p>
+  <hr>
   <br>
-  <div class="payment-amt-container">
-    <h5>Your total Payment Fee:</h5>
+  <div class="payment-info-details">
+    <p class="payment-info-tell">For a product to be verified and published a <mark>non-refundable</mark> payment fee of
+      ${{ fee }} JMD per available item of your product must be paid i.e. the total
+      payment fee of a product with 5 available items (stock) would be 5 &#215; {{ fee }} =
+      $<span id="totalcostex"></span> JMD. Please select a suitable payment option below.
+      As soon as payment is received the product verification process will begin.
+    </p>
     <br>
-    <p class="product-calc">${{ fee }} &#215; {{ product.amt_available }} item{{ product.amt_available|pluralize }}</p>
-    <p class="payment-amt">${{ total }} JMD</p>
+    <p class="payment-info-tell"><span style="color: red;"><i class="fas fa-exclamation-triangle"></i></span> Proceed only
+      if you are sure and willing to pay the non-refundable payment fee.
+    </p>
+    <br>
+    <div class="payment-amt-container">
+      <h5>Your total Payment Fee:</h5>
+      <br>
+      <p class="product-calc">${{ fee }} &#215; {{ product.amt_available }} item{{ product.amt_available|pluralize }}</p>
+      <p class="payment-amt">${{ total }} JMD</p>
+    </div>
   </div>
-</div>
-<br>
-<br>
-<div class="payment-view-payment-holder">
-  <h6 class="light-medium-heading">Payment Options:</h6>
   <br>
-  <div id="paypal-button-container"></div>
+  <br>
+  <div class="payment-view-payment-holder">
+    <h6 class="light-medium-heading">Payment Options:</h6>
+    <br>
+    <div id="paypal-button-container"></div>
+  </div>
+  <br>
+  <br>
 </div>
-<br>
-<br>
 
 <script src="https://www.paypal.com/sdk/js?client-id=Afsx3QmWygAjv6jlgNdeziMPx42M3IEJd61E-enTff0qsAlYfZJHXOqsv-nv8c7ZcVBRF5mZongj0Zoa&currency=USD&disable-funding=credit"></script>
 
@@ -145,7 +148,8 @@
           return actions.order.capture().then(function(details) {
               // Show a success message to the buyer
               sellerPaid()
-              alert('Transaction completed by ' + details.payer.name.given_name + '!');
+              document.getElementById("payment-container").style.display = "none";
+              document.getElementById("paysuccess").innerHTML = "Payment Successful!";
           });
       }
 

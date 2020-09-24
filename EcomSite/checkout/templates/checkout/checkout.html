@@ -83,36 +83,40 @@ these items.</p>
         </div>
         {% endfor %}
         {% else %}
-        {% for item in order_items %}
-        <div class="order-item">
+          {% if not empty %}
+            {% for item in order_items %}
+              <div class="order-item">
 
-          <div class="cart-row item thumb-img order">
-            <img class="item-thumb order" src="{{ item.product.imageURL }}">
-          </div>
-          <div class="order-item-details">
-            <div class="order-item-name">
-              <p>{{ item.product.name }}</p>
-            </div>
-            <div class="order-item-quantity">
-              <form id="input" class="form-inline my-2 my-lg-0 chg-quantity chg-form" action="{% url 'checkoutchangeqty' item.id 'cart' %}" method="post">
-                {% csrf_token %}
-                <input id="itemquantity" class="chg-quantity qty-input" type="number" name="item_quantity" value="{{ item.quantity }}" />
-                <a class="submit-qty-chg yes" type="submit" name="reload" onclick="reload()"><button type="submit"><i class="submit-qty-chg far fa-check-circle grow yes"></i></button></a>
-              </form>
-              <div class="seller-info">
-                <p>from <a href="#">{{ item.product.product_seller }}</a></p>
+                <div class="cart-row item thumb-img order">
+                  <img class="item-thumb order" src="{{ item.product.imageURL }}">
+                </div>
+                <div class="order-item-details">
+                  <div class="order-item-name">
+                    <p>{{ item.product.name }}</p>
+                  </div>
+                  <div class="order-item-quantity">
+                    <form id="input" class="form-inline my-2 my-lg-0 chg-quantity chg-form" action="{% url 'checkoutchangeqty' item.id 'cart' %}" method="post">
+                      {% csrf_token %}
+                      <input id="itemquantity" class="chg-quantity qty-input" type="number" name="item_quantity" value="{{ item.quantity }}" />
+                      <a class="submit-qty-chg yes" type="submit" name="reload" onclick="reload()"><button type="submit"><i class="submit-qty-chg far fa-check-circle grow yes"></i></button></a>
+                    </form>
+                    <div class="seller-info">
+                      <p>from <a href="#">{{ item.product.product_seller }}</a></p>
+                    </div>
+                  </div>
+                  <div class="order-item-price">
+                    <p> Total: ${{ item.total|floatformat:2 }} </p>
+                  </div>
+                </div>
+                <div class="x-icon-holder">
+                  <a href="{% url 'deletecartitem' item.id 'cart' %}"><i class="fas fa-times"></i></a>
+                </div>
               </div>
-            </div>
-            <div class="order-item-price">
-              <p> Total: ${{ item.total|floatformat:2 }} </p>
-            </div>
-          </div>
-          <div class="x-icon-holder">
-            <a href="{% url 'deletecartitem' item.id 'cart' %}"><i class="fas fa-times"></i></a>
-          </div>
-        </div>
-        <br>
-        {% endfor %}
+              <br>
+            {% endfor %}
+          {% else %}
+          <h6 id="message"> No items in cart </h6>
+          {% endif %}
         {% endif %}
       </div>
     </div>
@@ -148,10 +152,18 @@ these items.</p>
           <div class="payment-heading">
             <p class="checkout-heading"> Payment Options </p>
           </div>
-              <div id="paypal-holder">
-                <div id="paypal-button-container" onmouseover="ishovered()" onmouseout="unhovered()"></div>
-                <div id="paypal-refreshbtn"></div>
-              </div>
+          {% if not empty %}
+            <div id="paypal-holder">
+              <div id="paypal-button-container" onmouseover="ishovered()" onmouseout="unhovered()"></div>
+              <div id="paypal-refreshbtn"></div>
+            </div>
+          {% else %}
+            <div id="paypal-holder" style="display: none;">
+              <div id="paypal-button-container" onmouseover="ishovered()" onmouseout="unhovered()"></div>
+              <div id="paypal-refreshbtn"></div>
+            </div>
+            <h3 class="light-small-heading" style="color: green;">Add items to your cart to view payment options.</h3>
+          {% endif %}
         </div>
       </div>
     </div>
@@ -244,8 +256,6 @@ these items.</p>
     const csrftoken = getCookie('csrftoken');
 
 
-    var total = "{{ cart_total|floatformat:2 }}"
-
     function completeOrder() {
       var url = "{% url 'complete' %}"
 
@@ -273,7 +283,7 @@ these items.</p>
             return actions.order.create({
                 purchase_units: [{
                     amount: {
-                        value: total
+                        value: {{ cart_total|floatformat:2 }}
                     }
                 }]
             });

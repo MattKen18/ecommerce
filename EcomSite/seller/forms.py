@@ -68,9 +68,8 @@ class ProPicForm(forms.ModelForm):
 
 
 class CreateProductForm(forms.ModelForm):
-    name = forms.CharField(max_length=200, label="Title")
     price = forms.FloatField(min_value=1)
-    details = forms.CharField(max_length=200, help_text="e.g. The Hate You Give hardcover by Angie Thomas 2 years old. ")
+    #details = forms.CharField(max_length=150, help_text="e.g. The Hate You Give hardcover by Angie Thomas 2 years old. ")
     category = forms.ChoiceField(choices=categories)
     image = forms.ImageField(required=False)
     condition = forms.ChoiceField(choices=conditions)
@@ -79,6 +78,8 @@ class CreateProductForm(forms.ModelForm):
     class Meta:
         model = Product
         fields = ['name', 'price', 'details', 'category', 'image', 'condition', 'amt_available']
+        widgets = {'details': forms.Textarea(attrs={"style": "resize: none;"})}
+        labels = {"name": "Title"}
 
 class AddPrimaryImage(forms.Form):
     primaryimage = forms.ImageField(required=True)
@@ -92,11 +93,11 @@ class AddSecondaryImages(forms.ModelForm):
         fields = ['image']
 
 class EditProduct(forms.ModelForm):
-    name = forms.CharField(required=False, max_length=200, label="Title")
+    name = forms.CharField(required=False, max_length=50, label="Title")
     price = forms.FloatField(required=False, min_value=1)
-    details = forms.CharField(required=False, max_length=200, help_text="e.g. The Hate You Give hardcover by Angie Thomas 2 years old. ")
+    details = forms.CharField(required=False, max_length=150, help_text="e.g. The Hate You Give hardcover by Angie Thomas 2 years old. ")
     category = forms.ChoiceField(required=False, choices=categories)
-    image = forms.ImageField(required=False, widget=forms.ClearableFileInput(attrs={'multiple': True}))
+    image = forms.ImageField(required=False)
     condition = forms.ChoiceField(required=False, choices=conditions)
     class Meta:
         model = Product

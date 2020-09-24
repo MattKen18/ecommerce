@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404
 from .models import *
 from seller.models import Profile
 
-FEE = 100 #cost per item (product fee)
+FEE = 250 #cost per item (product fee)
 
 def send_to_main(request): #use this to add context variables available to all templates
     template = 'store/main.html'

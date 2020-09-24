@@ -128,7 +128,15 @@ def checkout(request):
     singles = SingleBuy.objects.filter(customer=customer)
 
     if singles.exists():
-
+        for item in singles:
+            if item.product.published == True:
+                pass
+            else:
+                item.delete()
+                messages.info(request, """An item has been removed from your cart,
+                                        this may be due to the product being altered
+                                        by product seller.""")
+                return redirect("checkout")
         #checks if the product stock of a single buy item has been decreased and if its
         #less than the item quantity then it pegs it to the remaining product amt_available
         #and eventually reloads the page
@@ -153,6 +161,17 @@ def checkout(request):
     else:
         cart, created = Cart.objects.get_or_create(user=request.user)
         cart_items = OrderItem.objects.filter(cart=cart)
+        empty = False
+
+        for item in cart_items:
+            if item.product.published == True:
+                pass
+            else:
+                item.delete()
+                messages.info(request, """An item has been removed from your cart,
+                                        this may be due to the product being altered
+                                        by product seller.""")
+                return redirect("checkout")
 
         reload = False
         for item in cart_items:
@@ -171,7 +190,10 @@ def checkout(request):
         if reload == True:
             return redirect('checkout')
 
-        context = {"address": address, "order_items": cart_items, "cart_total": total}
+        if cart_items.count() == 0:
+            empty = True
+
+        context = {"address": address, "order_items": cart_items, "cart_total": total, "empty": empty}
 
     return render(request, template, context)
 

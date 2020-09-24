@@ -12,7 +12,9 @@ from .decorators import authenticated_user, unauthenticated_user, allowed_users
 def store(response):  #order by
     #option to request order of book
     template = 'store/store.html'
-    products = Product.objects.all().filter(published=True, rejected=False, available=True, amt_available__gt=0).order_by('-pub_date')
+    products = Product.objects.all().filter(paid=True, verified=True, published=True,
+                                            rejected=False, available=True,
+                                            amt_available__gt=0).order_by('-pub_date')
     choices = Product._meta.get_field('category').choices
     categories = [choice[1] for choice in choices]
     sellers = Profile.objects.all().filter(tier="T3").order_by('-tier_points')[:10]
@@ -122,43 +124,46 @@ def add_to_cart(request, pk):
     cart, created = Cart.objects.get_or_create(user=request.user)
     order_item, created = OrderItem.objects.get_or_create(cart=cart, product=product)
 
-    try:
-        detail_amt = request.POST['detailorder_amt'] #adding to cart from the detail page
-
-    except: # adding to cart from store
-        if order_item.quantity < order_item.product.amt_available:
-            order_item.quantity += 1
-            order_item.save()
-            added_to_cart = messages.error(request, 'Item added to cart')
-        elif order_item.quantity <= 0: #if adding item that has no stock, then prevent it from showing in cart i.e deleting it
-            order_item.delete()
-        elif order_item.quantity == order_item.product.amt_available:
-            no_more_stock = messages.error(request, 'No more items in stock, currently there are ' + str(order_item.product.amt_available) + ' item(s) available.')
-            return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
-        else:
-            no_more_stock = messages.error(request, 'No more items in stock, currently there are ' + str(order_item.product.amt_available) + ' item(s) available.')
-            return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
-
+    if product.paid == False or product.verified == False or product.published == False:
+        messages.info(request, "Product has not been published.")
+        return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
     else:
-        detail_amt = int(detail_amt)
-        if detail_amt != 0:
-            if order_item.quantity + detail_amt <= order_item.product.amt_available:
-                order_item.quantity += detail_amt
+        try:
+            detail_amt = request.POST['detailorder_amt'] #adding to cart from the detail page
+
+        except: # adding to cart from store
+            if order_item.quantity < order_item.product.amt_available:
+                order_item.quantity += 1
                 order_item.save()
                 added_to_cart = messages.error(request, 'Item added to cart')
-            else:
-                if order_item.quantity <= 0:
-                    order_item.delete()
+            elif order_item.quantity <= 0: #if adding item that has no stock, then prevent it from showing in cart i.e deleting it
+                order_item.delete()
+            elif order_item.quantity == order_item.product.amt_available:
                 no_more_stock = messages.error(request, 'No more items in stock, currently there are ' + str(order_item.product.amt_available) + ' item(s) available.')
                 return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
-        else:
-            if order_item.quantity >= 1:
-                add_more = messages.error(request, 'Quantity should be at least 1.')
             else:
-                order_item.delete()
-                add_more = messages.error(request, 'Quantity should be at least 1.')
-            return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+                no_more_stock = messages.error(request, 'No more items in stock, currently there are ' + str(order_item.product.amt_available) + ' item(s) available.')
+                return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
 
+        else:
+            detail_amt = int(detail_amt)
+            if detail_amt != 0:
+                if order_item.quantity + detail_amt <= order_item.product.amt_available:
+                    order_item.quantity += detail_amt
+                    order_item.save()
+                    added_to_cart = messages.error(request, 'Item added to cart')
+                else:
+                    if order_item.quantity <= 0:
+                        order_item.delete()
+                    no_more_stock = messages.error(request, 'No more items in stock, currently there are ' + str(order_item.product.amt_available) + ' item(s) available.')
+                    return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+            else:
+                if order_item.quantity >= 1:
+                    add_more = messages.error(request, 'Quantity should be at least 1.')
+                else:
+                    order_item.delete()
+                    add_more = messages.error(request, 'Quantity should be at least 1.')
+                return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
     return redirect('cart')
 
 @authenticated_user
@@ -208,6 +213,17 @@ def cart(request):
     cart, created = Cart.objects.get_or_create(user=request.user)
     cart_items = OrderItem.objects.filter(cart=cart)
 
+    for item in cart_items:
+        if item.product.published == True:
+            pass
+        else:
+            item.delete()
+            messages.info(request, """An item has been removed from your cart,
+                                    this may be due to the product being altered
+                                    by product seller.""")
+            return redirect("cart")
+
+
     total_items = cart_items.count()
 
     total_price = 0
@@ -215,7 +231,7 @@ def cart(request):
         total_price += item.total()
 
 
-    context = {"cart": cart_items, "items":total_items, "total":total_price}
+    context = {"cart": cart_items, "items": total_items, "total": total_price}
 
     return render(request, template, context)
 

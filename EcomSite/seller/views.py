@@ -377,10 +377,10 @@ def create_product(request):
 
     try:
         context = {'productform': productform, "profile": seller, "created": product_created, "product": product}
-        print(context)
+        #print(context)
     except:
         context = {'productform': productform, "profile": seller, "created": product_created, "address": addr}
-        print(context)
+        #print(context)
 
     return render(request, template, context)
 
@@ -453,16 +453,20 @@ def delete_product(request, pk):
     user = request.user
     seller = get_object_or_404(Profile, user=user)
     addr = HomeAddress.objects.get(profile=seller)
-
+    customer = get_object_or_404(Customer, user=user)
 
     if request.method == "POST":
         answer = request.POST['verifydelete']
-        if answer == 'yes':
-            product.delete()
-            messages.info(request, "Product deleted")
-            return redirect('sellerproducts')
-        if answer == 'no':
-            return redirect('sellerproducts')
+        if product.product_seller == customer:
+            if answer == 'yes':
+                product.delete()
+                messages.info(request, "Product deleted")
+                return redirect('sellerproducts')
+            if answer == 'no':
+                return redirect('sellerproducts')
+        else:
+            messages.info(request, "Don't be sneeky, that's not your product :-P")
+            return redirect('store')
     else:
         context = {'product': product, 'profile': seller, "address": addr}
         return render(request, template, context)
@@ -510,8 +514,6 @@ def seller_products(request):
     seller = get_object_or_404(Profile, user=user)
     customer = get_object_or_404(Customer, user=user)
     addr = HomeAddress.objects.get(profile=seller)
-
-
 
     if customer.seller == True:
         products = customer.product_set.all().order_by('-pub_date')
@@ -564,44 +566,49 @@ def add_images(request, pk, mode):
     product_sec_images = ProductImages.objects.filter(product=product) #secondary images for the product
     paystream = False #if accessing from create product to add images then this would be True
 
-    if request.method == 'POST':
-        imagesform = AddSecondaryImages(request.POST, request.FILES)
-        primageform = AddPrimaryImage(request.POST, request.FILES)
+    if product in seller_products:
+        if request.method == 'POST':
+            imagesform = AddSecondaryImages(request.POST, request.FILES)
+            primageform = AddPrimaryImage(request.POST, request.FILES)
 
-        if mode == "secondary":
-            if imagesform.is_valid():
+            if mode == "secondary":
+                if imagesform.is_valid():
 
-                image = request.FILES.get('image')
-                extraimages, created = ProductImages.objects.get_or_create(product=product, image=image)
-                product.edited = True
-                product.published = False
-                product.save()
-                messages.info(request, 'Secondary Image added')
-                return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
-        elif mode == "primary":
-            if primageform.is_valid():
+                    image = request.FILES.get('image')
+                    extraimages, created = ProductImages.objects.get_or_create(product=product, image=image)
+                    product.edited = True
+                    product.published = False
+                    product.save()
+                    messages.info(request, 'Secondary Image added')
+                    return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+            elif mode == "primary":
+                if primageform.is_valid():
 
-                image = request.FILES.get('primaryimage')
-                product.image = image
-                product.edited = True
-                product.published = False
-                product.save()
-                messages.info(request, 'Primary image updated')
-                return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
-    else:
-        imagesform = AddSecondaryImages()
-        primageform = AddPrimaryImage()
-        if mode == "paystream":
-            paystream = True
-        elif mode == "modify":
-            pass #if the page is being visited from seller page
+                    image = request.FILES.get('primaryimage')
+                    product.image = image
+                    product.edited = True
+                    product.published = False
+                    product.save()
+                    messages.info(request, 'Primary image updated')
+                    return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
         else:
-            return redirect("sellerhome")
+            imagesform = AddSecondaryImages()
+            primageform = AddPrimaryImage()
+            if mode == "paystream":
+                paystream = True
+            elif mode == "modify":
+                pass #if the page is being visited from seller page
+            else:
+                return redirect("sellerhome")
 
 
-    context = {"profile": seller, 'imagesform': imagesform, 'userproducts': seller_products,
-               "address": addr, "secondaryimages": product_sec_images, "product": product,
-               "primageform": primageform, "paystream": paystream}
+        context = {"profile": seller, 'imagesform': imagesform, 'userproducts': seller_products,
+                   "address": addr, "secondaryimages": product_sec_images, "product": product,
+                   "primageform": primageform, "paystream": paystream}
+    else:
+        info = messages.info(request, "That's not your product!")
+        return redirect('sellerhome')
+
     return render(request, template, context)
 
 
@@ -753,28 +760,34 @@ def vouch(request, pk):
 def restock_product(request, pk):
     template = "seller/restockproduct.html"
     product = Product.objects.get(id=pk)
+    customer = get_object_or_404(Customer, user=request.user)
 
-    if request.method == "POST":
-        restockform = Restock(request.POST)
+    if product.product_seller == customer:
+        if request.method == "POST":
+            restockform = Restock(request.POST)
 
-        if restockform.is_valid():
-            amt = restockform.cleaned_data['amt_available']
-            if int(amt) <= 0:
-                messages.info(request, "Invalid quantity!")
-                return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
-            else:
-                product.amt_available = amt
-                product.req_date = datetime.datetime.now()
-                product.re_evaluating = True
-                product.published = False
-                product.verified = False
-                product.restocking = True #sent for restocking in AdminVerify
-                product.save()
-                messages.info(request, "Success! Please await stock verification")
-                return redirect('restockproducts')
+            if restockform.is_valid():
+                amt = restockform.cleaned_data['amt_available']
+                if int(amt) <= 0:
+                    messages.info(request, "Invalid quantity!")
+                    return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+                else:
+                    product.amt_available = amt
+                    product.req_date = datetime.datetime.now()
+                    product.re_evaluating = True
+                    product.published = False
+                    product.verified = False
+                    product.restocking = True #sent for restocking in AdminVerify
+                    product.save()
+                    messages.info(request, "Success! Please await stock verification")
+                    return redirect('restockproducts')
+
+        else:
+            restockform = Restock(initial={"amt_available": "%s" %product.amt_available})
 
     else:
-        restockform = Restock(initial={"amt_available": "%s" %product.amt_available})
+        messages.info(request, "Don't be sneeky, that's not your product :-P")
+        return redirect('store')
 
     context = {"restockform": restockform, "product": product}
 

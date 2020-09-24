@@ -8,13 +8,13 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
         integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
   <link rel="stylesheet" type='text/css' href="{% static 'css/main.css' %}">
-  <link href='https://fonts.googleapis.com/css?family=Raleway|Titan+One' rel='stylesheet'>
+  <link href='https://fonts.googleapis.com/css?family=Raleway|Titan+One|Lobster|Pacifico' rel='stylesheet'>
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1" />
 </head>
 <body id="site-body">
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <a class="navbar-brand site-logo" href="{% url 'store' %}">ChegBase</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -200,37 +200,41 @@
             <!-- Content -->
             <h6 class="text-uppercase font-weight-bold">ChegBase</h6>
             <hr class="teal accent-3 mb-4 mt-0 d-inline-block mx-auto" style="width: 60px;">
-            <p>Here you can use rows and columns to organize your footer content. Lorem ipsum dolor sit amet,
-              consectetur
-              adipisicing elit.</p>
+            <p>Sell and buy books on Jamaica's premier online multivendor bookstore.</p>
 
           </div>
           <!-- Grid column -->
 
           <!-- Grid column -->
-          <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mb-4">
+          <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mb-4 link-to-authors">
 
             <!-- Links -->
-            <h6 class="text-uppercase font-weight-bold">Products</h6>
+            <h6 class="text-uppercase font-weight-bold">Icons By:</h6>
             <hr class="teal accent-3 mb-4 mt-0 d-inline-block mx-auto" style="width: 60px;">
             <p>
-              <a class="dark-grey-text" href="#!">MDBootstrap</a>
+              <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
             </p>
             <p>
-              <a class="dark-grey-text" href="#!">MDWordPress</a>
+              <a href="https://www.flaticon.com/authors/pixel-perfect" title="Pixel perfect">Pixel perfect</a>
             </p>
             <p>
-              <a class="dark-grey-text" href="#!">BrandFlow</a>
+              <a href="https://www.flaticon.com/authors/icongeek26" title="Icongeek26">Icongeek26</a>
             </p>
             <p>
-              <a class="dark-grey-text" href="#!">Bootstrap Angular</a>
+              <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a>
+            </p>
+            <p>
+              <a href="https://www.flaticon.com/authors/good-ware" title="Good Ware">Good Ware</a>
+            </p>
+            <p>
+              <a href="https://www.flaticon.com/free-icon/loupe_875623" title="Kiranshastry">Kiranshastry</a>
             </p>
 
           </div>
           <!-- Grid column -->
 
           <!-- Grid column -->
-          <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mb-4">
+          <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mb-4 useful-links">
 
             <!-- Links -->
             <h6 class="text-uppercase font-weight-bold">Useful links</h6>
@@ -239,7 +243,7 @@
               <a class="dark-grey-text" href="#!">Your Profile</a>
             </p>
             <p>
-              <a class="dark-grey-text" href="#!">Become a Seller</a>
+              <a class="dark-grey-text" href="{% url 'sellerhome' %}">Become a Seller</a>
             </p>
             <p>
               <a class="dark-grey-text" href="#!">Shipping Rates</a>
@@ -276,8 +280,8 @@
       <!-- Footer Links -->
 
       <!-- Copyright -->
-      <div class="footer-copyright text-center text-black-50 py-3">© 2020 Copyright:
-        <a class="dark-grey-text" href="https://mdbootstrap.com/"> MDBootstrap.com</a>
+      <div class="footer-copyright text-center text-black-50 py-3">
+        <p>© 2020 Chegbase.com</p>
       </div>
       <!-- Copyright -->
 

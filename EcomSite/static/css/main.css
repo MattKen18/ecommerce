@@ -120,6 +120,19 @@ body, html {
   width: 100%;
 }
 
+#storesearch {
+  border-radius: 20px;
+
+}
+
+.input-group-text.amber.lighten-3 {
+  margin-left: 5px;
+  border-radius: 20px;
+  border-top-left-radius: -20px;
+  border-bottom-left-radius: -20px;
+
+}
+
 .input-group-text.amber.lighten-3 {
   background-color: #C9CFD0;
 }
@@ -168,9 +181,42 @@ input.form-control.searchbar {
   background-image: linear-gradient(aqua, dodgerblue);
 }
 
-.banner-text {
+.chegbase-banner-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.banner-store-text {
+  font-family: "Pacifico";
   text-align: center;
-  font-size: 80px;
+  font-size: 90px;
+  color: navy; /*#0409AF #2C30BC;*/
+}
+
+.banner-store-text span {
+  color:;
+}
+
+.banner-subtext-holder {
+  display: flex;
+  opacity: 0.5;
+}
+
+.subtext-tick {
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+}
+
+
+.banner-subtext {
+  color: #A6EEA9;
+  font-size: 15px;
+  font-family: "Raleway";
+  font-weight: bolder;
 }
 
 /* search results page */
@@ -233,7 +279,7 @@ a.go-to:hover {
 }
 
 .dropdown-toggle::after {
-  color: black;
+  color: white;
 }
 
 .dropdown-menu {
@@ -973,6 +1019,10 @@ span.highlight-price {
 .form-group.detail.amt-change-form input {
   margin-top: 5px;
   width: 90px;
+}
+
+.detail-product-name {
+  overflow-x: hidden;
 }
 
 .detail-product-name, .detail-container-upper.inner {
@@ -1766,6 +1816,12 @@ img.hand-wave {
   flex: 4;
 }
 
+.btn.btn-outline-success.buy-btn.modify-btn {
+  margin-top: 5px;
+  width: 128px;
+}
+
+
 /* add images */
 
 .skip {
@@ -2477,5 +2533,43 @@ div.space-medium {
 /*footer*/
 
 footer {
+  background-color: #343a40;/*#5D6D7E;*/
+  color: white;
+  font-family: "Raleway";
+}
 
+footer a {
+  color: #21d192;
+  font-weight: bolder;
+}
+
+footer p:hover {
+
+}
+
+footer a:hover {
+  text-decoration: none;
+  color: orange;
+}
+
+.link-to-authors p {
+  margin-bottom: 10px;
+  transition: all .2s ease-in-out;
+
+}
+
+.link-to-authors p:hover, .useful-links p:hover {
+  transform: translateX(15px);
+}
+
+.link-to-authors p, .link-to-authors a {
+  font-size: 15px;
+}
+
+.useful-links {
+
+}
+
+.useful-links p {
+  transition: all .2s ease-in-out;
 }
