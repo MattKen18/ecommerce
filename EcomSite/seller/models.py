@@ -23,6 +23,7 @@ tiers = [
 class Profile(models.Model):
     sellerid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    customer = models.OneToOneField('store.Customer', null=True, blank=False, on_delete=models.CASCADE, related_name="customer")
     date_of_birth = models.DateField(null=True, blank=False)
     gender = models.CharField(max_length=20, null=True, blank=False, choices=genders)
     phone = models.CharField(max_length=20, null=True, blank=False)
@@ -60,6 +61,9 @@ class Profile(models.Model):
         except:
             url = ''
         return url
+
+    def c_date(self):
+        return str(self.created_date.strftime("%d/%m/%Y"))
 
 class HomeAddress(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)

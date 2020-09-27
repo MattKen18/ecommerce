@@ -1,0 +1,142 @@
+{% extends 'store/main.html' %}
+{% load static %}
+{% block title %} Seller Profile {% endblock title %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<br>
+{% if messages %}
+  {% for message in messages %}
+    <p id="message">{{ message }}</p>
+  {% endfor %}
+{% endif %}
+<br>
+<br>
+<div class="row profile-view-row">
+  <div class="col-lg-4 profile-section left-profile-view">
+    <div class="element-container profile-holder profile-view">
+      <div id="tier-style" class="seller-profile-pic-holder">
+        <img class="seller-profile-pic" src="{{ seller.imageURL }}" alt="">
+      </div>
+      <div class="seller-profile-view-details">
+        <!--<div class="seller-username">
+          <h5 class="seller-username-text">{{ seller.user.username }}</h5>
+        </div>-->
+        <br>
+        <div class="seller-profile-view seller-details">
+          <div class="seller-details-item age grow">
+            <div class="seller-details-svg-holder">
+              <img src="{% static 'images/sitesvgs/age.svg' %}" alt="age-svg">
+            </div>
+            <div class="seller-details-content">
+              <p>{{ seller.age }}</p>
+            </div>
+          </div>
+          <div class="seller-details-item gender grow">
+            <div class="seller-details-svg-holder">
+              <img src="{% static 'images/sitesvgs/gender.svg' %}" alt="">
+            </div>
+            <div class="seller-details-content">
+              <p>{{ seller.get_gender_display }}</p>
+            </div>
+          </div>
+          <div class="seller-details-item tier grow">
+            <div class="seller-details-svg-holder">
+              <img src="{% static 'images/sitesvgs/ranking.svg' %}" alt="tier">
+            </div>
+            <div class="seller-details-content">
+              <p>{{ seller.tier }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="seller-profile-view-extra-details">
+        <div class="seller-details-flexed seller-location">
+          <p class="profile-detail-intro">Location: &nbsp</p>
+          <div class="profile-detail-location-holder">
+            <p class="profile-detail-info">{{ homeaddress.get_country_display }}</p>
+            <img src="{{ homeaddress.country.flag }}" alt="country flag"></img>
+          </div>
+        </div><br>
+        <div class="seller-details-flexed seller-email">
+          <p class="profile-detail-intro">Email: &nbsp</p><p class="profile-detail-info">{{ seller.email }}</p>
+        </div><br>
+        <div class="seller-details-flexed seller-tierpoints">
+          <p class="profile-detail-intro">Tier-points: &nbsp</p><p class="profile-detail-info">{{ seller.tier_points }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-8 profile-section right-profile-view">
+    <div class="profile-section-view-left-right right-profile-holder">
+      <div class="seller-username">
+        <h1>{{ seller.user.username }}</h1>
+        <p>Seller since {{ seller.c_date }}</p>
+      </div>
+      <br>
+      <br>
+      <div class="seller-info-content">
+        <div class="seller-intro-info-content">
+          <h3>Seller Products</h3>
+          <a href="#">See More</a>
+        </div>
+        <div class="row seller-products">
+          {% for product in products %}
+          <a class="product-link" href="{% url 'detail' product.id %}">
+            <div class="col-lg-3 product-item">
+              <div class="product-item-content">
+                <div class="thumbnail-holder">
+                  <img class='thumbnail-img' src="{{ product.imageURL }}">
+                </div>
+                <div class="product-name">
+                  <p>{{ product.name }}</p>
+                </div>
+                <div class="product-details">
+                  <p class="product-details-text">{{ product.details }}</p>
+                </div>
+                <div class="product-price">
+                  <p class="product-price-text"><strong>${{ product.price|floatformat:2 }}</strong></p>
+                </div>
+                <div class="add-to-cart-buy-btn-holder">
+                  <a style="display: none;" class="btn btn-outline-success add-to-cart-btn" href="{% url 'addtocart' product.id  %}"> Add to Cart</a>
+                  <a style="display: none;" class="btn btn-outline-success buy-btn" href="{% url 'single' product.id %}">Buy</a>
+                </div>
+              </div>
+            </div>
+          </a>
+          {% endfor %}
+        </div>
+        <div class="seller-note-content">
+          <h3>Seller's Note</h3>
+          <div class="seller-note-holder">
+            <p>{{ seller.note }}</p>
+          </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <br>
+        <h3>Seller Tier</h3>
+        <div class="seller-vouch-tier">
+          <div class="seller-tier-content">
+            <div class="seller-tier-image-holder">
+              <img src="{% static 'images/sitesvgs/ranking.svg' %}" alt="tier">
+            </div>
+            <p>{{ seller.get_tier_display }}</p>
+          </div>
+          <div class="seller-vouch-content">
+            <div class="">
+              <h6>Vouch for seller</h6>
+            </div>
+            <div class="seller-username-vouch">
+              <p>{{ seller.user.username }}</p>
+              <a href="#"><img src="{% static 'images/sitesvgs/vouch.svg' %}" alt="vouchlink"></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock content %}

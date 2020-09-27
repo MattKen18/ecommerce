@@ -70,6 +70,8 @@ def detail_page(request, pk):
     customerSeller = product.product_seller.user
     images = product.productimages_set.all()
     customer = get_object_or_404(Customer, user=customerSeller) #seller of the current product in the detail page i.e the customer whose user field is the seller of the product
+    seller_products = Product.objects.all().filter(product_seller=product.product_seller,
+                                                   published=True).exclude(id=product.id).order_by("-pub_date")[:12]
     #this 'block' is to get the order item of the product that the user has in his/her cart, this is to get the amt that the user has in his/her cart
     #to show in the detail page
     if user.is_authenticated:
@@ -90,7 +92,8 @@ def detail_page(request, pk):
     #    print(image.imageURL)
 
     context = {'product': product, 'productimages': images, "seller": seller,
-               "homeaddress": homeaddress, "sellerorders": seller_orders, 'detailproduct': detail_product}
+               "homeaddress": homeaddress, "sellerorders": seller_orders,
+               'detailproduct': detail_product, "seller_products": seller_products}
 
     return render(request, template, context)
 

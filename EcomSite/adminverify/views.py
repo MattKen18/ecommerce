@@ -178,7 +178,7 @@ def unverify(request, pk):
 
 
 @allowed_users(allowed_roles=['staff'])
-def product_update(request, pk):
+def product_update(request, pk): #new products
 
     product, created = Product.objects.get_or_create(pk=pk)
     unverified = Product.objects.all().filter(published=False).order_by('-req_date')
@@ -207,13 +207,14 @@ def product_update(request, pk):
         product.condition = condition[2:4]
         product.pub_date = datetime.datetime.now()
         product.amt_available = amt
+        product.edited = False
         product.published = True
         product.save()
 
     return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
 
 @allowed_users(allowed_roles=['staff'])
-def product_update_evaluate(request, pk):
+def product_update_evaluate(request, pk): #products that have been edited or restocked
 
     product, created = Product.objects.get_or_create(pk=pk)
     unverified = Product.objects.all().filter(published=False).order_by('-req_date')
@@ -241,6 +242,7 @@ def product_update_evaluate(request, pk):
         product.category = category[2:4]
         product.condition = condition[2:4]
         product.amt_available = amt
+        product.edited = False
         product.re_evaluating = False
         product.published = True
         product.save()

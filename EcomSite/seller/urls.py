@@ -22,5 +22,6 @@ urlpatterns = [
     path('paymentinquiries/', views.payment_inquiries, name='inquiries'),
     path('editproduct/<uuid:pk>/', views.editproduct, name='editproduct'),
     path('vouch/<uuid:pk>/', views.vouch, name='vouch'),
+    path('user/profile/<int:pk>/<str:username>/', views.profileview, name='profileview'),
 
 ]

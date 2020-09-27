@@ -205,6 +205,7 @@ def update_seller_profile(request, form):
 @not_seller
 def registerseller(request):
     template = 'seller/register.html'
+    customer = get_object_or_404(Customer, user=request.user)
 
     if request.method == "POST":
         addrform = AddressForm(request.POST) #home address
@@ -264,9 +265,9 @@ def registerseller(request):
             try:
                 profile = Profile.objects.get(user=request.user)
             except Profile.DoesNotExist:
-                profile = Profile(user=request.user, date_of_birth=dob,
-                                  gender=gender, phone=phone,
-                                  email=email, note=note, tier="T0")#initially setst the seller tier to tier 0
+                profile = Profile.objects.create(user=request.user, date_of_birth=dob,
+                                  gender=gender, phone=phone, customer=customer,
+                                  email=email, note=note, tier="T0")#initially sets the seller tier to tier 0
                 profile.save()
 
                 try:
@@ -578,6 +579,8 @@ def add_images(request, pk, mode):
                     extraimages, created = ProductImages.objects.get_or_create(product=product, image=image)
                     product.edited = True
                     product.published = False
+                    product.verified = False
+                    product.re_evaluating = True
                     product.save()
                     messages.info(request, 'Secondary Image added')
                     return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
@@ -587,7 +590,9 @@ def add_images(request, pk, mode):
                     image = request.FILES.get('primaryimage')
                     product.image = image
                     product.edited = True
+                    product.verified = False
                     product.published = False
+                    product.re_evaluating = True
                     product.save()
                     messages.info(request, 'Primary image updated')
                     return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
@@ -790,5 +795,18 @@ def restock_product(request, pk):
         return redirect('store')
 
     context = {"restockform": restockform, "product": product}
+
+    return render(request, template, context)
+
+
+
+def profileview(request, pk, username):
+    template = "seller/profileview.html"
+    customer = get_object_or_404(Customer, id=pk)
+    seller = get_object_or_404(Profile, customer=customer)
+    home_address = HomeAddress.objects.get(profile=seller)
+    seller_products = Product.objects.all().filter(product_seller=customer).order_by("-pub_date")[:4]
+
+    context = {"seller": seller, "homeaddress": home_address, "products": seller_products}
 
     return render(request, template, context)
