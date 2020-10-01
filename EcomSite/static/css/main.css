@@ -282,8 +282,8 @@ a.go-to:hover {
 .dropdown-menu {
   border: 1px solid black;
   height: auto;
-  min-width: 170px;
-  max-width: 170px;
+  min-width: 200px;
+  max-width: 200px;
 }
 
 
@@ -1263,7 +1263,7 @@ a.submit-qty-chg.no{
   font-weight: bolder;
 }
 
-.cart-heading.cart-total span {
+.cart-heading.cart-total span, .cart-total span {
   font-size: 20px;
   color: green;
   border-bottom: 2px solid lightgrey;
