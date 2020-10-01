@@ -70,7 +70,7 @@ these items.</p>
                 <a class="submit-qty-chg yes" type="submit" name="reload" onclick="reload()"><button type="submit"><i class="submit-qty-chg far fa-check-circle grow yes"></i></button></a>
               </form>
               <div class="seller-info">
-                <p>from <a href="#">{{ single.product.product_seller }}</a></p>
+                <p>from <a href="{% url 'profileview' single.product.product_seller.id single.product.product_seller.user.username %}">{{ single.product.product_seller }}</a></p>
               </div>
             </div>
             <div class="order-item-price">
@@ -101,7 +101,7 @@ these items.</p>
                       <a class="submit-qty-chg yes" type="submit" name="reload" onclick="reload()"><button type="submit"><i class="submit-qty-chg far fa-check-circle grow yes"></i></button></a>
                     </form>
                     <div class="seller-info">
-                      <p>from <a href="#">{{ item.product.product_seller }}</a></p>
+                      <p>from <a href="{% url 'profileview' item.product.product_seller.id item.product.product_seller.user.username %}" class="seller-profile-link">{{ item.product.product_seller }}</a></p>
                     </div>
                   </div>
                   <div class="order-item-price">

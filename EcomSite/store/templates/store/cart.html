@@ -28,12 +28,15 @@
   }
 
 </script>
-
+<br>
+<br>
 {% if messages %}
 {% for message in messages %}
   <p id="message">{{ message }}</p>
 {% endfor %}
+{% else %}
 {% endif %}
+<br>
 <br>
 <br>
 <div class="cart-headings-holder">
@@ -69,7 +72,7 @@
         </div>
         <div class="cart-product-price-seller-holder">
           <p class="cart-product-price"><span class="cart-product-price-span">${{ item.product.price }} USD</span></p>
-          <a href="#" class="cart-product-seller grow"><p>{{ item.product.product_seller }}</p></a>
+          <a href="{% url 'profileview' item.product.product_seller.id item.product.product_seller.user.username %}" class="cart-product-seller grow"><p>{{ item.product.product_seller }}</p></a>
         </div>
       </div>
       <div class="cart-product cdetail product-quantity">

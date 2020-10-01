@@ -8,7 +8,8 @@ urlpatterns = [
     path('product/', views.create_product, name='createproduct'),
     path('deleteproduct/<uuid:pk>', views.delete_product, name='deleteproduct'),
     path('paid/', views.seller_paid, name='paid'),
-    path('addimages/<uuid:pk>/<str:mode>/', views.add_images, name='addimages'),
+    path('addimages/<uuid:pk>/<str:mode>/create/', views.add_images, name='addimages'),
+    path('addimages/<uuid:pk>/<str:mode>/modify/', views.add_images_after, name='addimagesafter'),
     path('deleteimage/<int:pk>/', views.delete_image, name='deleteimage'),
     path('payment/<uuid:pk>/', views.product_payment, name='productpayment'),
     path('userprofile/', views.seller_profile, name='profile'),
@@ -23,5 +24,7 @@ urlpatterns = [
     path('editproduct/<uuid:pk>/', views.editproduct, name='editproduct'),
     path('vouch/<uuid:pk>/', views.vouch, name='vouch'),
     path('user/profile/<int:pk>/<str:username>/', views.profileview, name='profileview'),
+    path('user/userprofile/<int:pk>/<str:username>/', views.personalprofileview, name='personalprofileview'),
+    path('user/profile/<int:pk>/<str:username>/products/', views.profile_seller_products, name='sellerproductsview'),
 
 ]

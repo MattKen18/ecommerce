@@ -66,7 +66,7 @@
               {% if product.product_seller == None %}
               <p>From <a href="#">Ecom</a></p>
               {% else %}
-              <p>From <a href="{% url 'profileview' product.product_seller.id product.product_seller.user.username %}">{{product.product_seller}}</a></p>
+              <p>From <a href="{% url 'profileview' product.product_seller.id product.product_seller.user.username %}" class="seller-profile-link">{{product.product_seller}}</a></p>
               {% endif %}
             </div>
             <div class="detail product-details-holder">
@@ -128,7 +128,7 @@
         </div>
       </div>
       <div class="seller-name">
-        <a href="#"><p>{{ seller.user.username}}</p></a>
+        <a href="{% url 'profileview' product.product_seller.id product.product_seller.user.username %}" class="seller-profile-link"><p>{{ seller.user.username}}</p></a>
       </div>
       <div class="seller-country">
         <p class="seller-headings">Location:</p>

@@ -72,14 +72,14 @@ class Address(models.Model): #shipping address
 class Product(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     product_seller = models.ForeignKey(Customer, null=True, blank=True, on_delete=models.PROTECT)
-    name = models.CharField(max_length=50, null=True, blank=False)
+    name = models.CharField(max_length=70, null=True, blank=False)
     price = models.FloatField(null=True, blank=False)
-    details = models.CharField(max_length=150, null=True, blank=False)
+    details = models.CharField(max_length=200, null=True, blank=False)
     available = models.BooleanField(default=True, null=True, blank=False) #sold or not (restock also)
     category = models.CharField(max_length=20, null=True, blank=False, choices=categories)
     req_date = models.DateTimeField(null=True, blank=False, auto_now_add=True)#date when the product is requested to be uploaded by seller
     pub_date = models.DateTimeField(null=True, blank=False, auto_now_add=True)#date when product is uploaded by us after being verified
-    image = models.ImageField(upload_to='products/%Y/%m/%d/', null=True, blank=True)
+    image = models.ImageField(upload_to='products/%Y/%m/%d/', default="products/defaultbook.svg", null=True, blank=True)
     condition = models.CharField(max_length=200, null=True, blank=False, choices=conditions)
     amt_sold = models.IntegerField(default=0)
     amt_available = models.IntegerField(null=True, blank=False, default=1)

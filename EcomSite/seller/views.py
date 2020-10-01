@@ -9,7 +9,7 @@ from django.contrib.auth.models import User, Group
 from django.shortcuts import render, redirect, get_object_or_404
 from store.models import Customer, Address, Product, ProductImages, Order, SoldItem, OrderItem
 from store.decorators import authenticated_user, unauthenticated_user, allowed_users
-from .decorators import not_seller, is_seller
+from .decorators import not_seller, is_seller, profile_exists
 from .models import *
 from django.http import JsonResponse
 import json
@@ -50,6 +50,7 @@ def seller_profile(request):
     shippingaddr, created = Address.objects.get_or_create(user=user)
 
     if request.method == "POST":
+        userform = UserForm(request.POST)
         addrform = AddressForm(request.POST)
         shipaddr = ShippingForm(request.POST)
         personalform = PersonalForm(request.POST)
@@ -111,12 +112,18 @@ def update_seller_profile(request, form):
                 fname = userform.cleaned_data['first_name']
                 lname = userform.cleaned_data['last_name']
                 uname = userform.cleaned_data['username']
-                print(fname)
-                print(lname)
-                print(uname)
+                users = User.objects.all()
+                usernames = [u.username for u in users]
+
                 user.first_name = fname
                 user.last_name = lname
-                user.username = uname #check if username exists first
+                if uname not in usernames:
+                    user.username = uname #check if username exists first
+                elif uname == user.username:
+                    pass
+                else:
+                    messages.error(request, "Username taken")
+                    return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
                 user.save()
                 messages.info(request, "Profile Updated!")
             else:
@@ -556,7 +563,7 @@ def restock(request):
 @authenticated_user
 @is_seller
 @allowed_users(allowed_roles=['seller', 'staff'])
-def add_images(request, pk, mode):
+def add_images(request, pk, mode): #adding images from paystream #product will not be set to edited or re-evaluating
     template = 'seller/addimages.html'
     customer = Customer.objects.get(user=request.user)
     seller_products = Product.objects.filter(product_seller=customer)
@@ -566,6 +573,60 @@ def add_images(request, pk, mode):
     product = Product.objects.get(id=pk) #the product just created by the create product view
     product_sec_images = ProductImages.objects.filter(product=product) #secondary images for the product
     paystream = False #if accessing from create product to add images then this would be True
+    modify = False
+
+    if product in seller_products:
+        if request.method == 'POST':
+            imagesform = AddSecondaryImages(request.POST, request.FILES)
+            primageform = AddPrimaryImage(request.POST, request.FILES)
+
+            if mode == "secondary":
+                if imagesform.is_valid():
+
+                    image = request.FILES.get('image')
+                    extraimages, created = ProductImages.objects.get_or_create(product=product, image=image)
+                    product.published = False
+                    product.verified = False
+                    product.save()
+                    messages.info(request, 'Secondary Image added')
+                    return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+            elif mode == "primary":
+                if primageform.is_valid():
+
+                    image = request.FILES.get('primaryimage')
+                    product.image = image
+                    product.verified = False
+                    product.published = False
+                    product.save()
+                    messages.info(request, 'Primary image updated')
+                    return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+        else:
+            imagesform = AddSecondaryImages()
+            primageform = AddPrimaryImage()
+
+        context = {"profile": seller, 'imagesform': imagesform, 'userproducts': seller_products,
+                   "address": addr, "secondaryimages": product_sec_images, "product": product,
+                   "primageform": primageform}
+    else:
+        info = messages.info(request, "That's not your product!")
+        return redirect('sellerhome')
+
+    return render(request, template, context)
+
+
+
+@authenticated_user
+@is_seller
+@allowed_users(allowed_roles=['seller', 'staff'])
+def add_images_after(request, pk, mode): #adding images from sellerhome #product will be set to edited and re-evaluating
+    template = 'seller/addimagesafter.html'
+    customer = Customer.objects.get(user=request.user)
+    seller_products = Product.objects.filter(product_seller=customer)
+    user = request.user
+    seller = get_object_or_404(Profile, user=user)
+    addr = HomeAddress.objects.get(profile=seller)
+    product = Product.objects.get(id=pk) #the product just created by the create product view
+    product_sec_images = ProductImages.objects.filter(product=product) #secondary images for the product
 
     if product in seller_products:
         if request.method == 'POST':
@@ -599,22 +660,17 @@ def add_images(request, pk, mode):
         else:
             imagesform = AddSecondaryImages()
             primageform = AddPrimaryImage()
-            if mode == "paystream":
-                paystream = True
-            elif mode == "modify":
-                pass #if the page is being visited from seller page
-            else:
-                return redirect("sellerhome")
-
 
         context = {"profile": seller, 'imagesform': imagesform, 'userproducts': seller_products,
                    "address": addr, "secondaryimages": product_sec_images, "product": product,
-                   "primageform": primageform, "paystream": paystream}
+                   "primageform": primageform}
     else:
         info = messages.info(request, "That's not your product!")
         return redirect('sellerhome')
 
     return render(request, template, context)
+
+
 
 
 @authenticated_user
@@ -798,15 +854,67 @@ def restock_product(request, pk):
 
     return render(request, template, context)
 
-
-
-def profileview(request, pk, username):
+@authenticated_user
+def profileview(request, pk, username): #when clicking on a seller's profile
     template = "seller/profileview.html"
     customer = get_object_or_404(Customer, id=pk)
     seller = get_object_or_404(Profile, customer=customer)
     home_address = HomeAddress.objects.get(profile=seller)
-    seller_products = Product.objects.all().filter(product_seller=customer).order_by("-pub_date")[:4]
+    seller_products = Product.objects.all().filter(product_seller=customer, published=True,
+                                                   restocking=False, edited=False,
+                                                   re_evaluating=False, verified=True,
+                                                   available=True, paid=True).order_by("-pub_date")
+    seller_products_4 = seller_products[:4]
 
-    context = {"seller": seller, "homeaddress": home_address, "products": seller_products}
+    more = False #show more link on page
+    if seller_products.count() > 4:
+        more = True
+    else:
+        more = False
 
+    context = {"seller": seller, "homeaddress": home_address, "products": seller_products_4,
+               "more": more, "customer": customer}
+
+    return render(request, template, context)
+
+@authenticated_user
+@profile_exists
+def personalprofileview(request, pk, username): #when viewing myprofile
+    template = "seller/profileview.html"
+    customer = get_object_or_404(Customer, id=pk)
+    seller = get_object_or_404(Profile, customer=customer)
+    home_address = HomeAddress.objects.get(profile=seller)
+    seller_products = Product.objects.all().filter(product_seller=customer, published=True,
+                                                   restocking=False, edited=False,
+                                                   re_evaluating=False, verified=True,
+                                                   available=True, paid=True).order_by("-pub_date")
+    seller_products_4 = seller_products[:4]
+
+    more = False #show more link on page
+    if seller_products.count() > 4:
+        more = True
+    else:
+        more = False
+
+    context = {"seller": seller, "homeaddress": home_address, "products": seller_products_4,
+               "more": more, "customer": customer}
+
+    return render(request, template, context)
+
+
+@authenticated_user
+def profile_seller_products(request, pk, username):
+    template = "seller/sellerproducts.html"
+    customer = get_object_or_404(Customer, id=pk)
+    seller = get_object_or_404(Profile, customer=customer)
+    seller_products = Product.objects.all().filter(product_seller=customer, published=True,
+                                                   restocking=False, edited=False,
+                                                   re_evaluating=False, verified=True,
+                                                   available=True, paid=True).order_by("-pub_date")
+
+    paginator = Paginator(seller_products, 20)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {"products": seller_products, "page_obj": page_obj, "customer": customer}
     return render(request, template, context)

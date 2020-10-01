@@ -3,6 +3,7 @@ from store.models import Customer, Product, conditions, categories
 from django.contrib.auth.models import User
 from django_countries.fields import CountryField
 from django_countries.widgets import CountrySelectWidget
+from django.contrib.auth.forms import UserCreationForm
 
 from .models import *
 from store.models import ProductImages
@@ -27,10 +28,11 @@ class DateInput(forms.DateInput):
 
 
 
-class UserForm(forms.ModelForm):
-    class Meta:
-        model = User
-        fields = ['first_name', 'last_name', 'username']
+class UserForm(forms.Form):
+    first_name = forms.CharField(max_length=30, required=False)
+    last_name = forms.CharField(max_length=30, required=False)
+    username = forms.CharField(max_length=30, required=False)
+
 
 
 class PersonalForm(forms.ModelForm):
@@ -78,7 +80,7 @@ class CreateProductForm(forms.ModelForm):
     class Meta:
         model = Product
         fields = ['name', 'price', 'details', 'category', 'image', 'condition', 'amt_available']
-        widgets = {'details': forms.Textarea(attrs={"style": "resize: none;"})}
+        widgets = {'details': forms.Textarea(attrs={"style": "resize: none;", "rows": 5})}
         labels = {"name": "Title"}
 
 class AddPrimaryImage(forms.Form):

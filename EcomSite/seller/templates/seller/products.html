@@ -58,7 +58,7 @@
         <div class="add-to-cart-buy-btn-holder">
           <a class="btn btn-outline-success add-to-cart-btn" href="{% url 'editproduct' product.id %}">Edit</a>
           <a class="btn btn-outline-success buy-btn" href="{% url 'deleteproduct' product.id %}">Delete</a>
-          <a class="btn btn-outline-success buy-btn modify-btn" href="{% url 'addimages' product.id 'modify' %}">Add images</a>
+          <a class="btn btn-outline-success buy-btn modify-btn" href="{% url 'addimagesafter' product.id 'editstream' %}">Add images</a>
           {% if product.paid == False %}
           <a class="btn btn-outline-success buy-btn modify-btn" href="{% url 'productpayment' product.id %}">Pay</a>
           {% endif %}

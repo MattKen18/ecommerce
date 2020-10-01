@@ -69,7 +69,11 @@
                 {% else %}
                   <p class="user-username">Guest</p>
                 {% endif %}
+                {% if user.is_authenticated %}
+                <a class="go-to profile-dropdown" href="{% url 'personalprofileview' cus.id cus.user.username %}"><p>My Profile</p></a>
+                {% else %}
                 <a class="go-to profile-dropdown" href="{% url 'profile' %}"><p>My Profile</p></a>
+                {% endif %}
                 <a class="go-to cart-dropdown" href="{% url 'cart' %}"><p>My Cart</p></a>
                 <a class="go-to checkout-dropdown" href="{% url 'checkout' %}"><p>Go to Checkout</p></a>
                 <div class="dropdown-divider"></div>
@@ -242,7 +246,7 @@
             <h6 class="text-uppercase font-weight-bold">Useful links</h6>
             <hr class="teal accent-3 mb-4 mt-0 d-inline-block mx-auto" style="width: 60px;">
             <p>
-              <a class="dark-grey-text" href="#!">Your Profile</a>
+              <a class="dark-grey-text" href="{% url 'personalprofileview' cus.id cus.user.username %}"><p>Your Profile</p></a>              
             </p>
             <p>
               <a class="dark-grey-text" href="{% url 'sellerhome' %}">Become a Seller</a>

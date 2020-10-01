@@ -841,10 +841,23 @@ a.categories-links-btn.activecat {
 }
 .pagination {
   text-align: center;
-  width: 300px;
+  width: 400px;
   margin: auto;
   font-weight: bolder;
   font-family: 'Raleway';
+  margin-bottom: 50px;
+}
+
+.pagination a {
+  border: 1px solid lightgrey;
+  border-radius: 5px;
+  padding: 3px;
+  color: black;
+
+}
+
+.pagination .step-links a:hover {
+  text-decoration: none;
 }
 
 .pagination-inner {
@@ -2566,6 +2579,10 @@ div.space-medium {
   padding: 0;
 }
 
+.col-lg-4.profile-section.left-profile-view .seller-profile-pic-holder {
+  border: 1px solid transparent;
+}
+
 
 .seller-profile-view-extra-details .seller-details-flexed .profile-detail-location-holder {
   display: flex;
@@ -2645,6 +2662,7 @@ div.space-medium {
   border-left: 2px solid #21d192;
   height: auto;
   padding: 10px;
+  width: 500px
 }
 
 .seller-note-holder p {
@@ -2667,6 +2685,7 @@ div.space-medium {
   font-weight: bolder;
   text-align: center;
   margin-bottom: 0;
+  color: dodgerblue;
 }
 
 .seller-vouch-tier .seller-tier-image-holder {
@@ -2686,21 +2705,41 @@ div.space-medium {
 
 }
 
-.seller-username-vouch p, .seller-username-vouch a {
-  display: inline-block;
+.seller-vouch-content h6 {
+  opacity: 0.7;
+  color: #21d192;
+}
+
+.seller-username-vouch {
+  display: flex;
+  flex-direction: row;
 }
 
 .seller-username-vouch img {
-  width: 30px;
-  height: 30px;
+  margin-left: 5px;
+  width: 40px;
+  height: 100%;
 }
 
 .seller-username-vouch p {
-  font-size: 20px;
+  font-size: 30px;
   font-weight: bolder;
   margin: 0;
 }
 
+.col-lg-8.profile-section.right-profile-view h3 {
+  font-weight: 400;
+}
+
+.seller-profile-link {
+  font-weight: bolder;
+  opacity: 0.7;
+}
+
+.seller-profile-link:hover {
+  text-decoration: none;
+  color: dodgerblue;
+}
 
 /*footer*/
 

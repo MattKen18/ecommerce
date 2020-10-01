@@ -22,9 +22,9 @@ def send_to_main(request): #use this to add context variables available to all t
 
         if customer.seller == True:
             profile  = get_object_or_404(Profile, user=user)
-            context = {"fee": FEE, "cart": cart_order_items, "cartquantity": total_items, "profile": profile, "cart_total": cart_total}
+            context = {"fee": FEE, "cart": cart_order_items, "cartquantity": total_items, "profile": profile, "cart_total": cart_total, "cus": customer}
         else:
-            context = {"fee": FEE, "cart": cart_order_items, "cartquantity": total_items, "cart_total": cart_total}
+            context = {"fee": FEE, "cart": cart_order_items, "cartquantity": total_items, "cart_total": cart_total, "cus": customer}
 
         return context
     else:

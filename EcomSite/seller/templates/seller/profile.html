@@ -5,7 +5,6 @@
 {% load widget_tweaks %}
 
 {% block content %}
-<h1> Seller Profile </h1>
 <br>
 {% if messages %}
   {% for message in messages %}
@@ -13,6 +12,7 @@
   {% endfor %}
 {% endif %}
 <br>
+
 <div class="row">
   <div class="col-lg-4 profile-image-holder element-container seller-profile-view">
     <div class="seller-profile-pic-holder">
@@ -48,15 +48,11 @@
     <hr>
     <form class="form-group" action="{% url 'updateprofile' 'user' %}" method="post">
       {% csrf_token %}
-      {{ userform.first_name.label_tag }}
-      {{ userform.first_name|attr:'required:false'|add_class:"form-control"}}
-      <br>
-      {{ userform.last_name.label_tag }}
-      {{ userform.last_name|attr:'required:false'|add_class:"form-control"}}
-      <br>
-      {{ userform.username.label_tag }}
-      {{ userform.username|attr:'required:false'|add_class:"form-control"}}
-      <br>
+      {% for field in userform %}
+        {{ field.label_tag }}
+        {{ field|add_class:"form-control" }}
+        <br>
+      {% endfor %}
       <hr>
       <div class="submitbt-holder seller-profile-view">
         <button class="btn btn-outline-primary update-profile-btn" type="submit" name="button" onclick="this.disabled=true;this.form.submit();">Update</button>

@@ -78,7 +78,12 @@
       <div class="seller-info-content">
         <div class="seller-intro-info-content">
           <h3>Seller Products</h3>
-          <a href="#">See More</a>
+          {% if more %}
+            <a href="{% url 'sellerproductsview' customer.id customer.user.username %}">See More</a>
+          {% else %}
+          {% endif %}
+          <hr>
+
         </div>
         <div class="row seller-products">
           {% for product in products %}
@@ -108,6 +113,7 @@
         </div>
         <div class="seller-note-content">
           <h3>Seller's Note</h3>
+          <hr>
           <div class="seller-note-holder">
             <p>{{ seller.note }}</p>
           </div>
@@ -117,6 +123,7 @@
         <br>
         <br>
         <h3>Seller Tier</h3>
+        <hr>
         <div class="seller-vouch-tier">
           <div class="seller-tier-content">
             <div class="seller-tier-image-holder">
@@ -130,7 +137,7 @@
             </div>
             <div class="seller-username-vouch">
               <p>{{ seller.user.username }}</p>
-              <a href="#"><img src="{% static 'images/sitesvgs/vouch.svg' %}" alt="vouchlink"></a>
+              <a href="{% url 'vouch' seller.sellerid %}"><img src="{% static 'images/sitesvgs/vouch.svg' %}" alt="vouchlink" class="grow"></a>
             </div>
           </div>
         </div>

@@ -1,0 +1,88 @@
+{% extends 'seller/home.html' %}
+{% load static %}
+{% block title %} Seller {% endblock title %}
+{% load crispy_forms_tags %}
+
+
+
+{% block activehead %}
+  <a href="{% url 'sellerhome' %}" class="grow">Home</a>
+  <a href="{% url 'createproduct' %}" class="active-seller-heading grow">Submit Product</a>
+  <a href="{% url 'sellerproducts' %}" class="grow">My Products</a>
+  <a href="#" class="grow">My Sales</a>
+  <a href="#" class="grow">Request Pick-up</a>
+  <a href="#" class="grow">Payment Inquiries</a>
+{% endblock activehead %}
+
+{% block body %}
+{% if messages %}
+{% for message in messages %}
+<p id="message">{{ message }}</p>
+{% endfor %}
+{% else %}
+
+<span style="text-align: center;"><h1>Extra Images</h1></span><br>
+<small><p><strong>Note:</strong> If you are updating images after the product has been verified it will be re-evaluated.</p></small>
+{% endif %}
+<br>
+<hr>
+<div class="product-addimages-view">
+  <div class="product-add-image primary-view">
+    <div class="image-type-heading-holder">
+      <h6>Primary Image</h6>
+    </div>
+    <div class="image-holder primary-image">
+      <img src="{{ product.imageURL }}" alt="primary image">
+    </div>
+  </div>
+  <div class="product-add-image secondary-view">
+    <div class="image-type-heading-holder">
+      <h6>Secondary Images</h6>
+    </div>
+    <div class="secondary-image-holder">
+      {% for image in secondaryimages %}
+      <div class="image-holder secondary-image">
+        <img src="{{ image.imageURL }}" alt="secondary image {{ forloop.counter }}">
+        <a class="delete-secondary-image" href="{% url 'deleteimage' image.id %}">Remove</a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<form class="form-group" action="{% url 'addimages' product.id 'primary' %}" method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  <br>
+  {% for field in primageform %}
+  <div class="form-group">
+    <label for="{{ field.id_for_label }}" class="addimages-label">Change Primary Image:</label>&nbsp
+    <br>
+    {{ field }}
+  </div>
+  {% endfor %}
+  <br>
+  <div class="btn-upload-holder">
+    <button type="submit" name="button" class="btn-upload">Update</button>
+  </div>
+</form>
+
+<form class="form-group" action="{% url 'addimages' product.id 'secondary'%}" method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  <br>
+  {% for field in imagesform %}
+  <div class="form-group">
+    <label for="{{ field.id_for_label }}" class="addimages-label">Add Secondary Image:</label>&nbsp
+    <br>
+    {{ field }}
+  </div>
+  {% endfor %}
+  <br>
+  <div class="btn-upload-holder">
+    <button type="submit" name="button" class="btn-upload">Update</button>
+  </div>
+</form>
+
+{% if altered %}
+<a href="#" class="skip">Next</a>
+{% endif %}
+{% endblock body %}
