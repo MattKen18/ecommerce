@@ -122,7 +122,7 @@
         <h4 style="text-align: center;">Seller</h4>
       </div>
       <div class="image-holder-exterior">
-        <a href="{% url 'vouch' seller.sellerid %}"><i class="fas fa-thumbs-up grow"></i></a>
+        <a href="{% url 'vouch' seller.sellerid %}"><img src="{% static 'images/sitesvgs/vouch.svg' %}" alt="vouchlink" class="grow"></a>
         <div id="tier-style" class="seller-pic">
           <img src="{{ seller.imageURL }}" alt="seller profile picture">
         </div>

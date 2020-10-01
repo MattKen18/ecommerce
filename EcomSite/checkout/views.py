@@ -274,5 +274,3 @@ def paymentComplete(request):
 
     #body = json.loads(request.body)
     #print("BODY:", body)
-    messages.info(request, "Items successfully purchased")
-    return redirect("checkout")

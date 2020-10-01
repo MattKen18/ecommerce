@@ -783,7 +783,7 @@ def vouch(request, pk):
 
 
     if seller.user == user: #checks if the person trying to vouch for the seller is the actual seller
-        messages.info(request, "You can't vouch for youself")
+        messages.info(request, "You can't vouch for yourself")
         return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found')) #this returns to the current page
     elif customer in seller_vouches: #checks if the customer already vouched for this seller
         messages.info(request, "You already vouched for this seller")

@@ -84,7 +84,7 @@
   <div class="categories-options">
     <a href="{% url 'store'  %}" class="categories-links-btn grow-medium activecat"><p class="categories-options-items">all</p></a>
     {% for category in categories %}
-      <a href="{% url 'categories' category %}" id="cat-{{ forloop.counter0 }}" class="categories-links-btn grow-medium"><p class="categories-options-items">{{ category }}s</p></a>
+      <a href="{% url 'categories' category %}" id="cat-{{ forloop.counter0 }}" class="categories-links-btn grow-medium"><p class="categories-options-items">{{ category }}</p></a>
     {% endfor %}
   </div>
 </div>

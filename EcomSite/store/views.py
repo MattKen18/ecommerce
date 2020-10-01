@@ -33,19 +33,19 @@ def store(response):  #order by
 def store_categories(response, category):  #order by
     sellers = Profile.objects.all().filter(tier="T3").order_by('-tier_points')[:10]
 
-    if category == 'textbook' or category == 'TB':
+    if category == 'Textbooks' or category == 'TB':
         template = 'store/store_textbooks.html'
         products = Product.objects.filter(published=True, rejected=False, category='TB').order_by('-pub_date')
 
-    elif category == 'notebook' or category == 'NB' :
+    elif category == 'Notebooks' or category == 'NB' :
         template = 'store/store_notebooks.html'
         products = Product.objects.filter(published=True, rejected=False, category='NB').order_by('-pub_date')
 
-    elif category == 'reading book' or category == 'RB':
+    elif category == 'Reading Books' or category == 'RB':
         template = 'store/store_reading.html'
         products = Product.objects.filter(published=True, rejected=False, category='RB').order_by('-pub_date')
 
-    elif category == 'literature book' or category == 'LB':
+    elif category == 'Literature Books' or category == 'LB':
         template = 'store/store_literature.html'
         products = Product.objects.filter(published=True, rejected=False, category='LB').order_by('-pub_date')
 

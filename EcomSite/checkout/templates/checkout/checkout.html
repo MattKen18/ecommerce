@@ -29,7 +29,9 @@
 {% endfor %}
 <br>
 {% else %}
+<br>
 <h1 style="text-align: center;">Checkout</h1>
+<h1 class="light-large-heading" id="paysuccess" style="margin-top: 30px;"></h1>
 <br>
 <br>
 {% endif %}
@@ -70,7 +72,7 @@ these items.</p>
                 <a class="submit-qty-chg yes" type="submit" name="reload" onclick="reload()"><button type="submit"><i class="submit-qty-chg far fa-check-circle grow yes"></i></button></a>
               </form>
               <div class="seller-info">
-                <p>from <a href="{% url 'profileview' single.product.product_seller.id single.product.product_seller.user.username %}">{{ single.product.product_seller }}</a></p>
+                <p>from <a href="{% url 'profileview' single.product.product_seller.id single.product.product_seller.user.username %}" class="seller-profile-link">{{ single.product.product_seller }}</a></p>
               </div>
             </div>
             <div class="order-item-price">
@@ -293,7 +295,10 @@ these items.</p>
             return actions.order.capture().then(function(details) {
                 // Show a success message to the buyer
                 completeOrder()
-                alert('Transaction completed by ' + details.payer.name.given_name + '!');
+                //alert('Transaction completed by ' + details.payer.name.given_name + '!');
+                location.reload();
+                document.getElementById("paysuccess").innerHTML = "Payment Successful!";
+
             });
         }
 

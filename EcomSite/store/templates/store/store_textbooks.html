@@ -13,9 +13,9 @@
     <a href="{% url 'store'  %}" class="categories-links-btn grow-medium"><p class="categories-options-items">all</p></a>
     {% for category in categories %}
       {% if forloop.counter0 == 0 %}
-      <a href="{% url 'categories' category %}" id="cat-{{ forloop.counter0 }}" class="categories-links-btn grow-medium activecat"><p class="categories-options-items">{{ category }}s</p></a>
+      <a href="{% url 'categories' category %}" id="cat-{{ forloop.counter0 }}" class="categories-links-btn grow-medium activecat"><p class="categories-options-items">{{ category }}</p></a>
       {% else %}
-      <a href="{% url 'categories' category %}" id="cat-{{ forloop.counter0 }}" class="categories-links-btn grow-medium"><p class="categories-options-items">{{ category }}s</p></a>
+      <a href="{% url 'categories' category %}" id="cat-{{ forloop.counter0 }}" class="categories-links-btn grow-medium"><p class="categories-options-items">{{ category }}</p></a>
       {% endif %}
     {% endfor %}
   </div>

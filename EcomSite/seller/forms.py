@@ -95,9 +95,9 @@ class AddSecondaryImages(forms.ModelForm):
         fields = ['image']
 
 class EditProduct(forms.ModelForm):
-    name = forms.CharField(required=False, max_length=50, label="Title")
+    name = forms.CharField(required=False, max_length=70, label="Title")
     price = forms.FloatField(required=False, min_value=1)
-    details = forms.CharField(required=False, max_length=150, help_text="e.g. The Hate You Give hardcover by Angie Thomas 2 years old. ")
+    details = forms.CharField(required=False, max_length=200, help_text="e.g. The Hate You Give hardcover by Angie Thomas 2 years old. ")
     category = forms.ChoiceField(required=False, choices=categories)
     image = forms.ImageField(required=False)
     condition = forms.ChoiceField(required=False, choices=conditions)

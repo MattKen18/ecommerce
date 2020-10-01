@@ -11,15 +11,16 @@ from django_countries.fields import CountryField
 # Create your models here.
 
 categories = [
-        ('TB', 'textbook'),
-        ('NB', 'notebook'),
-        ('LB', 'literature book'),
-        ('RB', 'reading book'),
+        ('TB', 'Textbooks'),
+        ('NB', 'Notebooks'),
+        ('LB', 'Literature Books'),
+        ('RB', 'Reading Books'),
 
 ]
 
 conditions = [
         ('BN', 'Brand New'),
+        ('NGC', 'New Good Condition'),
         ('NPC', 'New Poor Condition'),
         ('UGD', 'Used Good Condition'),
         ('UPC', 'Used Poor Condition'),
