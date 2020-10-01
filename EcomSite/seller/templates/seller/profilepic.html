@@ -4,7 +4,9 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<h1 style="text-align: center;">Profile Image Upload</h1>
+<br>
+<br>
+<h1 class="heading-border-left propicinitial">Profile Image Upload</h1>
 {% if messages %}
   {% for message in messages %}
     <p id="message">{{ message }}</p>
@@ -12,7 +14,7 @@
   {% endfor %}
 {% endif %}
 <br>
-<hr>
+<br>
 <br>
 <div class="col-lg-4 profile-image-holder element-container">
   <div class="seller-profile-pic-holder">
@@ -29,8 +31,9 @@
       {% endfor %}
       <br>
       <br>
+      <br>
       <div class="submitbt-holder">
-        <button class="btn btn-outline-primary upload-profilepic-btn" type="submit" name="button" onclick="this.disabled=true;this.form.submit();">Update</button>
+        <button class="medium-btn upload-profilepic-btn" type="submit" name="button" onclick="this.disabled=true;this.form.submit();">Update</button>
       </div>
     </form>
     <br>

@@ -57,7 +57,7 @@ class MiscForm(forms.ModelForm):
         model = Profile
         fields = ['note']
         widgets = {'note': forms.Textarea(attrs={"placeholder":"This is the perfect time to lay out your terms...",
-                                                 "style": "resize: none;"})}
+                                                 "style": "resize: none;", "rows": 4})}
         labels = {"note": "Seller's Note"}
 
 

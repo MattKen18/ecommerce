@@ -8,20 +8,25 @@
 
 <form class="form-group signup-login" action="{% url 'registerseller' %}" method="post">
   {% csrf_token %}
-  <h1> Official Seller Registration </h1>
+  <br>
+  <h1 class="heading-border-left"> Official Seller Registration </h1>
   <br>
   {% if messages %}
     {% for message in messages %}
       <p id="message">{{ message }}</p>
     {% endfor %}
   {% endif %}
-  <hr>
+  <br>
+  <br>
   <h2>Personal Info</h2>
+  <hr>
   <br>
   {{ personalform|crispy }}
-  <hr>
+  <br>
+  <br>
   <h2>Contact Info</h2>
   <hr>
+  <br>
   {{ contactform|crispy }}
   <br>
   <br>
@@ -29,12 +34,16 @@
   <br>
   <br>
   <h2>Home Address</h2><small class="subscript"> ( You may leave blank if your home address is the same as your shipping address )</small>
-  <br>
   <hr>
+  <br>
   {{ addrform|crispy }}
-
+  <br>
   <div class="submitbt-holder">
-    <button class="btn btn-outline-success submit" type="submit" name="submitbt"><a href="{% url 'registerseller' %}"></a>Next</button>
+    <button class="medium-btn" type="submit" name="submitbt"><a href="{% url 'registerseller' %}"></a>Next</button>
   </div> <!-- take out this button when the other form is put in so that one button can submit everything-->
 </form>
+
+<div class="space-medium">
+
+</div>
 {% endblock %}

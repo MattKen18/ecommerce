@@ -34,6 +34,7 @@
 <br>
 <br>
 <br>
+{% if page_obj %}
 <div class="row items-container">
   {% for product in page_obj %}
   <a class="product-link" href="{% url 'detail' product.id %}">
@@ -87,5 +88,15 @@
     </span>
   </div>
 </div>
-
+{% else %}
+<br>
+<div class="no-sales-notice">
+  <div class="">
+    <h3 class='no-sales'>You have not submitted any products.</h3>
+  </div>
+  <div class="">
+    <img src="{% static 'images/sitesvgs/cryingdinosaur.svg'%}" alt="cryingdinosar">
+  </div>
+</div>
+{% endif %}
 {% endblock body%}

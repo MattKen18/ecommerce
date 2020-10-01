@@ -176,28 +176,32 @@ def single_buy(request, pk):
     customer = get_object_or_404(Customer, user=request.user)
     single_buy, created = SingleBuy.objects.get_or_create(customer=customer, product=product)
     no_more_stock = ''
-
-    try:
-        detail_single_amt = request.POST['detailorder_amt']
-        detail_single_amt = int(detail_single_amt)
-
-    except:
-        if single_buy.quantity >= single_buy.product.amt_available:
-            single_buy.delete()
-            no_more_stock = messages.error(request, 'No more items in stock, currently there are ' + str(single_buy.product.amt_available) + ' item(s) available.')
-            return redirect('store')
-        else:
-            single_buy.quantity += 1
-            single_buy.save()
-
+    
+    if product.paid == False or product.verified == False or product.published == False:
+        messages.info(request, "Product has not been published.")
+        return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
     else:
-        if single_buy.quantity >= single_buy.product.amt_available or single_buy.quantity + detail_single_amt > single_buy.product.amt_available:
-            single_buy.delete()
-            no_more_stock = messages.error(request, 'No more items in stock, currently there are ' + str(single_buy.product.amt_available) + ' item(s) available.')
-            return redirect('detail', pk=pk)
+        try:
+            detail_single_amt = request.POST['detailorder_amt']
+            detail_single_amt = int(detail_single_amt)
+
+        except:
+            if single_buy.quantity >= single_buy.product.amt_available:
+                single_buy.delete()
+                no_more_stock = messages.error(request, 'No more items in stock, currently there are ' + str(single_buy.product.amt_available) + ' item(s) available.')
+                return redirect('store')
+            else:
+                single_buy.quantity += 1
+                single_buy.save()
+
         else:
-            single_buy.quantity = detail_single_amt
-            single_buy.save()
+            if single_buy.quantity >= single_buy.product.amt_available or single_buy.quantity + detail_single_amt > single_buy.product.amt_available:
+                single_buy.delete()
+                no_more_stock = messages.error(request, 'No more items in stock, currently there are ' + str(single_buy.product.amt_available) + ' item(s) available.')
+                return redirect('detail', pk=pk)
+            else:
+                single_buy.quantity = detail_single_amt
+                single_buy.save()
 
     return redirect('checkout')
 

@@ -1592,6 +1592,19 @@ p.cart-product-price-full {
   margin: auto;
 }
 
+.heading-border-left {
+  font-family: "Raleway";
+  border-left: 3px solid #21d192;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.form-group.signup-login h2 {
+  font-weight: 300;
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
 /* checkout */
 
 #paypal-holder {
@@ -1701,7 +1714,7 @@ p.cart-product-price-full {
 }
 
 .order-item-name {
-  height: 50px;
+  height: 60px;
 }
 
 .order-item-name p {
@@ -2467,8 +2480,14 @@ img.seller-profile-pic {
 }
 
 /*profile image update */
+
+.heading-border-left.propicinitial {
+  width: 420px;
+  margin: auto;
+}
+
 .profile-image-holder {
-  border: 1px solid black;
+  box-shadow: none;
   padding: 15px;
   margin: auto;
   width: 350px;
@@ -2483,6 +2502,10 @@ input#id_profile_pic{
   flex-direction: column;
 }
 
+
+.profile-image-holder.element-container .seller-profile-pic-holder {
+  border: none;
+}
 /*seller profile view*/
 .col-lg-4.profile-image-holder.element-container.seller-profile-view {
   border: 1px solid transparent;
