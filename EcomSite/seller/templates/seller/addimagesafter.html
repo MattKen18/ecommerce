@@ -49,7 +49,7 @@
   </div>
 </div>
 
-<form class="form-group" action="{% url 'addimages' product.id 'primary' %}" method="post" enctype="multipart/form-data">
+<form class="form-group" action="{% url 'addimagesafter' product.id 'primary' %}" method="post" enctype="multipart/form-data">
   {% csrf_token %}
   <br>
   {% for field in primageform %}
@@ -65,7 +65,7 @@
   </div>
 </form>
 
-<form class="form-group" action="{% url 'addimages' product.id 'secondary'%}" method="post" enctype="multipart/form-data">
+<form class="form-group" action="{% url 'addimagesafter' product.id 'secondary'%}" method="post" enctype="multipart/form-data">
   {% csrf_token %}
   <br>
   {% for field in imagesform %}

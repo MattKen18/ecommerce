@@ -29,7 +29,10 @@
 {% endblock current %}
 <br>
 <br>
-<i class="seller-products fas fa-circle"></i> <span style="font-weight: lighter; font-family: Raleway; opacity: 0.7;"> Re-evaluating</span>
+<i class="seller-products fas fa-circle" style="color: green;"></i> <span class="color-indicator-guide">Published</span>
+<i class="seller-products fas fa-circle"></i> <span class="color-indicator-guide">Not Published</span>
+<i class="seller-products fas fa-circle" style="color: yellow;"></i> <span class="color-indicator-guide">Re-evaluating</span>
+
 <br>
 <br>
 {% if page_obj %}
@@ -49,11 +52,17 @@
         </div>
         <div class="product-price">
           <p class="product-price-text"><strong>${{ product.price|floatformat:2 }}</strong></p>
-          {% if product.re_evaluating %}
-          <div class="evaluating-icon-holder">
+          <div class="status-icon-holder">
+            {% if product.re_evaluating %}
+            <i class="seller-products fas fa-circle" style="color: yellow;"></i>
+            {% endif %}
+            {% if product.published %}
+            <i class="seller-products fas fa-circle" style="color: green;"></i>
+            {% endif %}
+            {% if not product.published %}
             <i class="seller-products fas fa-circle"></i>
+            {% endif %}
           </div>
-          {% endif %}
         </div>
         <div class="add-to-cart-buy-btn-holder">
           <a class="btn btn-outline-success add-to-cart-btn" href="{% url 'editproduct' product.id %}">Edit</a>

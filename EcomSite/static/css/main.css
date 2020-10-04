@@ -733,6 +733,11 @@ a.categories-links-btn.activecat {
   color: black;
 }
 
+.row.seller-products.profile-view-products .product-price-text {
+  width: 100%;
+  font-weight: bolder;
+}
+
 
 .col-lg-3.product-item {
   margin-bottom: 100px;
@@ -2005,19 +2010,29 @@ a.delete-secondary-image:hover {
   margin: auto;
 }
 
+.color-indicator-guide {
+  font-weight: lighter;
+  font-family: "Raleway";
+  opacity: 0.7;
+  margin-right: 10px;
+}
+
 .seller-products.fas.fa-circle {
   font-size: 10px;
   color: red;
+  opacity: 0.5;
 }
 
 .product-price {
   display: flex;
 }
 
-.evaluating-icon-holder {
+.status-icon-holder {
   width: 50%;
   margin-bottom: 10px;
   text-align: center;
+  display: flex;
+  flex-direction: column;
 }
 
 .product-price-text {

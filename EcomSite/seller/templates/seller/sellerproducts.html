@@ -32,7 +32,7 @@
           <p class="product-details-text">{{ product.details }}</p>
         </div>
         <div class="product-price">
-          <p class="product-price-text"><strong>${{ product.price|floatformat:2 }}</strong></p>
+          <p class="product-price-text"><strong>${{ product.price|floatformat:2 }} JMD</strong></p>
         </div>
         <div class="add-to-cart-buy-btn-holder">
           <a class="btn btn-outline-success add-to-cart-btn" href="{% url 'addtocart' product.id  %}"> Add to Cart</a>

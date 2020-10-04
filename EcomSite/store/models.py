@@ -1,4 +1,5 @@
 import datetime
+import os
 import uuid
 from django.db import models
 from django.contrib.auth.models import User, Group
@@ -110,10 +111,40 @@ class Product(models.Model):
             url = ''
         return url
 
+@receiver(models.signals.post_delete, sender=Product)
+def auto_delete_file_on_delete(sender, instance, **kwargs):
+    """
+    Deletes file from filesystem
+    when corresponding `Product` object is deleted.
+    """
+    if instance.image:
+        if os.path.isfile(instance.image.path):
+            os.remove(instance.image.path)
+
+@receiver(models.signals.pre_save, sender=Product)
+def auto_delete_file_on_change(sender, instance, **kwargs):
+    """
+    Deletes old file from filesystem
+    when corresponding `Product` object is updated
+    with new file.
+    """
+    if not instance.pk:
+        return False
+
+    try:
+        old_file = Product.objects.get(pk=instance.pk).image
+    except Product.DoesNotExist:
+        return False
+
+    new_file = instance.image
+    if not old_file == new_file:
+        if os.path.isfile(old_file.path):
+            os.remove(old_file.path)
+
 
 class ProductImages(models.Model):
     product = models.ForeignKey(Product, blank=True, null=True, on_delete=models.CASCADE)
-    image = models.ImageField(null=True, blank=True)
+    image = models.ImageField(upload_to='products/%Y/%m/%d/', null=True, blank=True)
 
     def __str__(self):
         return self.product.product_seller.__str__() + "'s " + "'{}'".format(self.product.name) + " secondary image."
@@ -126,6 +157,15 @@ class ProductImages(models.Model):
             url = ''
         return url
 
+@receiver(models.signals.post_delete, sender=ProductImages)
+def auto_delete_file_on_delete(sender, instance, **kwargs):
+    """
+    Deletes file from filesystem
+    when corresponding `ProductImages` object is deleted.
+    """
+    if instance.image:
+        if os.path.isfile(instance.image.path):
+            os.remove(instance.image.path)
 
 
 class Cart(models.Model):

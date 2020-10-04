@@ -28,7 +28,7 @@ def admin_verify(request):
 @allowed_users(allowed_roles=['staff'])
 def verify_new(request):
     template = "adminverify/newproductsverify.html"
-    unverified = Product.objects.all().filter(published=False, re_evaluating=False).order_by('-req_date')
+    unverified = Product.objects.all().filter(published=False, re_evaluating=False, edited=False).order_by('-req_date')
     categories = Product._meta.get_field('category').choices
     conditions = Product._meta.get_field('condition').choices
 
@@ -217,7 +217,7 @@ def product_update(request, pk): #new products
 def product_update_evaluate(request, pk): #products that have been edited or restocked
 
     product, created = Product.objects.get_or_create(pk=pk)
-    unverified = Product.objects.all().filter(published=False).order_by('-req_date')
+    unverified = Product.objects.all().filter(published=False, edited=True, re_evaluating=True).order_by('-req_date')
 
     if request.method == "POST":
         imageform = ImageUpload(request.POST, request.FILES)

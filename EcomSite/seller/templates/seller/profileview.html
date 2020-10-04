@@ -85,7 +85,7 @@
           <hr>
 
         </div>
-        <div class="row seller-products">
+        <div class="row seller-products profile-view-products">
           {% for product in products %}
           <a class="product-link" href="{% url 'detail' product.id %}">
             <div class="col-lg-3 product-item">
@@ -100,7 +100,7 @@
                   <p class="product-details-text">{{ product.details }}</p>
                 </div>
                 <div class="product-price">
-                  <p class="product-price-text"><strong>${{ product.price|floatformat:2 }}</strong></p>
+                  <p class="product-price-text">${{ product.price|floatformat:2 }} JMD</p>
                 </div>
                 <div class="add-to-cart-buy-btn-holder">
                   <a style="display: none;" class="btn btn-outline-success add-to-cart-btn" href="{% url 'addtocart' product.id  %}"> Add to Cart</a>

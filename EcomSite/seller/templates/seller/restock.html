@@ -5,12 +5,11 @@
 
 
 {% block activehead %}
-  <a href="{% url 'sellerhome' %}" class="grow">Home</a>
-  <a href="{% url 'createproduct' %}" class="grow">Submit Product</a>
-  <a href="{% url 'sellerproducts' %}" class="active-seller-heading grow">My Products</a>
-  <a href="{% url 'sales' %}" class="grow">My Sales</a>
-  <a href="{% url 'pickup' %}" class="grow">Request Pick-up</a>
-  <a href="{% url 'inquiries' %}" class="grow">Payment Inquiries</a>
+  <a href="{% url 'sellerhome' %}" class="slide-down">Home</a>
+  <a href="{% url 'createproduct' %}" class="slide-down">Submit Product</a>
+  <a href="{% url 'sellerproducts' %}" class="active-seller-heading">My Products</a>
+  <a href="{% url 'sales' %}" class="slide-down">My Sales</a>
+  <a href="{% url 'pickup' %}" class="slide-down">Request Pick-up</a>
 {% endblock activehead %}
 
 
@@ -92,10 +91,7 @@
 <br>
 <div class="no-sales-notice">
   <div class="">
-    <h3 class='no-sales'>You have not submitted any products.</h3>
-  </div>
-  <div class="">
-    <img src="{% static 'images/sitesvgs/cryingdinosaur.svg'%}" alt="cryingdinosar">
+    <h3 class='no-sales'>No products need re-stocking.</h3>
   </div>
 </div>
 {% endif %}
