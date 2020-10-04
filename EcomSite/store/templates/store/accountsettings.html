@@ -1,0 +1,77 @@
+{% extends 'store/main.html' %}
+{% load static %}
+{% block title %} Product Details {% endblock %}
+{% load crispy_forms_tags %}
+{% load widget_tweaks %}
+
+{% block content %}
+{% if messages %}
+{% for message in messages %}
+<br>
+<p id="message">{{ message }}</p>
+<hr>
+{% endfor %}
+{% else %}
+<br>
+<h1 class="account-large-heading">Account Settings</h1>
+<hr>
+{% endif %}
+<br>
+<br>
+<div class="accountsettings-form-holder">
+  <h2 class="account-heading">User</h2>
+  <form class="" action="{% url 'accountsettings' user.username 'info' %}" method="post">
+    {% csrf_token %}
+    {{ infoform|crispy }}
+    <div class="submitbt-holder">
+      <button class="medium-btn" type="submit" name="button">Update</button>
+    </div>
+  </form>
+</div>
+<div class="space-medium"></div>
+
+<div class="accountsettings-form-holder">
+  <form class="" action="{% url 'accountsettings' user.username 'user'%}" method="post">
+    {% csrf_token %}
+    {{ userform|crispy }}
+    <div class="submitbt-holder">
+      <button class="medium-btn" type="submit" name="button">Update</button>
+    </div>
+  </form>
+</div>
+<hr>
+<div class="space-medium"></div>
+
+<div class="accountsettings-form-holder">
+  <h2 class="account-heading">Change Password</h2>
+  <form class="" action="{% url 'accountsettings' user.username 'password'%}" method="post">
+    {% csrf_token %}
+    <div class="form-group">
+      <label for="original_password">Original Password</label>
+      <input id="original_password" class="form-control" type="password" name="original_password" required>
+    </div>
+    {{ passwordform|crispy }}
+    <small style="color: red;">After successfull password change you will be redirected to login page.</small>
+    <div class="submitbt-holder">
+      <button class="medium-btn" type="submit" name="button">Update</button>
+    </div>
+  </form>
+</div>
+<hr>
+<div class="space-medium"></div>
+
+<div class="accountsettings-form-holder">
+  <h2 class="account-heading">Shipping Address</h2>
+  <form class="" action="{% url 'accountsettings' user.username 'shipping'%}" method="post">
+    {% csrf_token %}
+    {{ shipform|crispy }}
+    <div class="submitbt-holder">
+      <button class="medium-btn" type="submit" name="button">Update</button>
+    </div>
+  </form>
+</div>
+<hr>
+<div class="space-medium"></div>
+
+
+{% endblock content %}

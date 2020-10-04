@@ -5,8 +5,11 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from seller.models import Profile, HomeAddress
 from .models import *
+from .forms import *
 from checkout.decorators import has_shipping
 from .decorators import authenticated_user, unauthenticated_user, allowed_users
+from django.contrib.auth.hashers import check_password
+
 # Create your views here.
 
 def store(response):  #order by
@@ -142,10 +145,10 @@ def add_to_cart(request, pk):
             elif order_item.quantity <= 0: #if adding item that has no stock, then prevent it from showing in cart i.e deleting it
                 order_item.delete()
             elif order_item.quantity == order_item.product.amt_available:
-                no_more_stock = messages.error(request, 'No more items in stock, currently there are ' + str(order_item.product.amt_available) + ' item(s) available.')
+                no_more_stock = messages.error(request, 'Cannot add more items to cart')
                 return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
             else:
-                no_more_stock = messages.error(request, 'No more items in stock, currently there are ' + str(order_item.product.amt_available) + ' item(s) available.')
+                no_more_stock = messages.error(request, 'Cannot add more items to cart')
                 return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
 
         else:
@@ -158,7 +161,7 @@ def add_to_cart(request, pk):
                 else:
                     if order_item.quantity <= 0:
                         order_item.delete()
-                    no_more_stock = messages.error(request, 'No more items in stock, currently there are ' + str(order_item.product.amt_available) + ' item(s) available.')
+                    no_more_stock = messages.error(request, 'Cannot add more items to cart')
                     return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
             else:
                 if order_item.quantity >= 1:
@@ -170,13 +173,22 @@ def add_to_cart(request, pk):
     return redirect('cart')
 
 @authenticated_user
+def clear_cart(request):
+    cart = get_object_or_404(Cart, user=request.user)
+    order_items = OrderItem.objects.filter(cart=cart)
+    for item in order_items:
+        item.delete()
+    messages.info(request, "Cart items deleted")
+    return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+
+@authenticated_user
 @has_shipping
 def single_buy(request, pk):
     product = get_object_or_404(Product, pk=pk)
     customer = get_object_or_404(Customer, user=request.user)
     single_buy, created = SingleBuy.objects.get_or_create(customer=customer, product=product)
     no_more_stock = ''
-    
+
     if product.paid == False or product.verified == False or product.published == False:
         messages.info(request, "Product has not been published.")
         return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
@@ -284,7 +296,97 @@ def delete_item(request, pk):
     deleted = messages.info(request, "Item removed from cart")
     return redirect('cart')
 
+@authenticated_user
+def account_settings(request, username, form):
+    template = "store/accountsettings.html"
+    user = request.user
 
+    if request.method == "POST":
+        infoform = CustomerInfoform(request.POST)
+        userform = CustomerUserform(request.POST)
+        passwordform = CustomerPasswordForm(request.POST)
+        shipform = CustomerShippingAddressForm(request.POST)
+        if form == "info":
+            if infoform.is_valid():
+                fname = infoform.cleaned_data['first_name']
+                lname = infoform.cleaned_data['last_name']
+                email = infoform.cleaned_data['email']
+
+                user.first_name = fname
+                user.last_name = lname
+                user.email = email
+
+                user.save()
+                messages.info(request, "Account updated")
+                return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+        elif form == "user":
+            if userform.is_valid():
+                uname = userform.cleaned_data['username']
+                user.username = uname
+
+                user.save()
+                messages.info(request, "Account updated")
+                return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+        elif form == "password":
+            if passwordform.is_valid():
+                original = request.POST['original_password']
+                if check_password(original, user.password) == True:
+
+                    password = passwordform.cleaned_data['password1']
+                    user.set_password(password)  # replace with your real password
+
+                    user.save()
+                    messages.info(request, "Account updated")
+                    return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+                else:
+                    print(original)
+                    messages.info(request, "Incorrect original password")
+                    return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+        elif form == 'shipping':
+            if shipform.is_valid():
+                shippingaddress, created = Address.objects.get_or_create(user=user)
+
+                adl1 = shipform.cleaned_data['address_line1']
+                adl2 = shipform.cleaned_data['address_line2']
+                city = shipform.cleaned_data['city']
+                state = shipform.cleaned_data['state']
+                zip = shipform.cleaned_data['zip_code']
+                country = shipform.cleaned_data['country']
+
+                shippingaddress.address_line1 = adl1
+                shippingaddress.address_line2 = adl2
+                shippingaddress.city = city
+                shippingaddress.state = state
+                shippingaddress.zip_code = zip
+                shippingaddress.country = country
+
+                shippingaddress.save()
+                messages.info(request, "Shipping Address Updated!")
+                return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+
+    else:
+        infoform = CustomerInfoform(initial={"first_name": "%s" % user.first_name,
+                                             "last_name": "%s" % user.last_name,
+                                             "username": "%s" % user.username,
+                                             "email": "%s" % user.email})
+        userform = CustomerUserform(initial={"username": "%s" % user.username})
+        passwordform = CustomerPasswordForm()
+        try:
+            shippingaddr = Address.objects.get(user=user)
+        except:
+            shipform = CustomerShippingAddressForm()
+        else:
+            shipform = CustomerShippingAddressForm(
+                                initial={"address_line1": "%s" %shippingaddr.address_line1,
+                                "address_line2": "%s" %shippingaddr.address_line2,
+                                "city": "%s" %shippingaddr.city,
+                                "state": "%s" %shippingaddr.state,
+                                "zip_code": "%s" %shippingaddr.zip_code,
+                                "country": "%s" %shippingaddr.country,})
+
+    context = {"infoform": infoform, "userform": userform, "passwordform": passwordform,
+               "shipform": shipform}
+    return render(request, template, context)
 
 
 #def login(request):

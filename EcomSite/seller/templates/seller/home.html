@@ -81,12 +81,11 @@
         <div class="detail-view-inner">
           <div class="detail-view-inner-headings">
             {% block activehead %}
-              <a href="{% url 'sellerhome' %}" class="active-seller-heading grow">Home</a>
-              <a href="{% url 'createproduct' %}" class="grow">Submit Product</a>
-              <a href="{% url 'sellerproducts' %}" class="grow">My Products</a>
-              <a href="{% url 'sales' %}" class="grow">My Sales</a>
-              <a href="{% url 'pickup' %}" class="grow">Request Pick-up</a>
-              <a href="{% url 'inquiries' %}" class="grow">Payment Inquiries</a>
+              <a href="{% url 'sellerhome' %}" class="active-seller-heading">Home</a>
+              <a href="{% url 'createproduct' %}" class="slide-down">Submit Product</a>
+              <a href="{% url 'sellerproducts' %}" class="slide-down">My Products</a>
+              <a href="{% url 'sales' %}" class="slide-down">My Sales</a>
+              <a href="{% url 'pickup' %}" class="slide-down">Request Pick-up</a>
             {% endblock activehead %}
           </div>
           <hr>

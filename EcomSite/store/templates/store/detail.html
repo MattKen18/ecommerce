@@ -3,14 +3,17 @@
 {% block title %} Product Details {% endblock %}
 
 {% block content %}
-
 {% if messages %}
 {% for message in messages %}
 <br>
 <p id="message">{{ message }}</p>
-{% endfor %}
-<br>
 <hr>
+<br>
+<br>
+{% endfor %}
+{% else %}
+<br>
+<br>
 {% endif %}
 
 <div class="detail-page top-options">
@@ -77,7 +80,7 @@
               <p>Condition: {{ product.get_condition_display }}</p>
             </div>
             <div class="detail products-price">
-              <p>Price: <span class="highlight-price">${{ product.price }} USD</span></p>
+              <p>Price: <span class="highlight-price">${{ product.price }} JMD</span></p>
             </div>
             <br>
             <div class="detail products-stock">

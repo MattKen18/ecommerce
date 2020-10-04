@@ -70,7 +70,7 @@ class ProPicForm(forms.ModelForm):
 
 
 class CreateProductForm(forms.ModelForm):
-    price = forms.FloatField(min_value=1)
+    price = forms.FloatField(min_value=1, help_text="Quote price in JMD")
     #details = forms.CharField(max_length=150, help_text="e.g. The Hate You Give hardcover by Angie Thomas 2 years old. ")
     category = forms.ChoiceField(choices=categories)
     image = forms.ImageField(required=False)
@@ -96,14 +96,21 @@ class AddSecondaryImages(forms.ModelForm):
 
 class EditProduct(forms.ModelForm):
     name = forms.CharField(required=False, max_length=70, label="Title")
-    price = forms.FloatField(required=False, min_value=1)
-    details = forms.CharField(required=False, max_length=200, help_text="e.g. The Hate You Give hardcover by Angie Thomas 2 years old. ")
+    price = forms.FloatField(required=False, min_value=1, help_text="Quote price in JMD")
     category = forms.ChoiceField(required=False, choices=categories)
     image = forms.ImageField(required=False)
     condition = forms.ChoiceField(required=False, choices=conditions)
     class Meta:
         model = Product
         fields = [ 'image', 'name', 'price', 'details', 'category', 'condition']
+        widgets = {'details': forms.Textarea(attrs={"style": "resize: none;", "rows": 5})}
+
+    def __init__(self, *args, **kwargs):
+        # first call parent's constructor
+        super(EditProduct, self).__init__(*args, **kwargs)
+        # there's a `fields` property now
+        self.fields['details'].required = False
+
 
 
 class Restock(forms.ModelForm):

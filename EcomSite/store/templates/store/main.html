@@ -76,6 +76,9 @@
                 {% endif %}
                 <a class="go-to cart-dropdown" href="{% url 'cart' %}"><p>My Cart</p></a>
                 <a class="go-to checkout-dropdown" href="{% url 'checkout' %}"><p>Go to Checkout</p></a>
+                {% if user.is_authenticated %}
+                  <a class="go-to checkout-dropdown" href="{% url 'accountsettings' user.username 'View' %}"><p>Account Settings</p></a>
+                {% endif %}
                 <div class="dropdown-divider"></div>
                 {% if user.is_authenticated %}
                   <a class="login-logout" href="{% url 'logout' %}">Logout</a>
@@ -104,7 +107,7 @@
                   </a>
                   <div class="cart-dropdown dropdown-menu dropdown-menu-right">
                     {% if cart %}
-                      <p class="cart-sneak-heading">Cart Total: <span>${{ cart_total|floatformat:2 }}</span></p>
+                      <p class="cart-sneak-heading">Cart Total: <span>${{ cart_total|floatformat:2 }} JMD</span></p>
                       {% for item in cart%}
                         <div class="cart-item-sneak-row">
                           <div class="item-sneak-details-holder">

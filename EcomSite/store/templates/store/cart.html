@@ -51,6 +51,7 @@
 </div>
 <hr>
 {% if cart %}
+<p class="clear-cart"><a href="{% url 'clearcart' %}">clear cart</a></p>
 <div class="row cart-content">
   {% for item in cart%}
     <div class="element-container cart-item">
@@ -70,7 +71,7 @@
           <p>{{ item.product.details }}</p>
         </div>
         <div class="cart-product-price-seller-holder">
-          <p class="cart-product-price"><span class="cart-product-price-span">${{ item.product.price }} USD</span></p>
+          <p class="cart-product-price"><span class="cart-product-price-span">${{ item.product.price }} JMD</span></p>
           <a href="{% url 'profileview' item.product.product_seller.id item.product.product_seller.user.username %}" class="cart-product-seller grow"><p>{{ item.product.product_seller }}</p></a>
         </div>
       </div>

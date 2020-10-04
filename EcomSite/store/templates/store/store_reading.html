@@ -36,7 +36,7 @@
 <div class="row items-container">
   {% for product in page_obj %}
   <a class="product-link" href="{% url 'detail' product.id %}">
-    <div class="col-lg-3 product-item grow-small">
+    <div class="col-lg-3 product-item">
       <div class="product-item-content">
         <div class="thumbnail-holder">
           <img class='thumbnail-img' src="{{ product.imageURL }}">

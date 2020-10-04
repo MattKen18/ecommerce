@@ -449,8 +449,11 @@ a.cart-icon-link.nav-link.dropdown-toggle::after {
 p.cart-sneak-heading {
   text-align: center;
   margin: 0;
-  width: 130px;
+  width: 170px;
   font-size: 12px;
+  overflow: hidden;
+  word-wrap: break-word;
+  text-overflow: ellipsis;
 }
 
 p.cart-sneak-heading span {
@@ -1168,6 +1171,27 @@ span.highlight-price {
   font-weight: lighter;
 }
 /*cart*/
+
+p.clear-cart {
+  position: relative;
+  height: 20px;
+}
+
+.clear-cart a{
+  font-size: 18px;
+  color: grey;
+  opacity: 0.5;
+  font-weight: bolder;
+  position: absolute;
+  right: 10px;
+  transition: all .2s ease-in-out;
+}
+
+.clear-cart a:hover {
+  opacity: 1;
+  text-decoration: none;
+  color: grey;
+}
 
 span.item-price {
   font-weight: bolder;
@@ -2346,12 +2370,25 @@ img.seller-profile-pic {
 
 }
 
-.active-seller-heading {
+.slide-down {
+  transition: all .2s ease-in-out;
+}
+
+.slide-down:hover {
+  transform: translateY(10px);
+}
+
+.detail-view-inner-headings a.active-seller-heading {
   padding: 10px;
-  border: 1px solid #E4EEE4;
-  border-radius: 10px;
+  border-bottom: 3px solid #21d192;
+  font-size: 20px;
+}
+
+.detail-view-inner-headings a {
+  color: grey;
+  font-weight: bolder;
+  padding: 5px;
   font-size: 18px;
-  background-color: #E4EEE4;
 }
 
 .detail-view-inner-headings a:hover {
@@ -2772,6 +2809,38 @@ div.space-medium {
 .seller-profile-link:hover {
   text-decoration: none;
   color: dodgerblue;
+}
+
+/* account settings */
+
+.account-large-heading {
+  text-align: center;
+  font-weight: lighter;
+}
+
+.account-heading {
+  color: grey;
+  border-left: 3px solid #21d192;
+  padding-left: 5px;
+  margin-bottom: 30px;
+}
+
+.accountsettings-form-holder .form-group{
+  margin-bottom: 30px;
+}
+
+.accountsettings-form-holder label{
+  font-weight: bolder;
+  font-size: 18px;
+}
+
+.accountsettings-form-holder input {
+  opacity: 0.7;
+  font-weight: 500;
+}
+
+.accountsettings-form-holder small {
+  font-weight: 500;
 }
 
 /*footer*/
