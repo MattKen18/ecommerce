@@ -204,6 +204,12 @@ def update_seller_profile(request, form):
                 messages.info(request, "Seller's note Updated!")
             else:
                 print("not")
+    else:
+        if form == "rempropic":
+            image = Profile._meta.get_field('profile_pic').default #default profile pic
+            profile.profile_pic = image #sets the image back to the default
+            profile.save()
+            messages.info(request, "Profile picture removed!")
 
     return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
 

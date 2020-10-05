@@ -2532,6 +2532,17 @@ img.seller-profile-pic {
 }
 
 /*profile image update */
+.remove-propic {
+  color: grey;
+  opacity: 0.7;
+  font-weight: bolder;
+}
+
+.remove-propic:hover {
+  text-decoration: none;
+  color: grey;
+  opacity: 1;
+}
 
 .heading-border-left.propicinitial {
   width: 420px;

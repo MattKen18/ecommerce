@@ -4,9 +4,14 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .forms import ShippingForm
 from .decorators import has_shipping
 from store.models import Address, Cart, OrderItem, SingleBuy, Customer, Order, SoldItem
+from seller.models import Profile
 from store.decorators import authenticated_user, unauthenticated_user
 from django.http import JsonResponse, HttpResponse
 import json
+
+from django.core.mail import EmailMessage
+from django.conf import settings
+from django.template.loader import render_to_string
 
 # Create your views here.
 
@@ -198,6 +203,29 @@ def checkout(request):
     return render(request, template, context)
 
 
+def send_order_notice(seller, user, item): #send email to seller of each cart item that was bought
+    template = render_to_string('checkout/order_notice_template.html', {'name': seller.user.username,
+                                                                 'buyer': user, 'item': item})
+    email = EmailMessage(
+            "You've got an Order!",
+            template,
+            settings.EMAIL_HOST_USER,
+            [seller.email],
+    )
+    email.fail_silently = True
+    email.send()
+
+def send_order_details_notice(buyer, order, tranID): #send email to buyer
+    template = render_to_string('checkout/order_details_template.html', {'buyer': buyer, 'order': order,
+                                                                         'tranID': tranID})
+    email = EmailMessage(
+            "Order details",
+            template,
+            settings.EMAIL_HOST_USER,
+            [buyer.email],
+    )
+    email.fail_silently = True
+    email.send()
 
 @authenticated_user
 def paymentComplete(request):
@@ -205,7 +233,6 @@ def paymentComplete(request):
     cart, created = Cart.objects.get_or_create(user=user)
     customer = get_object_or_404(Customer, user=user)
     singles = SingleBuy.objects.filter(customer=customer)
-
     #make ordered = True on the order_item objects
 
     if singles.exists():
@@ -226,17 +253,22 @@ def paymentComplete(request):
             order.singleitems.add(item)
             order.sellers.add(item.product.product_seller) #added afterwards
             sellers = [item.product.product_seller for item in order.singleitems.all()]
+
+            seller_profiles = []
+            for cus in sellers:
+                seller_profiles.append(Profile.objects.get(user=cus.user))
+
             prices = [item.total() for item in order.singleitems.all()]
             order_details = list(zip(sellers, prices))
             seller_emails = [item.product.product_seller.user.email for item in order.singleitems.all()]
-            #print(order_details)
-            send_mail(
-                "You've got an Order!",
-                'Hey %s! You just got an order from %s for \'%s\'.' %(item.product.product_seller, user, item.product.name),
-                'djangoecom808@gmail.com',
-                ['djangoecom808@gmail.com', '{}'.format(item.product.product_seller.user.email) ],
-                fail_silently=False,
-            )
+
+            for seller in seller_profiles: #sends email to all the sellers
+                send_order_notice(seller, user, item)
+
+        singleitems_order = order.singleitems.all()
+        send_order_details_notice(user, singleitems_order, order.id) #sends email to customer/buyer
+
+        for item in singles:
             item.delete()
 
 
@@ -259,18 +291,24 @@ def paymentComplete(request):
             order.items.add(item)
             order.sellers.add(item.product.product_seller)
             sellers = [item.product.product_seller for item in order.items.all()]
+
+            seller_profiles = []
+            for cus in sellers:
+                seller_profiles.append(Profile.objects.get(user=cus.user))
+
             prices = [item.total() for item in order.items.all()]
             order_details = list(zip(sellers, prices))
             seller_emails = [item.product.product_seller.user.email for item in order.items.all()]
-            #print(order_details)
-            send_mail(
-                "You've got an Order!",
-                'Hey %s! You just got an order from %s for your product %s.' %(item.product.product_seller, user, item.product.name),
-                'djangoecom808@gmail.com',
-                ['djangoecom808@gmail.com', '{}'.format(item.product.product_seller.user.email) ],
-                fail_silently=False,
-            )
+
+            for seller in seller_profiles: #sends email to all the sellers
+                send_order_notice(seller, user, item)
+
+        cartitems_order = order.items.all()
+        send_order_details_notice(user, cartitems_order, order.id) #sends email to customer/buyer
+
+        for item in cart_items:
             item.delete()
 
+    return JsonResponse("Payment Complete!", safe=False)
     #body = json.loads(request.body)
     #print("BODY:", body)

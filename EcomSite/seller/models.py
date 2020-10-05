@@ -1,8 +1,11 @@
+import os
 import uuid
 import datetime
 from django.db import models
 from django.contrib.auth.models import User
 from django_countries.fields import CountryField
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 #from store.models import Customer
 # Create your models here.
 
@@ -64,6 +67,42 @@ class Profile(models.Model):
 
     def c_date(self):
         return str(self.created_date.strftime("%d/%m/%Y"))
+
+@receiver(models.signals.post_delete, sender=Profile)
+def auto_delete_file_on_delete(sender, instance, **kwargs):
+    """
+    Deletes file from filesystem
+    when corresponding `Profile` object is deleted.
+    """
+    try:
+        if instance.profile_pic:
+            if os.path.isfile(instance.profile_pic.path):
+                os.remove(instance.profile_pic.path)
+    except:
+        pass
+
+@receiver(models.signals.pre_save, sender=Profile)
+def auto_delete_file_on_change(sender, instance, **kwargs):
+    """
+    Deletes old file from filesystem
+    when corresponding `Profile` object is updated
+    with new file.
+    """
+    try:
+        if not instance.pk:
+            return False
+
+        try:
+            old_file = Profile.objects.get(pk=instance.pk).profile_pic
+        except Profile.DoesNotExist:
+            return False
+
+        new_file = instance.profile_pic
+        if not old_file == new_file:
+            if os.path.isfile(old_file.path):
+                os.remove(old_file.path)
+    except:
+        pass
 
 class HomeAddress(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)

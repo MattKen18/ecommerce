@@ -147,7 +147,7 @@ these items.</p>
     <br>
     <div class="col-lg checkout-section right lower">
       <p class="section-content" style="font-weight: lighter; font-size: 13px; padding-left: 15px; text-align: center;">It is highly recommended to refresh page before paying, this is
-        to ensure that the products you have added to your cart hasn't been bought by another
+        to ensure that the products you have added to your cart haven't been bought by another
         user.</p>
       <div class="section-content right">
         <div class="payment-info">
@@ -294,15 +294,14 @@ these items.</p>
         onApprove: function(data, actions) {
             return actions.order.capture().then(function(details) {
                 // Show a success message to the buyer
-                completeOrder()
+                completeOrder();
                 //alert('Transaction completed by ' + details.payer.name.given_name + '!');
-                location.reload();
-                document.getElementById("paysuccess").innerHTML = "Payment Successful!";
-
+                //location.reload();
+                alert('Transaction completed by ' + details.payer.name.given_name + '!');
+                window.location.href = "{% url 'store' %}";
+                //document.getElementById("paysuccess").innerHTML = "Payment Successful!";
             });
         }
-
-
     }).render('#paypal-button-container');
   }
 

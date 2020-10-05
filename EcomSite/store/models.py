@@ -224,7 +224,7 @@ class SoldItem(models.Model):
     quantity = models.IntegerField(default=0)
     products_left = models.IntegerField(default=0)
     purchased_date = models.DateTimeField(auto_now_add=True, null=True, blank=False)
-    image = models.ImageField(null=True, blank=True)
+    image = models.ImageField(upload_to='products/%Y/%m/%d/', null=True, blank=True)
 
     def __str__(self):
         return "Sold " + self.name
@@ -245,3 +245,13 @@ class SoldItem(models.Model):
         except:
             url = ''
         return url
+
+@receiver(models.signals.post_delete, sender=SoldItem)
+def auto_delete_file_on_delete(sender, instance, **kwargs):
+    """
+    Deletes file from filesystem
+    when corresponding `SoldItem` object is deleted.
+    """
+    if instance.image:
+        if os.path.isfile(instance.image.path):
+            os.remove(instance.image.path)

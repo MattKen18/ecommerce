@@ -1,0 +1,13 @@
+Hey {{ buyer.username }}!
+
+Your order has been completed.
+
+Keep this transaction Id for future inquiries and verification.
+
+Transaction Id = {{ tranID }}
+
+
+Order Summary:
+{% for item in order %}
+  {{ item.product.name }} - {{ item.quantity }} item{{ item.quantity|pluralize }} for total: ${{ item.total }} JMD
+{% endfor %}
