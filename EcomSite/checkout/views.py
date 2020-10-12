@@ -12,6 +12,8 @@ import json
 from django.core.mail import EmailMessage
 from django.conf import settings
 from django.template.loader import render_to_string
+from store.context_processors import TIER_1, TIER_2, TIER_3
+
 
 # Create your views here.
 
@@ -235,6 +237,11 @@ def paymentComplete(request):
     singles = SingleBuy.objects.filter(customer=customer)
     #make ordered = True on the order_item objects
 
+    def tierCalc(solditems, seller): #calculates the tierPoints which determine what tier the seller should be in
+        profile = Profile.objects.get(customer=seller)
+        tier_points = (100 * solditems.count()) + (10 * profile.vouches_amt())
+        return tier_points
+
     if singles.exists():
         order = Order.objects.create(user=user)
         for item in singles:
@@ -253,6 +260,24 @@ def paymentComplete(request):
             order.singleitems.add(item)
             order.sellers.add(item.product.product_seller) #added afterwards
             sellers = [item.product.product_seller for item in order.singleitems.all()]
+
+            for seller in sellers:
+                solditems = SoldItem.objects.filter(seller=seller)
+                tier_points = tierCalc(solditems, seller)
+
+                profile = Profile.objects.get(customer=seller)
+                profile.tier_points = tier_points
+                profile.save()
+
+                # this if else block sets the tier the seller should be in based on their tier_points
+                if profile.tier_points >= TIER_3:
+                    profile.tier = "T3"
+                elif profile.tier_points < TIER_3 and profile.tier_points >= TIER_2:
+                    profile.tier = "T2"
+                else:
+                    profile.tier = "T1"
+                profile.save()
+                print(profile.tier_points)
 
             seller_profiles = []
             for cus in sellers:
@@ -292,6 +317,24 @@ def paymentComplete(request):
             order.sellers.add(item.product.product_seller)
             sellers = [item.product.product_seller for item in order.items.all()]
 
+            for seller in sellers:
+                solditems = SoldItem.objects.filter(seller=seller)
+                tier_points = tierCalc(solditems, seller)
+
+                profile = Profile.objects.get(user=seller.user)
+                profile.tier_points = tier_points
+                profile.save()
+
+                # this if else block sets the tier the seller should be in based on their tier_points
+                if profile.tier_points >= TIER_3:
+                    profile.tier = "T3"
+                elif profile.tier_points < TIER_3 and profile.tier_points >= TIER_2:
+                    profile.tier = "T2"
+                else:
+                    profile.tier = "T1"
+                profile.save()
+                print(profile.tier_points)
+
             seller_profiles = []
             for cus in sellers:
                 seller_profiles.append(Profile.objects.get(user=cus.user))
@@ -308,6 +351,10 @@ def paymentComplete(request):
 
         for item in cart_items:
             item.delete()
+
+
+
+
 
     return JsonResponse("Payment Complete!", safe=False)
     #body = json.loads(request.body)

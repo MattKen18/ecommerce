@@ -5,6 +5,11 @@ from seller.models import Profile
 
 FEE = 250 #cost per item (product fee)
 
+# threshold of each tier
+TIER_1 = 0
+TIER_2 = 1000
+TIER_3 = 10000
+
 def send_to_main(request): #use this to add context variables available to all templates
     template = 'store/main.html'
     user = request.user

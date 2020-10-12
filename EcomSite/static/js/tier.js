@@ -21,18 +21,8 @@ if (sellerTier === "T3") {
   // console.log(tierPoints);
   // console.log("tier2");
 } else if (sellerTier === "T1") {
-  propic.style.border = '6px solid #E800A6';
-  propic.style.boxShadow = 'none';
-  // console.log(sellerVouches);
-  // console.log(tierPoints);
-  // console.log("tier1");
-} else {
   propic.style.border = '1px solid transparent';
   propic.style.boxShadow = 'none';
-  // console.log(sellerVouches);
-  // console.log(tierPoints);
-  // console.log("tier0");
-}
 
 
 //console.log(propic);

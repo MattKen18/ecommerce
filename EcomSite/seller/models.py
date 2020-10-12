@@ -17,7 +17,6 @@ genders = [
 ]
 
 tiers = [
-        ('T0', 'Tier 0'),
         ('T1', 'Tier 1'),
         ('T2', 'Tier 2'),
         ('T3', 'Tier 3'),
@@ -34,8 +33,8 @@ class Profile(models.Model):
     business = models.BooleanField(default=False)
     profile_pic = models.ImageField(upload_to='profilepics/%Y/%m/%d/', default="profilepics/defaultpropic.svg", null=True, blank=True)
     note = models.CharField(max_length=200, null=True, blank=True)
-    vouches = models.ManyToManyField('store.Customer')
-    tier = models.CharField(max_length=50, null=True, blank=False, choices=tiers)
+    vouches = models.ManyToManyField('store.Customer', null=True, blank=True)
+    tier = models.CharField(max_length=50, null=True, blank=False, choices=tiers, default="T1")
     tier_points = models.IntegerField(default=0)
     created_date = models.DateTimeField(auto_now_add=True, null=True, blank=False)
 
@@ -97,8 +96,9 @@ def auto_delete_file_on_change(sender, instance, **kwargs):
         except Profile.DoesNotExist:
             return False
 
+        default_pic = instance._meta.get_field('profile_pic').default #to not remove the default picture wehen changed
         new_file = instance.profile_pic
-        if not old_file == new_file:
+        if old_file != new_file and old_file != default_pic:
             if os.path.isfile(old_file.path):
                 os.remove(old_file.path)
     except:

@@ -1,11 +1,14 @@
 import datetime
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib import messages
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from store.models import Product, ProductImages, categories, conditions
+from seller.models import Profile
 from .forms import ImageUpload
 from store.decorators import allowed_users
+from django.core.mail import EmailMessage
+from django.conf import settings
 # Create your views here.
 
 @allowed_users(allowed_roles=['staff'])
@@ -180,8 +183,10 @@ def unverify(request, pk):
 @allowed_users(allowed_roles=['staff'])
 def product_update(request, pk): #new products
 
-    product, created = Product.objects.get_or_create(pk=pk)
+    product = get_object_or_404(Product, pk=pk)
     unverified = Product.objects.all().filter(published=False).order_by('-req_date')
+    customer = product.product_seller
+    profile = get_object_or_404(Profile, customer=customer)
 
     if request.method == "POST":
         imageform = ImageUpload(request.POST, request.FILES)
@@ -211,6 +216,17 @@ def product_update(request, pk): #new products
         product.published = True
         product.save()
 
+        details = "Hey %s! your product '%s' has just been published, head over to ChegBase and check it out." %(customer.user.username, product.name)
+        email = EmailMessage(
+                "Product published",
+                details,
+                settings.EMAIL_HOST_USER,
+                [profile.email],
+        )
+        email.fail_silently = True
+        email.send()
+
+
     return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
 
 @allowed_users(allowed_roles=['staff'])
@@ -218,6 +234,8 @@ def product_update_evaluate(request, pk): #products that have been edited or res
 
     product, created = Product.objects.get_or_create(pk=pk)
     unverified = Product.objects.all().filter(published=False, edited=True, re_evaluating=True).order_by('-req_date')
+    customer = product.product_seller
+    profile = get_object_or_404(Profile, customer=customer)
 
     if request.method == "POST":
         imageform = ImageUpload(request.POST, request.FILES)
@@ -246,5 +264,15 @@ def product_update_evaluate(request, pk): #products that have been edited or res
         product.re_evaluating = False
         product.published = True
         product.save()
+
+        details = "Hey %s! your product '%s' has just been re-published, head over to ChegBase and check it out." %(customer.user.username, product.name)
+        email = EmailMessage(
+                "Product re-published",
+                details,
+                settings.EMAIL_HOST_USER,
+                [profile.email],
+        )
+        email.fail_silently = True
+        email.send()
 
     return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))

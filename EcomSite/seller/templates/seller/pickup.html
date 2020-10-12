@@ -14,13 +14,15 @@
 
 {% block body %}
 
-<br>
-<h5 class="light-large-heading">PickUp</h5>
-<br>
+
 {% if messages %}
 {% for message in messages %}
 <p id="message">{{ message }}</p>
 {% endfor %}
+{% else %}
+<br>
+<h5 class="light-large-heading">PickUp</h5>
+<br>
 <br>
 {% endif %}
 <form class="" action="{% url 'makepickup' %}" method="post">

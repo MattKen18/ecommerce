@@ -15,6 +15,10 @@ from django.http import JsonResponse
 import json
 from store.context_processors import FEE
 
+from django.core.mail import EmailMessage
+from django.conf import settings
+from django.template.loader import render_to_string
+
 
 # Create your views here.
 @authenticated_user
@@ -25,8 +29,16 @@ def seller(request):
     user = request.user
     seller = get_object_or_404(Profile, user=user)
     seller_customer = Customer.objects.get(user=user) #the only customer who can access this page must be the customer currently logged in as this is the seller home page
+    seller_profile = Profile.objects.get(customer=seller_customer)
     seller_orders = SoldItem.objects.filter(seller=seller_customer).count()#completed orders made for this seller's (customer) products because customers can also be sellers if customer.seller is true
+    seller_Products = Product.objects.filter(product_seller=seller_customer, re_evaluating=True).order_by("-req_date")[:4]
+
     addr = HomeAddress.objects.get(profile=seller)
+    try:
+
+        seller_recent_order = SoldItem.objects.filter(seller=seller_customer).order_by('-purchased_date')[0]
+    except:
+        seller_recent_order = ''
 
     customer, created = Customer.objects.get_or_create(user=user)
     if customer.seller == True:
@@ -36,7 +48,29 @@ def seller(request):
     else:
         is_seller = False
 
-    context = {"isseller": is_seller, "profile": seller, "address": addr, "sellerorders": seller_orders}
+    if request.method == "POST":
+        inqform = Inquiries(request.POST)
+        if inqform.is_valid():
+            subject = inqform.cleaned_data['subject']
+            details = inqform.cleaned_data['issue']
+
+            subject_line = "%s - %s (%s)" %(user.username, subject, seller_profile.sellerid)
+            email = EmailMessage(
+                    subject_line,
+                    details,
+                    settings.EMAIL_HOST_USER,
+                    [settings.EMAIL_HOST_USER],
+            )
+            email.fail_silently = True
+            email.send()
+            messages.info(request, "Your report has been recorded.")
+            return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+    else:
+        inqform = Inquiries()
+
+
+    context = {"isseller": is_seller, "profile": seller, "address": addr, "sellerorders": seller_orders,
+               "recent_sold": seller_recent_order, "sproducts": seller_Products, "inqform": inqform}
 
     return render(request, template, context)
 
@@ -709,6 +743,8 @@ def request_pickup(request):
 @allowed_users(allowed_roles=['seller', 'staff'])
 def pickup(request):
     user = request.user
+    customer = get_object_or_404(Customer, user=user)
+    profile = get_object_or_404(Profile, customer=customer)
 
     if request.method == "POST":
         location = request.POST["location"]
@@ -718,7 +754,22 @@ def pickup(request):
 
         pickup = Pickup.objects.create(user=user, location=location, date=date, time=time, phone=phone)
         messages.info(request, "We'll Be There!")
+
+        template = render_to_string('checkout/restock_email_template.html', {'name': user.username,
+                                                                    'location': location, 'date': date,
+                                                                    'time': time, 'phone': phone})
+        email = EmailMessage(
+                "Pickup for %s (%s)" %(user.username, profile.sellerid),
+                template,
+                settings.EMAIL_HOST_USER,
+                [profile.email],
+        )
+        email.fail_silently = True
+        email.send()
+
         return redirect('pickup')
+
+
 
 
 @authenticated_user
@@ -779,13 +830,8 @@ def vouch(request, pk):
     solditems = SoldItem.objects.filter(seller=seller_customer).count() #amt of items sold by seller
 
     def tierCalc(): #calculates the tierPoints which determine what tier the seller should be in
-        tier = (0.7 * solditems) + (0.3 * seller.vouches_amt())
+        tier = (100 * solditems) + (10 * seller.vouches_amt())
         return tier
-
-    # threshold of each tier
-    tier1 = 10
-    tier2 = 50
-    tier3 = 100
 
 
     if seller.user == user: #checks if the person trying to vouch for the seller is the actual seller
@@ -803,18 +849,15 @@ def vouch(request, pk):
         seller.save()
 
         # this if else block sets the tier the seller should be in based on their tier_points
-        if tier_points >= tier3:
+        if tier_points >= TIER_3:
             seller.tier = "T3"
-        elif tier_points < tier3 and tier_points >= tier2:
+        elif tier_points < TIER_3 and tier_points >= TIER_2:
             seller.tier = "T2"
-        elif tier_points < tier2 and tier_points >= tier1:
-            seller.tier = "T1"
         else:
-            seller.tier = "T0"
+            seller.tier = "T1"
 
         seller.save()
 
-        print(seller.tier)
         messages.info(request, "You vouched for " + seller.user.username + "!" )
         return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
 

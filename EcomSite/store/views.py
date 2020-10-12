@@ -20,7 +20,7 @@ def store(response):  #order by
                                             amt_available__gt=0).order_by('-pub_date')
     choices = Product._meta.get_field('category').choices
     categories = [choice[1] for choice in choices]
-    sellers = Profile.objects.all().filter(tier="T3").order_by('-tier_points')[:10]
+    sellers = Profile.objects.all().filter(tier="T3").order_by('-tier_points')[:10] #
 
     paginator = Paginator(products, 20)
 

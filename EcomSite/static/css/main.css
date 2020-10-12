@@ -661,6 +661,7 @@ transition: all .15s ease-in-out;
   margin-bottom: 2px;
   overflow: hidden;
   padding-bottom: 5px;
+  width: 150%;
 }
 
 
@@ -2014,7 +2015,7 @@ a.delete-secondary-image:hover {
   font-weight: lighter;
   font-family: "Raleway";
   opacity: 0.7;
-  margin-right: 10px;
+  margin-right: 20px;
 }
 
 .seller-products.fas.fa-circle {
@@ -2292,7 +2293,6 @@ form.form-group.admin-view textarea {
   width: 70%;
   height: 230px;
   border: 1px solid transparent;
-  border: 1px solid black;
   border-radius: 50%;
   margin: auto;
   overflow: hidden;
@@ -2390,7 +2390,7 @@ img.seller-profile-pic {
 }
 
 .slide-down:hover {
-  transform: translateY(10px);
+  transform: translateY(5px);
 }
 
 .detail-view-inner-headings a.active-seller-heading {
@@ -2410,6 +2410,54 @@ img.seller-profile-pic {
   text-decoration: none;
 }
 
+/*seller home view*/
+
+.seller-home-heading {
+  font-size: 20px;
+  font-weight: 500;
+  color: grey;
+  border-left: 3px solid dodgerblue;
+  padding-left: 10px;
+}
+
+.col-lg-3.mini-product-product-holder {
+  height: 200px;
+  padding: 0;
+}
+
+.mini-product-product-holder-container {
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+}
+
+.mini-product.image-holder {
+  min-height: 70%;
+  max-height: 70%;
+}
+
+.mini-product.image-holder img{
+  width: 100%;
+  height: 100%;
+}
+
+.mini-product-product-holder .mini-product-name {
+  font-size: 12px;
+  font-weight: bold;
+  height: 30%;
+  width: 90%;
+  margin-top: 10px;
+  opacity: 0.7;
+}
+
+a.mini-product-link {
+  color: black;
+}
+
+
+a.mini-product-link:hover {
+  text-decoration: none;
+}
 /* sales view */
 
 .no-sales-notice {

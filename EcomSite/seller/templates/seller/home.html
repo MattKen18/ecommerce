@@ -94,7 +94,105 @@
             {% for message in messages %}
             <p id="message">{{ message }}</p>
             {% endfor %}
+            <br>
             {% endif %}
+            <br>
+            <br>
+            <h5 class="seller-home-heading">Recent Sale</h5>
+            <hr>
+
+            {% if recent_sold %}
+            <div class="row">
+              <div class="col-lg-12 recent-sale">
+                <div class="sales-view col-lg-12">
+                  <div class="sales-view product-image">
+                    <img class="sales-view product-thumbnail-img" src="{{ recent_sold.imageURL }}" alt="product-thumbnail-image">
+                  </div>
+                  <div class="sales-view product-details">
+                    <div class="sales-view product-details-name">
+                      <p>{{ recent_sold.name }}</p>
+                    </div>
+
+                    <div class="sales-view product-details-price">
+                      <p>Price: ${{ recent_sold.price|floatformat:2 }}</p>
+                    </div>
+                  </div>
+                  <div class="sales-view sale-details">
+                    <div class="sales-view items-sold">
+                      <p>On {{ recent_sold.p_date }} at {{ recent_sold.p_time }}</p>
+                      <p>{{ recent_sold.quantity }} item{{ recent_sold.quantity|pluralize }} sold /<span> {{ recent_sold.products_left }} item{{ recent_sold.products_left|pluralize }} remaining </span></p>
+                    </div>
+                    <div class="sales-view money-earned">
+                      <p>${{ recent_sold.total|floatformat:2 }} earned</p>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            {% else %}
+            <br>
+            <br>
+            <div class="no-sales-notice">
+              <div class="">
+                <h3 class='no-sales'>You've made no sales as yet.</h3>
+              </div>
+              <div class="">
+                <img src="{% static 'images/sitesvgs/cryingdinosaur.svg'%}" alt="cryingdinosar">
+              </div>
+            </div>
+            {% endif %}
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <h5 class="seller-home-heading">Re-evaluating Products</h5>
+            <hr>
+            {% if sproducts %}
+            <div class="row">
+              {% for product in sproducts%}
+                <div class="col-lg-3 mini-product-product-holder">
+                  <a href="{% url 'detail' product.id %}" class="mini-product-link">
+                    <div class="mini-product-product-holder-container">
+                      <div class="mini-product image-holder">
+                        <img src="{{ product.imageURL }}" alt="">
+                      </div>
+                      <div class="mini-product details-holder">
+                        <p class="mini-product-name">{{ product.name }}</p>
+                      </div>
+                    </div>
+                  </a>
+                </div>
+              {% endfor %}
+            </div>
+            {% else %}
+            <br>
+            <br>
+            <div class="no-sales-notice">
+              <div class="">
+                <h3 class='no-sales'>None of your products are being re-evaluated.</h3>
+              </div>
+            </div>
+            {% endif %}
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <h5 class="seller-home-heading">Report Issue/Concern</h5>
+            <hr>
+            <div class="">
+              <form class="" action="" method="post">
+                {% csrf_token %}
+                {{ inqform|crispy }}
+                <br>
+                <div class="submitbt-placeholder">
+                  <button type="submit" class="medium-btn" name="button">Submit</button>
+                </div>
+              </form>
+            </div>
           {% endblock body%}
         </div>
       </div>
@@ -102,7 +200,7 @@
   </div>
 
 {% endif %}
-
+<div class="space-medium"></div>
 <script>
 // let sellerName = "{{ profile.user.username }}";
 // let sellerVouches = "{{ profile.vouches_amt }}";

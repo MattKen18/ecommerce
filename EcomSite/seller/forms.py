@@ -119,3 +119,7 @@ class Restock(forms.ModelForm):
         model = Product
         fields = ['amt_available']
         labels = {'amt_available': 'Restock To'}
+
+class Inquiries(forms.Form):
+    subject = forms.CharField(max_length=50)
+    issue = forms.CharField(max_length=1000, widget=forms.Textarea(attrs={"style": "resize: none;", "rows": 10}))
